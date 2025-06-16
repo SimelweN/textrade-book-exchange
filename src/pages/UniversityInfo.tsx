@@ -30,8 +30,11 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { logProgramVerification } from "@/utils/program-verification";
 import { logCriticalIssuesVerification } from "@/utils/critical-issues-verification";
 
-// Lazy load heavy components for better performance
-const APSCalculatorSection = lazy(
+// Direct import for APS calculator to fix loading issues
+import APSCalculatorSection from "@/components/university-info/APSCalculatorSection";
+
+// Keep lazy loading for other components
+const LazyAPSCalculatorSection = lazy(
   () => import("@/components/university-info/APSCalculatorSection"),
 );
 const BursaryExplorerSection = lazy(
