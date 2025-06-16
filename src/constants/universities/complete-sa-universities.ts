@@ -1,4 +1,8 @@
-import { University } from "@/types/university";
+import { University, Faculty } from "@/types/university";
+import {
+  generateUniversityPrograms,
+  getAllFaculties,
+} from "./comprehensive-program-allocation";
 
 /**
  * COMPLETE DATABASE: ALL 29 SOUTH AFRICAN UNIVERSITIES
@@ -7,6 +11,8 @@ import { University } from "@/types/university";
  * - 17 Traditional Universities (academic focus)
  * - 6 Universities of Technology (practical/vocational focus)
  * - 6 Comprehensive Universities (blend of traditional and technology)
+ *
+ * Updated with comprehensive program allocation system
  */
 
 // Base faculty structure for consistent application
