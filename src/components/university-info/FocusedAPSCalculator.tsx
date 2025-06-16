@@ -127,8 +127,7 @@ const FocusedAPSCalculator: React.FC = () => {
   const availableSubjects = useMemo(() => {
     return SOUTH_AFRICAN_SUBJECTS.filter(
       (subject) =>
-        !subjects.some((s) => s.name === subject.name) ||
-        subject.name.includes("Select"),
+        !subjects.some((s) => s.name === subject) || subject.includes("Select"),
     );
   }, [subjects]);
 
