@@ -7,7 +7,7 @@ export interface Subject {
 export interface Degree {
   id: string;
   name: string;
-  code: string; // Added missing code property
+  code?: string; // Made optional with default generation
   faculty: string;
   duration: string;
   apsRequirement: number;
@@ -47,14 +47,14 @@ export interface University {
   logo: string;
   overview: string;
   website: string;
-  studentPortal?: string; // Made optional
-  admissionsContact?: string; // Made optional
+  studentPortal?: string;
+  admissionsContact?: string;
   faculties: Faculty[];
-  applicationInfo?: ApplicationInfo; // Made optional
+  applicationInfo?: ApplicationInfo;
   establishedYear?: number;
   studentPopulation?: number;
   campuses?: string[];
-  type?: string; // Added type property
+  type?: string;
 }
 
 // APS Calculator Types
@@ -149,8 +149,8 @@ export interface StudyTip {
   tags?: string[];
   content: string;
   author?: string;
-  description?: string; // Added missing property
-  isActive?: boolean; // Added missing property
+  description?: string;
+  isActive?: boolean;
   isSponsored?: boolean;
   sponsorName?: string;
   sponsorLogo?: string;
@@ -170,9 +170,9 @@ export interface StudyResource {
   provider?: string;
   duration?: string;
   tags?: string[];
-  downloadUrl?: string; // Added missing property
-  isActive?: boolean; // Added missing property
-  isFeatured?: boolean; // Added missing property
+  downloadUrl?: string;
+  isActive?: boolean;
+  isFeatured?: boolean;
   isSponsored?: boolean;
   sponsorName?: string;
   sponsorLogo?: string;
@@ -205,3 +205,162 @@ export interface StudyPlan {
   createdAt: string;
   updatedAt: string;
 }
+
+// Type guards and utility functions
+export const isDegreeValid = (degree: any): degree is Degree => {
+  return (
+    degree &&
+    typeof degree.id === "string" &&
+    typeof degree.name === "string" &&
+    typeof degree.faculty === "string" &&
+    typeof degree.duration === "string" &&
+    typeof degree.apsRequirement === "number" &&
+    typeof degree.description === "string" &&
+    Array.isArray(degree.subjects) &&
+    Array.isArray(degree.careerProspects)
+  );
+};
+
+export const isFacultyValid = (faculty: any): faculty is Faculty => {
+  return (
+    faculty &&
+    typeof faculty.id === "string" &&
+    typeof faculty.name === "string" &&
+    typeof faculty.description === "string" &&
+    Array.isArray(faculty.degrees)
+  );
+};
+
+export const isUniversityValid = (
+  university: any,
+): university is University => {
+  return (
+    university &&
+    typeof university.id === "string" &&
+    typeof university.name === "string" &&
+    typeof university.abbreviation === "string" &&
+    typeof university.fullName === "string" &&
+    typeof university.location === "string" &&
+    typeof university.province === "string" &&
+    typeof university.logo === "string" &&
+    typeof university.overview === "string" &&
+    typeof university.website === "string" &&
+    Array.isArray(university.faculties)
+  );
+};
+
+export const isAPSSubjectValid = (subject: any): subject is APSSubject => {
+  return (
+    subject &&
+    typeof subject.name === "string" &&
+    typeof subject.marks === "number" &&
+    typeof subject.level === "number" &&
+    typeof subject.points === "number" &&
+    subject.marks >= 0 &&
+    subject.marks <= 100 &&
+    subject.level >= 0 &&
+    subject.level <= 7 &&
+    subject.points >= 0 &&
+    subject.points <= 7
+  );
+};
+
+// Default values for missing properties
+export const getDefaultDegreeCode = (degree: Degree): string => {
+  if (degree.code) return degree.code;
+
+  // Generate code from degree name
+  const cleanName = degree.name
+    .replace(/[^a-zA-Z0-9\s]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .toLowerCase();
+
+  return cleanName.substring(0, 20); // Limit length
+};
+
+export const getDefaultFacultyDescription = (faculty: Faculty): string => {
+  if (faculty.description) return faculty.description;
+
+  return `Academic programs and courses offered by the ${faculty.name} faculty.`;
+};
+
+export const getDefaultUniversityOverview = (
+  university: University,
+): string => {
+  if (university.overview) return university.overview;
+
+  return `${university.fullName} is a South African university offering various academic programs and courses.`;
+};
+
+// Error handling types
+export interface UniversityDataError {
+  type: "university" | "faculty" | "degree" | "subject";
+  message: string;
+  data?: any;
+  universityId?: string;
+  facultyId?: string;
+  degreeId?: string;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: UniversityDataError[];
+  warnings: UniversityDataError[];
+}
+
+// Search and filter types
+export interface UniversitySearchFilters {
+  searchTerm?: string;
+  province?: string;
+  type?: string;
+  minAPS?: number;
+  maxAPS?: number;
+  faculties?: string[];
+  hasApplicationInfo?: boolean;
+}
+
+export interface DegreeSearchFilters {
+  searchTerm?: string;
+  faculty?: string;
+  minAPS?: number;
+  maxAPS?: number;
+  duration?: string;
+  university?: string;
+  careerField?: string;
+}
+
+// Export utility constants
+export const UNIVERSITY_TYPES = {
+  TRADITIONAL: "Traditional University",
+  TECHNOLOGY: "University of Technology",
+  COMPREHENSIVE: "Comprehensive University",
+  SPECIALIZED: "Specialized University",
+} as const;
+
+export const SOUTH_AFRICAN_PROVINCES = [
+  "Eastern Cape",
+  "Free State",
+  "Gauteng",
+  "KwaZulu-Natal",
+  "Limpopo",
+  "Mpumalanga",
+  "Northern Cape",
+  "North West",
+  "Western Cape",
+] as const;
+
+export const COMMON_DEGREE_DURATIONS = [
+  "3 years",
+  "4 years",
+  "5 years",
+  "6 years",
+] as const;
+
+export const APS_SCORE_RANGES = {
+  EXCELLENT: { min: 40, max: 49, label: "Excellent" },
+  VERY_GOOD: { min: 35, max: 39, label: "Very Good" },
+  GOOD: { min: 30, max: 34, label: "Good" },
+  SATISFACTORY: { min: 25, max: 29, label: "Satisfactory" },
+  BASIC: { min: 20, max: 24, label: "Basic" },
+  BELOW_MINIMUM: { min: 0, max: 19, label: "Below Minimum" },
+} as const;

@@ -57,6 +57,7 @@ import {
   Download,
   Share2,
   HelpCircle,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Accordion,
@@ -70,16 +71,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  SOUTH_AFRICAN_UNIVERSITIES,
-  UNIVERSITY_YEARS,
-} from "@/constants/universities";
+import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
+import { SOUTH_AFRICAN_SUBJECTS } from "@/constants/subjects";
 import { toast } from "sonner";
 import {
   University,
   Degree,
   APSSubject,
   EligibleDegree,
+  APSCalculation,
 } from "@/types/university";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { cn } from "@/lib/utils";
@@ -91,10 +91,11 @@ import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { calculateAPS } from "@/utils/apsCalculation";
 
 // Default subjects for APS calculation
 const DEFAULT_SUBJECTS: APSSubject[] = [
-  { name: "English", marks: 0, level: 0, points: 0 },
+  { name: "English Home Language", marks: 0, level: 0, points: 0 },
   { name: "Mathematics", marks: 0, level: 0, points: 0 },
   { name: "Physical Sciences", marks: 0, level: 0, points: 0 },
   { name: "Life Sciences", marks: 0, level: 0, points: 0 },
@@ -103,38 +104,8 @@ const DEFAULT_SUBJECTS: APSSubject[] = [
   { name: "Additional Subject 3", marks: 0, level: 0, points: 0 },
 ];
 
-// Subject options for dropdown
-const SUBJECT_OPTIONS = [
-  "English",
-  "Mathematics",
-  "Mathematical Literacy",
-  "Physical Sciences",
-  "Life Sciences",
-  "Geography",
-  "History",
-  "Accounting",
-  "Economics",
-  "Business Studies",
-  "Information Technology",
-  "Computer Applications Technology",
-  "Consumer Studies",
-  "Tourism",
-  "Agricultural Sciences",
-  "Life Orientation",
-  "Music",
-  "Visual Arts",
-  "Dramatic Arts",
-  "Engineering Graphics and Design",
-  "Civil Technology",
-  "Electrical Technology",
-  "Mechanical Technology",
-  "Religion Studies",
-  "Second Language",
-  "Third Language",
-];
-
 // APS calculation function
-const calculateAPS = (marks: number): number => {
+const calculateAPSPoints = (marks: number): number => {
   if (marks >= 80) return 7;
   if (marks >= 70) return 6;
   if (marks >= 60) return 5;
@@ -155,173 +126,152 @@ const checkEligibility = (
   const reasons: string[] = [];
   let eligible = true;
 
-  // Check total APS
-  if (totalAPS < degree.apsRequirement) {
-    reasons.push(
-      `Your APS score (${totalAPS}) is below the required minimum (${degree.apsRequirement})`,
-    );
-    eligible = false;
-  }
+  try {
+    // Check total APS
+    if (totalAPS < degree.apsRequirement) {
+      reasons.push(
+        `Your APS score (${totalAPS}) is below the required minimum (${degree.apsRequirement})`,
+      );
+      eligible = false;
+    }
 
-  // Check required subjects
-  if (degree.subjects && degree.subjects.length > 0) {
-    degree.subjects.forEach((subject) => {
-      // Check if subject is required for this degree
-      const isRequired =
-        typeof subject === "string" ? false : subject.isRequired;
-      const subjectName = typeof subject === "string" ? subject : subject.name;
+    // Check required subjects
+    if (
+      degree.subjects &&
+      Array.isArray(degree.subjects) &&
+      degree.subjects.length > 0
+    ) {
+      degree.subjects.forEach((subject) => {
+        try {
+          // Handle both string and object subjects
+          const isRequired =
+            typeof subject === "string" ? false : subject.isRequired;
+          const subjectName =
+            typeof subject === "string" ? subject : subject.name;
 
-      if (isRequired) {
-        // Find the subject in student's subjects
-        const studentSubject = subjects.find(
-          (s) => s.name.toLowerCase() === subjectName.toLowerCase(),
-        );
+          if (!subjectName) return; // Skip invalid subjects
 
-        // Check if student has the subject and meets minimum level
-        const subjectLevel = typeof subject === "string" ? 4 : subject.level;
+          if (isRequired) {
+            // Find the subject in student's subjects
+            const studentSubject = subjects.find(
+              (s) =>
+                s.name && s.name.toLowerCase() === subjectName.toLowerCase(),
+            );
 
-        if (!studentSubject) {
-          reasons.push(
-            `${subjectName} is required but not in your subject list`,
-          );
-          eligible = false;
-        } else if (studentSubject.level < subjectLevel) {
-          reasons.push(
-            `${subjectName} requires level ${subjectLevel} but you have level ${studentSubject.level}`,
-          );
-          eligible = false;
+            // Check if student has the subject and meets minimum level
+            const subjectLevel =
+              typeof subject === "string" ? 4 : subject.level || 4;
+
+            if (!studentSubject) {
+              reasons.push(
+                `${subjectName} is required but not in your subject list`,
+              );
+              eligible = false;
+            } else if (studentSubject.level < subjectLevel) {
+              reasons.push(
+                `${subjectName} requires level ${subjectLevel} but you have level ${studentSubject.level}`,
+              );
+              eligible = false;
+            }
+          }
+        } catch (subjectError) {
+          console.warn("Error processing subject requirement:", subjectError);
         }
-      }
-    });
+      });
+    }
+  } catch (error) {
+    console.error("Error in checkEligibility:", error);
+    eligible = false;
+    reasons.push("Error checking eligibility requirements");
   }
 
   return { eligible, reasons };
 };
 
-// Find eligible degrees based on APS and subjects
+// Find eligible degrees based on APS calculation
 const findEligibleDegrees = (
-  totalAPS: number,
   subjects: APSSubject[],
-  universities: University[],
-  filters: {
-    universityIds?: string[];
-    facultyNames?: string[];
-    minAPS?: number;
-    maxAPS?: number;
-    keywords?: string;
-  },
+  totalAPS: number,
 ): EligibleDegree[] => {
   const eligibleDegrees: EligibleDegree[] = [];
 
   try {
-    // Safely handle subjects array
-    if (!subjects || !Array.isArray(subjects)) {
-      console.warn("Subjects array is not properly defined");
-      return eligibleDegrees;
+    // Ensure universities data is available
+    if (
+      !ALL_SOUTH_AFRICAN_UNIVERSITIES ||
+      !Array.isArray(ALL_SOUTH_AFRICAN_UNIVERSITIES)
+    ) {
+      console.error("Universities data not available");
+      return [];
     }
 
-    // Safely handle universities array
-    if (!universities || !Array.isArray(universities)) {
-      console.warn("Universities array is not properly defined");
-      return eligibleDegrees;
-    }
-
-    // Filter universities if specified
-    const filteredUniversities = filters.universityIds?.length
-      ? universities.filter(
-          (uni) => uni && filters.universityIds?.includes(uni.id),
-        )
-      : universities;
-
-    // Process each university
-    filteredUniversities.forEach((university) => {
-      // Safely check if university has faculties
-      if (
-        !university ||
-        !university.faculties ||
-        !Array.isArray(university.faculties)
-      ) {
-        return;
-      }
-
-      // Process each faculty in the university
-      university.faculties.forEach((faculty) => {
-        // Safely check if faculty exists
-        if (!faculty) {
-          return;
-        }
-
-        // Skip faculty if faculty filter is applied and doesn't match
+    ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
+      try {
         if (
-          filters.facultyNames?.length &&
-          !filters.facultyNames.some(
-            (name) =>
-              faculty.name &&
-              faculty.name.toLowerCase().includes(name.toLowerCase()),
-          )
+          !university ||
+          !university.faculties ||
+          !Array.isArray(university.faculties)
         ) {
+          console.warn(
+            `Invalid university data for: ${university?.name || "Unknown"}`,
+          );
           return;
         }
 
-        // Safely check if faculty has degrees
-        if (!faculty.degrees || !Array.isArray(faculty.degrees)) {
-          return;
-        }
-
-        // Process each degree in the faculty
-        faculty.degrees.forEach((degree) => {
-          // Safely check if degree exists and has required properties
-          if (!degree || typeof degree.apsRequirement !== "number") {
-            return;
-          }
-
-          // Skip if APS requirement is outside filter range
-          if (
-            (filters.minAPS !== undefined &&
-              degree.apsRequirement < filters.minAPS) ||
-            (filters.maxAPS !== undefined &&
-              degree.apsRequirement > filters.maxAPS)
-          ) {
-            return;
-          }
-
-          // Skip if keyword filter is applied and doesn't match
-          if (filters.keywords) {
-            const keywords = filters.keywords.toLowerCase();
-            const matchesKeyword =
-              (degree.name && degree.name.toLowerCase().includes(keywords)) ||
-              (degree.description &&
-                degree.description.toLowerCase().includes(keywords)) ||
-              (faculty.name && faculty.name.toLowerCase().includes(keywords));
-
-            if (!matchesKeyword) {
+        university.faculties.forEach((faculty) => {
+          try {
+            if (
+              !faculty ||
+              !faculty.degrees ||
+              !Array.isArray(faculty.degrees)
+            ) {
               return;
             }
+
+            faculty.degrees.forEach((degree) => {
+              try {
+                if (!degree || typeof degree.apsRequirement !== "number") {
+                  return;
+                }
+
+                const { eligible } = checkEligibility(
+                  totalAPS,
+                  subjects,
+                  degree,
+                  university,
+                );
+                const meetsRequirement = totalAPS >= degree.apsRequirement;
+                const apsGap = meetsRequirement
+                  ? 0
+                  : degree.apsRequirement - totalAPS;
+
+                eligibleDegrees.push({
+                  degree: {
+                    ...degree,
+                    faculty: faculty.name, // Ensure faculty is properly set
+                  },
+                  university,
+                  meetsRequirement,
+                  apsGap: apsGap > 0 ? apsGap : undefined,
+                });
+              } catch (degreeError) {
+                console.warn("Error processing degree:", degreeError);
+              }
+            });
+          } catch (facultyError) {
+            console.warn("Error processing faculty:", facultyError);
           }
-
-          // Check eligibility
-          const { eligible, reasons } = checkEligibility(
-            totalAPS,
-            subjects,
-            degree,
-            university,
-          );
-
-          // Calculate APS gap if not eligible
-          const apsGap = eligible ? 0 : degree.apsRequirement - totalAPS;
-
-          // Add to eligible degrees list
-          eligibleDegrees.push({
-            degree: {
-              ...degree,
-              subjects: degree.subjects || [],
-            },
-            university,
-            meetsRequirement: eligible,
-            apsGap: apsGap > 0 ? apsGap : undefined,
-          });
         });
-      });
+      } catch (universityError) {
+        console.warn("Error processing university:", universityError);
+      }
+    });
+
+    // Sort by eligibility and APS requirement
+    eligibleDegrees.sort((a, b) => {
+      if (a.meetsRequirement && !b.meetsRequirement) return -1;
+      if (!a.meetsRequirement && b.meetsRequirement) return 1;
+      return a.degree.apsRequirement - b.degree.apsRequirement;
     });
   } catch (error) {
     console.error("Error in findEligibleDegrees:", error);
@@ -332,1332 +282,1187 @@ const findEligibleDegrees = (
   return eligibleDegrees;
 };
 
-// Main component
-const EnhancedAPSCalculatorV2 = () => {
+interface EnhancedAPSCalculatorV2Props {
+  onCalculationComplete: (calculation: APSCalculation) => void;
+  selectedUniversityId?: string;
+}
+
+const EnhancedAPSCalculatorV2 = ({
+  onCalculationComplete,
+  selectedUniversityId,
+}: EnhancedAPSCalculatorV2Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  // State for subjects and marks
-  const [subjects, setSubjects] = useLocalStorage<APSSubject[]>(
-    "aps-calculator-subjects",
-    DEFAULT_SUBJECTS,
-  );
+  // Main calculator state
+  const [subjects, setSubjects] = useState<APSSubject[]>(DEFAULT_SUBJECTS);
+  const [calculationResults, setCalculationResults] =
+    useState<APSCalculation | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  const [activeTab, setActiveTab] = useState("calculator");
 
-  // State for filters
-  const [selectedUniversities, setSelectedUniversities] = useState<string[]>(
+  // UI state
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const [filteredUniversities, setFilteredUniversities] = useState<
+    University[]
+  >([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [minAPS, setMinAPS] = useState(20);
+  const [maxAPS, setMaxAPS] = useState(45);
+  const [selectedFaculties, setSelectedFaculties] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<"aps" | "name" | "university">("aps");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Storage and sharing
+  const [savedCalculations, setSavedCalculations] = useLocalStorage<any[]>(
+    "aps-calculations",
     [],
   );
-  const [selectedFaculties, setSelectedFaculties] = useState<string[]>([]);
-  const [minAPS, setMinAPS] = useState<number | undefined>(undefined);
-  const [maxAPS, setMaxAPS] = useState<number | undefined>(undefined);
-  const [searchKeywords, setSearchKeywords] = useState("");
-  const [showOnlyEligible, setShowOnlyEligible] = useState(false);
-  const [sortBy, setSortBy] = useState<
-    "name" | "university" | "aps" | "alphabetical"
-  >("aps");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [savedCalculations, setSavedCalculations] = useLocalStorage<
-    {
-      id: string;
-      name: string;
-      subjects: APSSubject[];
-      totalAPS: number;
-      timestamp: number;
-    }[]
-  >("saved-aps-calculations", []);
   const [activeCalculationName, setActiveCalculationName] = useState("");
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [includeLifeOrientation, setIncludeLifeOrientation] = useState(false);
-  const [useAlternativeAPS, setUseAlternativeAPS] = useState(false);
-  const [showEligibilityReasons, setShowEligibilityReasons] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [bookmarkedDegrees, setBookmarkedDegrees] = useLocalStorage<string[]>(
+    "bookmarked-degrees",
+    [],
+  );
 
-  // Calculate total APS
-  const totalAPS = useMemo(() => {
-    let total = 0;
-    subjects.forEach((subject) => {
-      // Skip Life Orientation if not included
-      if (!includeLifeOrientation && subject.name === "Life Orientation") {
+  // Error handling
+  const [error, setError] = useState<string | null>(null);
+
+  // Update subject marks and recalculate points
+  const updateSubjectMarks = useCallback(
+    (index: number, marks: number) => {
+      try {
+        if (marks < 0 || marks > 100) {
+          setError("Marks must be between 0 and 100");
+          return;
+        }
+
+        setError(null);
+        const newSubjects = [...subjects];
+        newSubjects[index] = {
+          ...newSubjects[index],
+          marks,
+          points: calculateAPSPoints(marks),
+          level: calculateAPSPoints(marks),
+        };
+        setSubjects(newSubjects);
+      } catch (err) {
+        console.error("Error updating subject marks:", err);
+        setError("Error updating subject marks");
+      }
+    },
+    [subjects],
+  );
+
+  // Update subject name
+  const updateSubjectName = useCallback(
+    (index: number, name: string) => {
+      try {
+        const newSubjects = [...subjects];
+        newSubjects[index] = {
+          ...newSubjects[index],
+          name,
+        };
+        setSubjects(newSubjects);
+        setError(null);
+      } catch (err) {
+        console.error("Error updating subject name:", err);
+        setError("Error updating subject name");
+      }
+    },
+    [subjects],
+  );
+
+  // Calculate APS and find eligible degrees
+  const performCalculation = useCallback(async () => {
+    try {
+      setIsCalculating(true);
+      setError(null);
+
+      // Validate subjects have valid marks
+      const validSubjects = subjects.filter(
+        (subject) =>
+          subject.name &&
+          subject.name !== "Additional Subject 1" &&
+          subject.name !== "Additional Subject 2" &&
+          subject.name !== "Additional Subject 3" &&
+          subject.marks >= 0 &&
+          subject.marks <= 100,
+      );
+
+      if (validSubjects.length < 4) {
+        throw new Error("Please enter at least 4 valid subjects with marks");
+      }
+
+      // Ensure we have required subjects
+      const hasEnglish = validSubjects.some((s) =>
+        s.name.toLowerCase().includes("english"),
+      );
+      const hasMath = validSubjects.some((s) =>
+        s.name.toLowerCase().includes("math"),
+      );
+
+      if (!hasEnglish) {
+        throw new Error(
+          "English (Home Language or First Additional Language) is required",
+        );
+      }
+
+      if (!hasMath) {
+        throw new Error("Mathematics or Mathematical Literacy is required");
+      }
+
+      // Calculate total APS (excluding Life Orientation)
+      const contributingSubjects = validSubjects.filter(
+        (subject) => !subject.name.toLowerCase().includes("life orientation"),
+      );
+
+      const totalScore = contributingSubjects.reduce((total, subject) => {
+        return total + subject.points;
+      }, 0);
+
+      // Find eligible degrees
+      const eligibleDegrees = findEligibleDegrees(validSubjects, totalScore);
+
+      const calculation: APSCalculation = {
+        subjects: validSubjects,
+        totalScore,
+        eligibleDegrees,
+      };
+
+      setCalculationResults(calculation);
+      setShowResults(true);
+      onCalculationComplete(calculation);
+
+      // Show success message
+      toast.success(
+        `APS calculated: ${totalScore} points. Found ${eligibleDegrees.length} programs.`,
+      );
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error calculating APS";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error("Calculation error:", err);
+    } finally {
+      setIsCalculating(false);
+    }
+  }, [subjects, onCalculationComplete]);
+
+  // Save calculation locally
+  const saveCalculationLocally = useCallback(() => {
+    try {
+      if (!activeCalculationName.trim()) {
+        toast.error("Please enter a name for this calculation");
         return;
       }
-      total += subject.points;
-    });
-    return total;
-  }, [subjects, includeLifeOrientation]);
 
-  // Get all faculties from universities
-  const allFaculties = useMemo(() => {
-    const faculties = new Set<string>();
-    SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
-      university.faculties.forEach((faculty) => {
-        faculties.add(faculty.name);
-      });
-    });
-    return Array.from(faculties).sort();
-  }, []);
+      if (!calculationResults) {
+        toast.error("No calculation to save");
+        return;
+      }
 
-  // Find eligible degrees
-  const eligibleDegrees = useMemo(() => {
-    return findEligibleDegrees(totalAPS, subjects, SOUTH_AFRICAN_UNIVERSITIES, {
-      universityIds: selectedUniversities.length
-        ? selectedUniversities
-        : undefined,
-      facultyNames: selectedFaculties.length ? selectedFaculties : undefined,
-      minAPS,
-      maxAPS,
-      keywords: searchKeywords.trim() || undefined,
-    });
+      const savedCalculation = {
+        id: Date.now().toString(),
+        name: activeCalculationName,
+        subjects: subjects,
+        totalScore: calculationResults.totalScore,
+        createdAt: new Date().toISOString(),
+      };
+
+      setSavedCalculations([...savedCalculations, savedCalculation]);
+      toast.success("Calculation saved locally");
+      setActiveCalculationName("");
+    } catch (err) {
+      console.error("Error saving calculation:", err);
+      toast.error("Failed to save calculation");
+    }
   }, [
-    totalAPS,
+    activeCalculationName,
+    calculationResults,
     subjects,
-    selectedUniversities,
-    selectedFaculties,
-    minAPS,
-    maxAPS,
-    searchKeywords,
+    savedCalculations,
+    setSavedCalculations,
   ]);
 
-  // Filter and sort eligible degrees
-  const filteredAndSortedDegrees = useMemo(() => {
-    let filtered = eligibleDegrees;
-
-    // Filter by eligibility if option is selected
-    if (showOnlyEligible) {
-      filtered = filtered.filter((degree) => degree.meetsRequirement);
-    }
-
-    // Sort the degrees
-    return filtered.sort((a, b) => {
-      let comparison = 0;
-
-      switch (sortBy) {
-        case "name":
-          comparison = a.degree.name.localeCompare(b.degree.name);
-          break;
-        case "university":
-          comparison = a.university.name.localeCompare(b.university.name);
-          break;
-        case "aps":
-          comparison = a.degree.apsRequirement - b.degree.apsRequirement;
-          break;
-        case "alphabetical":
-          comparison = a.degree.name.localeCompare(b.degree.name);
-          break;
-      }
-
-      return sortDirection === "asc" ? comparison : -comparison;
-    });
-  }, [eligibleDegrees, showOnlyEligible, sortBy, sortDirection]);
-
-  // Statistics about eligible degrees
-  const eligibilityStats = useMemo(() => {
-    const totalDegrees = eligibleDegrees.length;
-    const eligibleCount = eligibleDegrees.filter(
-      (d) => d.meetsRequirement,
-    ).length;
-    const eligiblePercentage = totalDegrees
-      ? Math.round((eligibleCount / totalDegrees) * 100)
-      : 0;
-
-    // Group by university
-    const byUniversity: Record<
-      string,
-      { total: number; eligible: number; percentage: number }
-    > = {};
-
-    eligibleDegrees.forEach((degree) => {
-      const uniId = degree.university.id;
-      if (!byUniversity[uniId]) {
-        byUniversity[uniId] = { total: 0, eligible: 0, percentage: 0 };
-      }
-      byUniversity[uniId].total++;
-      if (degree.meetsRequirement) {
-        byUniversity[uniId].eligible++;
-      }
-    });
-
-    // Calculate percentages
-    Object.keys(byUniversity).forEach((uniId) => {
-      const stats = byUniversity[uniId];
-      stats.percentage = stats.total
-        ? Math.round((stats.eligible / stats.total) * 100)
-        : 0;
-    });
-
-    // Group by faculty
-    const byFaculty: Record<
-      string,
-      { total: number; eligible: number; percentage: number }
-    > = {};
-
-    eligibleDegrees.forEach((degree) => {
-      const faculty = degree.degree.faculty;
-      if (!byFaculty[faculty]) {
-        byFaculty[faculty] = { total: 0, eligible: 0, percentage: 0 };
-      }
-      byFaculty[faculty].total++;
-      if (degree.meetsRequirement) {
-        byFaculty[faculty].eligible++;
-      }
-    });
-
-    // Calculate percentages
-    Object.keys(byFaculty).forEach((faculty) => {
-      const stats = byFaculty[faculty];
-      stats.percentage = stats.total
-        ? Math.round((stats.eligible / stats.total) * 100)
-        : 0;
-    });
-
-    return {
-      total: totalDegrees,
-      eligible: eligibleCount,
-      percentage: eligiblePercentage,
-      byUniversity,
-      byFaculty,
-    };
-  }, [eligibleDegrees]);
-
-  // Handle subject change
-  const handleSubjectChange = (
-    index: number,
-    field: keyof APSSubject,
-    value: any,
-  ) => {
-    const updatedSubjects = [...subjects];
-
-    if (field === "name") {
-      updatedSubjects[index].name = value;
-    } else if (field === "marks") {
-      const marks = parseInt(value) || 0;
-      updatedSubjects[index].marks = Math.min(Math.max(marks, 0), 100);
-      updatedSubjects[index].level = calculateAPS(updatedSubjects[index].marks);
-      updatedSubjects[index].points = updatedSubjects[index].level;
-    }
-
-    setSubjects(updatedSubjects);
-  };
-
-  // Reset calculator
-  const handleReset = () => {
-    setSubjects(DEFAULT_SUBJECTS);
-    setSelectedUniversities([]);
-    setSelectedFaculties([]);
-    setMinAPS(undefined);
-    setMaxAPS(undefined);
-    setSearchKeywords("");
-    setShowOnlyEligible(false);
-    setSortBy("aps");
-    setSortDirection("asc");
-    setActiveCalculationName("");
-    toast.success("Calculator has been reset");
-  };
-
-  // Save current calculation
-  const handleSaveCalculation = () => {
-    if (!activeCalculationName.trim()) {
-      toast.error("Please enter a name for this calculation");
-      return;
-    }
-
-    const newCalculation = {
-      id: Date.now().toString(),
-      name: activeCalculationName,
-      subjects: [...subjects],
-      totalAPS,
-      timestamp: Date.now(),
-    };
-
-    setSavedCalculations([...savedCalculations, newCalculation]);
-    setShowSaveDialog(false);
-    toast.success(`Calculation "${activeCalculationName}" saved successfully`);
-  };
-
-  // Load a saved calculation
-  const handleLoadCalculation = (calculationId: string) => {
-    const calculation = savedCalculations.find((c) => c.id === calculationId);
-    if (calculation) {
-      setSubjects(calculation.subjects);
-      setActiveCalculationName(calculation.name);
-      toast.success(`Loaded calculation: ${calculation.name}`);
-    }
-  };
-
-  // Delete a saved calculation
-  const handleDeleteCalculation = (calculationId: string) => {
-    const updatedCalculations = savedCalculations.filter(
-      (c) => c.id !== calculationId,
-    );
-    setSavedCalculations(updatedCalculations);
-    toast.success("Calculation deleted");
-  };
-
-  // Toggle sort direction
-  const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-  };
-
-  // Handle sort change
-  const handleSortChange = (value: string) => {
-    setSortBy(value as "name" | "university" | "aps" | "alphabetical");
-  };
-
-  // Toggle eligibility reasons
-  const toggleEligibilityReasons = (degreeId: string) => {
-    setShowEligibilityReasons((prev) => ({
-      ...prev,
-      [degreeId]: !prev[degreeId],
-    }));
-  };
-
-  // Save calculation to database
-  const saveCalculationToDatabase = async () => {
-    if (!user) {
-      toast.error("You must be logged in to save calculations to your account");
-      return;
-    }
-
-    if (!activeCalculationName.trim()) {
-      toast.error("Please enter a name for this calculation");
-      return;
-    }
-
+  // Save calculation to user account (if logged in)
+  const saveCalculationToAccount = useCallback(async () => {
     try {
+      if (!user) {
+        toast.error(
+          "You must be logged in to save calculations to your account",
+        );
+        return;
+      }
+
+      if (!activeCalculationName.trim()) {
+        toast.error("Please enter a name for this calculation");
+        return;
+      }
+
       const { data, error } = await supabase.from("aps_calculations").insert({
         user_id: user.id,
         name: activeCalculationName,
         subjects: subjects,
-        total_aps: totalAPS,
+        total_score: calculationResults?.totalScore || 0,
       });
 
       if (error) throw error;
 
       toast.success("Calculation saved to your account");
+      setActiveCalculationName("");
     } catch (error) {
       console.error("Error saving calculation:", error);
       toast.error("Failed to save calculation to your account");
     }
-  };
+  }, [user, activeCalculationName, subjects, calculationResults]);
 
   // Share calculation
-  const shareCalculation = () => {
-    // Create URL with query parameters
-    const subjectsParam = encodeURIComponent(JSON.stringify(subjects));
-    const shareUrl = `${window.location.origin}${window.location.pathname}?subjects=${subjectsParam}`;
+  const shareCalculation = useCallback(() => {
+    try {
+      const shareData = {
+        subjects: subjects.filter((s) => s.name && s.marks > 0),
+        totalScore: calculationResults?.totalScore,
+      };
 
-    // Copy to clipboard
-    navigator.clipboard
-      .writeText(shareUrl)
-      .then(() => {
-        toast.success("Share link copied to clipboard");
-      })
-      .catch(() => {
-        toast.error("Failed to copy share link");
-      });
-  };
+      const shareUrl = `${window.location.origin}/university-info?tool=aps-calculator&data=${encodeURIComponent(JSON.stringify(shareData))}`;
 
-  // Load calculation from URL on initial render
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const subjectsParam = params.get("subjects");
-
-    if (subjectsParam) {
-      try {
-        const loadedSubjects = JSON.parse(decodeURIComponent(subjectsParam));
-        if (Array.isArray(loadedSubjects)) {
-          setSubjects(loadedSubjects);
-          toast.success("Loaded shared calculation");
-        }
-      } catch (error) {
-        console.error("Error parsing subjects from URL:", error);
-      }
+      navigator.clipboard
+        .writeText(shareUrl)
+        .then(() => {
+          toast.success("Share link copied to clipboard");
+        })
+        .catch(() => {
+          toast.error("Failed to copy share link");
+        });
+    } catch (err) {
+      console.error("Error sharing calculation:", err);
+      toast.error("Failed to create share link");
     }
-  }, [location.search, setSubjects]);
+  }, [subjects, calculationResults]);
 
-  // Sort options
-  const sortOptions: Array<"name" | "university" | "aps" | "alphabetical"> = [
-    "name",
-    "university",
-    "aps",
-    "alphabetical",
-  ];
+  // Load shared calculation from URL
+  useEffect(() => {
+    try {
+      const urlParams = new URLSearchParams(location.search);
+      const sharedData = urlParams.get("data");
+
+      if (sharedData) {
+        try {
+          const data = JSON.parse(decodeURIComponent(sharedData));
+          if (data.subjects && Array.isArray(data.subjects)) {
+            setSubjects(data.subjects);
+            setActiveTab("calculator");
+          }
+        } catch (error) {
+          console.error("Error parsing subjects from URL:", error);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading shared data:", err);
+    }
+  }, [location.search]);
+
+  // Get unique faculties for filtering
+  const availableFaculties = useMemo(() => {
+    try {
+      const faculties = new Set<string>();
+
+      if (calculationResults?.eligibleDegrees) {
+        calculationResults.eligibleDegrees.forEach((eligible) => {
+          if (eligible.degree?.faculty) {
+            faculties.add(eligible.degree.faculty);
+          }
+        });
+      }
+
+      return Array.from(faculties).sort();
+    } catch (err) {
+      console.error("Error getting faculties:", err);
+      return [];
+    }
+  }, [calculationResults]);
+
+  // Filter and sort results
+  const filteredResults = useMemo(() => {
+    try {
+      if (!calculationResults?.eligibleDegrees) {
+        return [];
+      }
+
+      let filtered = calculationResults.eligibleDegrees.filter((eligible) => {
+        // Search filter
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
+          const matchesSearch =
+            eligible.degree?.name?.toLowerCase().includes(searchLower) ||
+            eligible.university?.name?.toLowerCase().includes(searchLower) ||
+            eligible.degree?.faculty?.toLowerCase().includes(searchLower);
+
+          if (!matchesSearch) return false;
+        }
+
+        // APS range filter
+        if (eligible.degree?.apsRequirement) {
+          if (
+            eligible.degree.apsRequirement < minAPS ||
+            eligible.degree.apsRequirement > maxAPS
+          ) {
+            return false;
+          }
+        }
+
+        // Faculty filter
+        if (selectedFaculties.length > 0) {
+          if (
+            !eligible.degree?.faculty ||
+            !selectedFaculties.includes(eligible.degree.faculty)
+          ) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // Sort results
+      filtered.sort((a, b) => {
+        let comparison = 0;
+
+        switch (sortBy) {
+          case "aps":
+            comparison =
+              (a.degree?.apsRequirement || 0) - (b.degree?.apsRequirement || 0);
+            break;
+          case "name":
+            comparison = (a.degree?.name || "").localeCompare(
+              b.degree?.name || "",
+            );
+            break;
+          case "university":
+            comparison = (a.university?.name || "").localeCompare(
+              b.university?.name || "",
+            );
+            break;
+        }
+
+        return sortOrder === "desc" ? -comparison : comparison;
+      });
+
+      return filtered;
+    } catch (err) {
+      console.error("Error filtering results:", err);
+      return [];
+    }
+  }, [
+    calculationResults,
+    searchTerm,
+    minAPS,
+    maxAPS,
+    selectedFaculties,
+    sortBy,
+    sortOrder,
+  ]);
+
+  // Add/remove degree bookmark
+  const toggleBookmark = useCallback(
+    (degreeId: string) => {
+      try {
+        const isBookmarked = bookmarkedDegrees.includes(degreeId);
+
+        if (isBookmarked) {
+          setBookmarkedDegrees(
+            bookmarkedDegrees.filter((id) => id !== degreeId),
+          );
+          toast.success("Removed from bookmarks");
+        } else {
+          setBookmarkedDegrees([...bookmarkedDegrees, degreeId]);
+          toast.success("Added to bookmarks");
+        }
+      } catch (err) {
+        console.error("Error toggling bookmark:", err);
+        toast.error("Failed to update bookmark");
+      }
+    },
+    [bookmarkedDegrees, setBookmarkedDegrees],
+  );
+
+  // Reset calculator
+  const resetCalculator = useCallback(() => {
+    try {
+      setSubjects(DEFAULT_SUBJECTS);
+      setCalculationResults(null);
+      setShowResults(false);
+      setError(null);
+      setSearchTerm("");
+      setSelectedFaculties([]);
+      setActiveCalculationName("");
+      toast.success("Calculator reset");
+    } catch (err) {
+      console.error("Error resetting calculator:", err);
+    }
+  }, []);
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center p-4 bg-blue-100 rounded-full mb-4">
-          <Calculator className="h-8 w-8 text-blue-600" />
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Enhanced APS Calculator</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Calculate your Admission Point Score (APS) and discover which degrees
-          you qualify for at South African universities.
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Error Alert */}
+      {error && (
+        <Alert className="border-red-200 bg-red-50">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Calculator */}
-        <div className="lg:col-span-1 space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+          <TabsTrigger value="calculator">Calculator</TabsTrigger>
+          <TabsTrigger value="results" disabled={!showResults}>
+            Results {calculationResults && `(${calculationResults.totalScore})`}
+          </TabsTrigger>
+          <TabsTrigger value="saved">Saved</TabsTrigger>
+          <TabsTrigger value="help">Help</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="calculator" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5" />
-                APS Calculator
+              <CardTitle className="flex items-center space-x-2">
+                <Calculator className="w-5 h-5" />
+                <span>APS Calculator</span>
               </CardTitle>
               <CardDescription>
-                Enter your subject marks to calculate your APS score
+                Enter your National Senior Certificate subject marks to
+                calculate your Admission Point Score (APS).
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Subject Inputs */}
-              {subjects.map((subject, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-12 gap-2 items-center"
-                >
-                  <div className="col-span-6">
-                    <Select
-                      value={subject.name}
-                      onValueChange={(value) =>
-                        handleSubjectChange(index, "name", value)
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select subject" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {SUBJECT_OPTIONS.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="col-span-3">
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={subject.marks}
-                      onChange={(e) =>
-                        handleSubjectChange(index, "marks", e.target.value)
-                      }
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="col-span-3 text-center">
-                    <Badge
-                      variant={subject.points > 0 ? "default" : "outline"}
-                      className="w-full"
-                    >
-                      {subject.points}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-
-              {/* Advanced Options */}
-              <div className="pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-                  className="w-full flex items-center justify-between"
-                >
-                  <span>Advanced Options</span>
-                  {showAdvancedOptions ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
-                  )}
-                </Button>
-
-                {showAdvancedOptions && (
-                  <div className="mt-4 space-y-4 p-4 border rounded-md">
-                    <div className="flex items-center justify-between">
-                      <Label
-                        htmlFor="include-lo"
-                        className="flex items-center gap-2"
-                      >
-                        <Info className="h-4 w-4" />
-                        Include Life Orientation
-                      </Label>
-                      <Switch
-                        id="include-lo"
-                        checked={includeLifeOrientation}
-                        onCheckedChange={setIncludeLifeOrientation}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <Label
-                        htmlFor="alt-aps"
-                        className="flex items-center gap-2"
-                      >
-                        <Calculator className="h-4 w-4" />
-                        Use Alternative APS Method
-                      </Label>
-                      <Switch
-                        id="alt-aps"
-                        checked={useAlternativeAPS}
-                        onCheckedChange={setUseAlternativeAPS}
-                      />
-                    </div>
-
-                    <Separator />
-
-                    <div className="text-sm text-gray-500">
-                      <p className="mb-2">
-                        <strong>Note:</strong> Different universities may
-                        calculate APS scores differently. Some include Life
-                        Orientation while others don't.
-                      </p>
-                      <p>
-                        The alternative APS method uses a different point scale
-                        for some universities.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col space-y-4">
-              <div className="w-full flex items-center justify-between p-4 bg-blue-50 rounded-md">
-                <span className="text-lg font-semibold">Total APS Score:</span>
-                <Badge
-                  variant="default"
-                  className="text-lg px-3 py-1 bg-blue-600"
-                >
-                  {totalAPS}
-                </Badge>
-              </div>
-
-              <div className="w-full flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSaveDialog(true)}
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleReset}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Reset
-                </Button>
-                <Button variant="outline" size="sm" onClick={shareCalculation}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
-                {user && (
+              {/* Subject Input Table */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Your Subjects</h3>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={saveCalculationToDatabase}
+                    onClick={resetCalculator}
+                    className="text-red-600 hover:text-red-700"
                   >
-                    <BookmarkPlus className="h-4 w-4 mr-2" />
-                    Save to Account
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Reset
                   </Button>
-                )}
-              </div>
+                </div>
 
-              {/* Save Dialog */}
-              {showSaveDialog && (
-                <div className="w-full p-4 border rounded-md mt-4">
-                  <h3 className="font-medium mb-2">Save Calculation</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="calculation-name">Name</Label>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Subject</TableHead>
+                        <TableHead className="text-center">Marks (%)</TableHead>
+                        <TableHead className="text-center">
+                          APS Points
+                        </TableHead>
+                        <TableHead className="text-center">Level</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {subjects.map((subject, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="w-1/2">
+                            <Select
+                              value={subject.name}
+                              onValueChange={(value) =>
+                                updateSubjectName(index, value)
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select subject" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {SOUTH_AFRICAN_SUBJECTS.map((subjectOption) => (
+                                  <SelectItem
+                                    key={subjectOption}
+                                    value={subjectOption}
+                                  >
+                                    {subjectOption}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="100"
+                              value={subject.marks || ""}
+                              onChange={(e) =>
+                                updateSubjectMarks(
+                                  index,
+                                  parseInt(e.target.value) || 0,
+                                )
+                              }
+                              placeholder="0-100"
+                              className="text-center"
+                            />
+                          </TableCell>
+                          <TableCell className="text-center font-medium">
+                            {subject.points}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge
+                              variant={
+                                subject.points >= 4 ? "default" : "secondary"
+                              }
+                              className={
+                                subject.points >= 4
+                                  ? "bg-green-100 text-green-800"
+                                  : ""
+                              }
+                            >
+                              Level {subject.level}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                    <TableCaption>
+                      <div className="text-left space-y-2">
+                        <p className="font-medium">
+                          Total APS:{" "}
+                          {subjects.reduce((total, s) => total + s.points, 0)}{" "}
+                          points
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          * Life Orientation is excluded from APS calculation
+                        </p>
+                      </div>
+                    </TableCaption>
+                  </Table>
+                </div>
+
+                {/* Calculate Button */}
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button
+                    onClick={performCalculation}
+                    disabled={isCalculating}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                  >
+                    {isCalculating ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Calculating...
+                      </>
+                    ) : (
+                      <>
+                        <Calculator className="w-4 h-4 mr-2" />
+                        Calculate APS & Find Programs
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick APS Guide */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Info className="w-5 h-5" />
+                <span>APS Points System</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-7 gap-2 text-center">
+                <div className="bg-green-100 p-2 rounded">
+                  <div className="font-bold text-green-800">7</div>
+                  <div className="text-xs">80-100%</div>
+                </div>
+                <div className="bg-blue-100 p-2 rounded">
+                  <div className="font-bold text-blue-800">6</div>
+                  <div className="text-xs">70-79%</div>
+                </div>
+                <div className="bg-indigo-100 p-2 rounded">
+                  <div className="font-bold text-indigo-800">5</div>
+                  <div className="text-xs">60-69%</div>
+                </div>
+                <div className="bg-purple-100 p-2 rounded">
+                  <div className="font-bold text-purple-800">4</div>
+                  <div className="text-xs">50-59%</div>
+                </div>
+                <div className="bg-yellow-100 p-2 rounded">
+                  <div className="font-bold text-yellow-800">3</div>
+                  <div className="text-xs">40-49%</div>
+                </div>
+                <div className="bg-orange-100 p-2 rounded">
+                  <div className="font-bold text-orange-800">2</div>
+                  <div className="text-xs">30-39%</div>
+                </div>
+                <div className="bg-red-100 p-2 rounded">
+                  <div className="font-bold text-red-800">1</div>
+                  <div className="text-xs">0-29%</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="results" className="space-y-6">
+          {calculationResults && (
+            <>
+              {/* Results Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Your APS Results</span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={shareCalculation}
+                      >
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Share
+                      </Button>
+                      {user && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={saveCalculationToAccount}
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          Save to Account
+                        </Button>
+                      )}
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center bg-blue-50 rounded-lg p-6">
+                      <div className="text-3xl font-bold text-blue-600 mb-2">
+                        {calculationResults.totalScore}
+                      </div>
+                      <div className="text-gray-600">Your APS Score</div>
+                    </div>
+
+                    <div className="text-center bg-green-50 rounded-lg p-6">
+                      <div className="text-3xl font-bold text-green-600 mb-2">
+                        {
+                          calculationResults.eligibleDegrees.filter(
+                            (d) => d.meetsRequirement,
+                          ).length
+                        }
+                      </div>
+                      <div className="text-gray-600">Eligible Programs</div>
+                    </div>
+
+                    <div className="text-center bg-purple-50 rounded-lg p-6">
+                      <div className="text-3xl font-bold text-purple-600 mb-2">
+                        {calculationResults.eligibleDegrees.length}
+                      </div>
+                      <div className="text-gray-600">Total Programs</div>
+                    </div>
+                  </div>
+
+                  {/* Save calculation form */}
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex gap-2">
                       <Input
-                        id="calculation-name"
+                        placeholder="Enter calculation name"
                         value={activeCalculationName}
                         onChange={(e) =>
                           setActiveCalculationName(e.target.value)
                         }
-                        placeholder="e.g., My Grade 12 Marks"
+                        className="flex-1"
                       />
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={handleSaveCalculation}
-                      >
+                      <Button onClick={saveCalculationLocally}>
+                        <Save className="w-4 h-4 mr-2" />
                         Save
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowSaveDialog(false)}
-                      >
-                        Cancel
                       </Button>
                     </div>
                   </div>
-                </div>
-              )}
+                </CardContent>
+              </Card>
 
-              {/* Saved Calculations */}
-              {savedCalculations.length > 0 && (
-                <div className="w-full">
-                  <h3 className="font-medium mb-2">Saved Calculations</h3>
-                  <ScrollArea className="h-[150px]">
-                    <div className="space-y-2">
-                      {savedCalculations.map((calc) => (
-                        <div
-                          key={calc.id}
-                          className="flex items-center justify-between p-2 border rounded-md hover:bg-gray-50"
+              {/* Filters and Search */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Filter className="w-5 h-5" />
+                    <span>
+                      Filter Results ({filteredResults.length} programs)
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {/* Search */}
+                    <div>
+                      <Label>Search Programs</Label>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          placeholder="Search by program or university"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+
+                    {/* APS Range */}
+                    <div>
+                      <Label>
+                        APS Range: {minAPS} - {maxAPS}
+                      </Label>
+                      <div className="pt-2">
+                        <Slider
+                          value={[minAPS, maxAPS]}
+                          onValueChange={([min, max]) => {
+                            setMinAPS(min);
+                            setMaxAPS(max);
+                          }}
+                          min={20}
+                          max={45}
+                          step={1}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Sort Options */}
+                    <div>
+                      <Label>Sort By</Label>
+                      <div className="flex gap-2">
+                        <Select
+                          value={sortBy}
+                          onValueChange={(value: any) => setSortBy(value)}
                         >
-                          <div>
-                            <div className="font-medium">{calc.name}</div>
-                            <div className="text-sm text-gray-500">
-                              APS: {calc.totalAPS} •{" "}
-                              {new Date(calc.timestamp).toLocaleDateString()}
-                            </div>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="aps">APS Requirement</SelectItem>
+                            <SelectItem value="name">Program Name</SelectItem>
+                            <SelectItem value="university">
+                              University
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                          }
+                        >
+                          <ArrowUpDown className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Faculty Filter */}
+                  {availableFaculties.length > 0 && (
+                    <div>
+                      <Label>Filter by Faculty</Label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {availableFaculties.map((faculty) => (
+                          <div
+                            key={faculty}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={faculty}
+                              checked={selectedFaculties.includes(faculty)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedFaculties([
+                                    ...selectedFaculties,
+                                    faculty,
+                                  ]);
+                                } else {
+                                  setSelectedFaculties(
+                                    selectedFaculties.filter(
+                                      (f) => f !== faculty,
+                                    ),
+                                  );
+                                }
+                              }}
+                            />
+                            <Label htmlFor={faculty} className="text-sm">
+                              {faculty}
+                            </Label>
                           </div>
-                          <div className="flex gap-1">
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Results List */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Program Results</CardTitle>
+                  <CardDescription>
+                    Showing {filteredResults.length} programs matching your
+                    criteria
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {filteredResults.length === 0 ? (
+                    <div className="text-center py-8">
+                      <GraduationCap className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-600">
+                        No programs match your current filters.
+                      </p>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSearchTerm("");
+                          setSelectedFaculties([]);
+                          setMinAPS(20);
+                          setMaxAPS(45);
+                        }}
+                        className="mt-4"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredResults.slice(0, 50).map((eligible, index) => (
+                        <div
+                          key={`${eligible.university.id}-${eligible.degree.id}-${index}`}
+                          className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-2">
+                                <h3 className="font-semibold text-lg text-gray-900">
+                                  {eligible.degree.name}
+                                </h3>
+                                <Badge
+                                  className={
+                                    eligible.meetsRequirement
+                                      ? "bg-green-100 text-green-800 border-green-200"
+                                      : "bg-red-100 text-red-800 border-red-200"
+                                  }
+                                >
+                                  {eligible.meetsRequirement
+                                    ? "Eligible"
+                                    : "Not Eligible"}
+                                </Badge>
+                              </div>
+
+                              <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
+                                <span className="font-medium">
+                                  {eligible.university.abbreviation ||
+                                    eligible.university.name}
+                                </span>
+                                <span>•</span>
+                                <span>{eligible.degree.faculty}</span>
+                                <span>•</span>
+                                <span>{eligible.degree.duration}</span>
+                                <span>•</span>
+                                <span className="text-blue-600 font-medium">
+                                  APS: {eligible.degree.apsRequirement}
+                                </span>
+                                {eligible.apsGap && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="text-orange-600">
+                                      Gap: {eligible.apsGap} points
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+
+                              <p className="text-sm text-gray-600 mb-3">
+                                {eligible.degree.description ||
+                                  "No description available."}
+                              </p>
+
+                              {/* Career Prospects */}
+                              {eligible.degree.careerProspects &&
+                                eligible.degree.careerProspects.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mb-3">
+                                    {eligible.degree.careerProspects
+                                      .slice(0, 4)
+                                      .map((career, idx) => (
+                                        <Badge
+                                          key={idx}
+                                          variant="secondary"
+                                          className="text-xs bg-gray-100"
+                                        >
+                                          {career}
+                                        </Badge>
+                                      ))}
+                                    {eligible.degree.careerProspects.length >
+                                      4 && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs bg-gray-100"
+                                      >
+                                        +
+                                        {eligible.degree.careerProspects
+                                          .length - 4}{" "}
+                                        more
+                                      </Badge>
+                                    )}
+                                  </div>
+                                )}
+                            </div>
+
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleLoadCalculation(calc.id)}
+                              onClick={() => toggleBookmark(eligible.degree.id)}
+                              className={
+                                bookmarkedDegrees.includes(eligible.degree.id)
+                                  ? "text-yellow-600 hover:text-yellow-700"
+                                  : "text-gray-400 hover:text-gray-600"
+                              }
                             >
-                              <Bookmark className="h-4 w-4" />
+                              {bookmarkedDegrees.includes(
+                                eligible.degree.id,
+                              ) ? (
+                                <Bookmark className="w-4 h-4" />
+                              ) : (
+                                <BookmarkPlus className="w-4 h-4" />
+                              )}
                             </Button>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
                             <Button
-                              variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteCalculation(calc.id)}
+                              onClick={() =>
+                                navigate(
+                                  `/books?university=${eligible.university.id}&degree=${eligible.degree.id}`,
+                                )
+                              }
+                              className="bg-blue-600 hover:bg-blue-700 text-white"
                             >
-                              <Trash2 className="h-4 w-4 text-red-500" />
+                              <BookOpen className="w-4 h-4 mr-2" />
+                              View Books
+                            </Button>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                navigate(
+                                  `/university/${eligible.university.id}`,
+                                )
+                              }
+                              className="border-blue-200 text-blue-600 hover:bg-blue-50"
+                            >
+                              <School className="w-4 h-4 mr-2" />
+                              University Info
                             </Button>
                           </div>
                         </div>
                       ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
-            </CardFooter>
-          </Card>
 
-          {/* Eligibility Stats Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                Eligibility Overview
-              </CardTitle>
-              <CardDescription>
-                Summary of your eligibility for degrees
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span>Total Degrees:</span>
-                  <Badge variant="outline">{eligibilityStats.total}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Eligible Degrees:</span>
-                  <Badge
-                    variant={
-                      eligibilityStats.eligible > 0 ? "default" : "outline"
-                    }
-                  >
-                    {eligibilityStats.eligible}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Eligibility Rate:</span>
-                  <Badge
-                    variant={
-                      eligibilityStats.percentage > 50 ? "success" : "outline"
-                    }
-                  >
-                    {eligibilityStats.percentage}%
-                  </Badge>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div>
-                <h4 className="font-medium mb-2">Top Universities for You</h4>
-                <div className="space-y-2">
-                  {Object.entries(eligibilityStats.byUniversity)
-                    .sort(([, a], [, b]) => b.percentage - a.percentage)
-                    .slice(0, 3)
-                    .map(([uniId, stats]) => {
-                      const university = SOUTH_AFRICAN_UNIVERSITIES.find(
-                        (u) => u.id === uniId,
-                      );
-                      return (
-                        <div
-                          key={uniId}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-sm truncate max-w-[180px]">
-                            {university?.name || uniId}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs">
-                              {stats.eligible}/{stats.total}
-                            </span>
-                            <Badge
-                              variant={
-                                stats.percentage > 50 ? "success" : "outline"
-                              }
-                              className="text-xs"
-                            >
-                              {stats.percentage}%
-                            </Badge>
-                          </div>
+                      {filteredResults.length > 50 && (
+                        <div className="text-center py-4">
+                          <p className="text-gray-600 mb-4">
+                            Showing first 50 results. Use filters to narrow down
+                            your search.
+                          </p>
                         </div>
-                      );
-                    })}
-                </div>
-              </div>
-
-              <Separator />
-
-              <div>
-                <h4 className="font-medium mb-2">Top Faculties for You</h4>
-                <div className="space-y-2">
-                  {Object.entries(eligibilityStats.byFaculty)
-                    .sort(([, a], [, b]) => b.percentage - a.percentage)
-                    .slice(0, 3)
-                    .map(([faculty, stats]) => (
-                      <div
-                        key={faculty}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-sm truncate max-w-[180px]">
-                          {faculty}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs">
-                            {stats.eligible}/{stats.total}
-                          </span>
-                          <Badge
-                            variant={
-                              stats.percentage > 50 ? "success" : "outline"
-                            }
-                            className="text-xs"
-                          >
-                            {stats.percentage}%
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Results */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <GraduationCap className="h-5 w-5" />
-                Degree Eligibility Results
-              </CardTitle>
-              <CardDescription>
-                Explore degrees based on your APS score and subject choices
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Filters */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-gray-500" />
-                  <h3 className="font-medium">Filters</h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* University Filter */}
-                  <div>
-                    <Label htmlFor="university-filter" className="mb-1 block">
-                      Universities
-                    </Label>
-                    <Select
-                      value={
-                        selectedUniversities.length === 1
-                          ? selectedUniversities[0]
-                          : ""
-                      }
-                      onValueChange={(value) => {
-                        if (value) {
-                          setSelectedUniversities([value]);
-                        } else {
-                          setSelectedUniversities([]);
-                        }
-                      }}
-                    >
-                      <SelectTrigger id="university-filter">
-                        <SelectValue placeholder="All Universities" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Universities</SelectItem>
-                        {SOUTH_AFRICAN_UNIVERSITIES.map((uni) => (
-                          <SelectItem key={uni.id} value={uni.id}>
-                            {uni.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Faculty Filter */}
-                  <div>
-                    <Label htmlFor="faculty-filter" className="mb-1 block">
-                      Faculty
-                    </Label>
-                    <Select
-                      value={
-                        selectedFaculties.length === 1
-                          ? selectedFaculties[0]
-                          : ""
-                      }
-                      onValueChange={(value) => {
-                        if (value) {
-                          setSelectedFaculties([value]);
-                        } else {
-                          setSelectedFaculties([]);
-                        }
-                      }}
-                    >
-                      <SelectTrigger id="faculty-filter">
-                        <SelectValue placeholder="All Faculties" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Faculties</SelectItem>
-                        {allFaculties.map((faculty) => (
-                          <SelectItem key={faculty} value={faculty}>
-                            {faculty}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* APS Range */}
-                  <div>
-                    <Label htmlFor="min-aps" className="mb-1 block">
-                      Minimum APS
-                    </Label>
-                    <Input
-                      id="min-aps"
-                      type="number"
-                      placeholder="Min APS"
-                      value={minAPS || ""}
-                      onChange={(e) => {
-                        const value = e.target.value
-                          ? parseInt(e.target.value)
-                          : undefined;
-                        setMinAPS(value);
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="max-aps" className="mb-1 block">
-                      Maximum APS
-                    </Label>
-                    <Input
-                      id="max-aps"
-                      type="number"
-                      placeholder="Max APS"
-                      value={maxAPS || ""}
-                      onChange={(e) => {
-                        const value = e.target.value
-                          ? parseInt(e.target.value)
-                          : undefined;
-                        setMaxAPS(value);
-                      }}
-                    />
-                  </div>
-
-                  {/* Search */}
-                  <div className="md:col-span-2">
-                    <Label htmlFor="search-keywords" className="mb-1 block">
-                      Search
-                    </Label>
-                    <div className="relative">
-                      <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="search-keywords"
-                        placeholder="Search by degree name, description..."
-                        value={searchKeywords}
-                        onChange={(e) => setSearchKeywords(e.target.value)}
-                        className="pl-8"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Additional Filters */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="show-eligible"
-                      checked={showOnlyEligible}
-                      onCheckedChange={(checked) =>
-                        setShowOnlyEligible(checked as boolean)
-                      }
-                    />
-                    <Label
-                      htmlFor="show-eligible"
-                      className="text-sm cursor-pointer"
-                    >
-                      Show only eligible degrees
-                    </Label>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor="sort-by" className="text-sm">
-                      Sort by:
-                    </Label>
-                    <Select value={sortBy} onValueChange={handleSortChange}>
-                      <SelectTrigger id="sort-by" className="h-8 w-[130px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="aps">APS Requirement</SelectItem>
-                        <SelectItem value="name">Degree Name</SelectItem>
-                        <SelectItem value="university">University</SelectItem>
-                        <SelectItem value="alphabetical">
-                          Alphabetical
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={toggleSortDirection}
-                      className="h-8 w-8 p-0"
-                    >
-                      {sortDirection === "asc" ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
                       )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </TabsContent>
 
-              <Separator />
-
-              {/* Results */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4" />
-                    <span>{filteredAndSortedDegrees.length} Degrees Found</span>
-                  </h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedUniversities([]);
-                      setSelectedFaculties([]);
-                      setMinAPS(undefined);
-                      setMaxAPS(undefined);
-                      setSearchKeywords("");
-                      setShowOnlyEligible(false);
-                    }}
-                  >
-                    Clear Filters
-                  </Button>
-                </div>
-
-                {filteredAndSortedDegrees.length === 0 ? (
-                  <div className="text-center py-8">
-                    <School className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
-                      No degrees found
-                    </h3>
-                    <p className="text-gray-500 mb-4">
-                      Try adjusting your filters or increasing your APS score.
-                    </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setSelectedUniversities([]);
-                        setSelectedFaculties([]);
-                        setMinAPS(undefined);
-                        setMaxAPS(undefined);
-                        setSearchKeywords("");
-                        setShowOnlyEligible(false);
-                      }}
-                    >
-                      Clear Filters
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {filteredAndSortedDegrees.map((eligibleDegree) => {
-                      const { degree, university, meetsRequirement, apsGap } =
-                        eligibleDegree;
-                      const degreeId = `${university.id}-${degree.id}`;
-
-                      return (
-                        <Card
-                          key={degreeId}
-                          className={cn(
-                            "border overflow-hidden transition-all",
-                            meetsRequirement
-                              ? "border-green-200 hover:border-green-300"
-                              : "border-gray-200 hover:border-gray-300",
-                          )}
-                        >
-                          <div
-                            className={cn(
-                              "h-1",
-                              meetsRequirement ? "bg-green-500" : "bg-gray-200",
-                            )}
-                          />
-                          <CardContent className="p-4">
-                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                              <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Badge
-                                    variant={
-                                      meetsRequirement ? "success" : "outline"
-                                    }
-                                    className="uppercase text-xs"
-                                  >
-                                    {meetsRequirement
-                                      ? "Eligible"
-                                      : "Not Eligible"}
-                                  </Badge>
-                                  {apsGap && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      Need +{apsGap} APS
-                                    </Badge>
-                                  )}
-                                </div>
-
-                                <h3 className="font-semibold text-lg">
-                                  {degree.name}
-                                </h3>
-
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <School className="h-4 w-4" />
-                                  <span>{university.name}</span>
-                                </div>
-
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    {degree.faculty}
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    {degree.duration}
-                                  </Badge>
-                                </div>
-
-                                <p className="text-sm text-gray-600 mt-2">
-                                  {degree.description}
-                                </p>
-
-                                {/* Career Prospects */}
-                                {degree.careerProspects &&
-                                  degree.careerProspects.length > 0 && (
-                                    <div className="mt-2">
-                                      <h4 className="text-sm font-medium mb-1">
-                                        Career Prospects:
-                                      </h4>
-                                      <div className="flex flex-wrap gap-1">
-                                        {degree.careerProspects.map(
-                                          (career, idx) => (
-                                            <Badge
-                                              key={idx}
-                                              variant="outline"
-                                              className="text-xs"
-                                            >
-                                              {career}
-                                            </Badge>
-                                          ),
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                {/* Eligibility Reasons */}
-                                {!meetsRequirement && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                      toggleEligibilityReasons(degreeId)
-                                    }
-                                    className="mt-2 h-auto p-0 text-blue-600 hover:text-blue-800 hover:bg-transparent"
-                                  >
-                                    <Info className="h-3 w-3 mr-1" />
-                                    <span className="text-xs">
-                                      {showEligibilityReasons[degreeId]
-                                        ? "Hide eligibility details"
-                                        : "Show why you don't qualify"}
-                                    </span>
-                                  </Button>
-                                )}
-
-                                {!meetsRequirement &&
-                                  showEligibilityReasons[degreeId] && (
-                                    <div className="mt-2 p-3 bg-red-50 rounded-md text-sm">
-                                      <h4 className="font-medium text-red-800 mb-1">
-                                        Why you don't qualify:
-                                      </h4>
-                                      <ul className="list-disc list-inside text-red-700 space-y-1">
-                                        {apsGap && (
-                                          <li>
-                                            Your APS score ({totalAPS}) is{" "}
-                                            {apsGap} points below the
-                                            requirement ({degree.apsRequirement}
-                                            )
-                                          </li>
-                                        )}
-                                        {degree.subjects &&
-                                          degree.subjects.map(
-                                            (subject, idx) => {
-                                              // Check if subject is required
-                                              const isRequired =
-                                                typeof subject === "string"
-                                                  ? false
-                                                  : subject.isRequired;
-
-                                              if (!isRequired) return null;
-
-                                              const subjectName =
-                                                typeof subject === "string"
-                                                  ? subject
-                                                  : subject.name;
-
-                                              const subjectLevel =
-                                                typeof subject === "string"
-                                                  ? 4
-                                                  : subject.level;
-
-                                              // Find if student has this subject
-                                              const studentSubject =
-                                                subjects.find(
-                                                  (s) =>
-                                                    s.name.toLowerCase() ===
-                                                    subjectName.toLowerCase(),
-                                                );
-
-                                              if (!studentSubject) {
-                                                return (
-                                                  <li key={idx}>
-                                                    Missing required subject:{" "}
-                                                    {subjectName}
-                                                  </li>
-                                                );
-                                              }
-
-                                              if (
-                                                studentSubject.level <
-                                                subjectLevel
-                                              ) {
-                                                return (
-                                                  <li key={idx}>
-                                                    {subjectName} requires level{" "}
-                                                    {subjectLevel} but you have
-                                                    level {studentSubject.level}
-                                                  </li>
-                                                );
-                                              }
-
-                                              return null;
-                                            },
-                                          )}
-                                      </ul>
-                                    </div>
-                                  )}
-                              </div>
-
-                              <div className="flex flex-col items-center justify-center min-w-[100px] mt-4 md:mt-0">
-                                <div className="text-center">
-                                  <div className="text-sm text-gray-500">
-                                    APS Required
-                                  </div>
-                                  <div
-                                    className={cn(
-                                      "text-2xl font-bold",
-                                      meetsRequirement
-                                        ? "text-green-600"
-                                        : "text-gray-700",
-                                    )}
-                                  >
-                                    {degree.apsRequirement}
-                                  </div>
-                                </div>
-
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-4"
-                                  onClick={() =>
-                                    navigate(
-                                      `/universities/${university.id}/programs/${degree.id}`,
-                                    )
-                                  }
-                                >
-                                  View Details
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* APS Information Card */}
+        <TabsContent value="saved" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="h-5 w-5" />
-                About APS Calculation
-              </CardTitle>
+              <CardTitle>Saved Calculations</CardTitle>
+              <CardDescription>
+                Your locally saved APS calculations
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>
-                    How is the APS score calculated?
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p className="mb-2">
-                      The Admission Point Score (APS) is calculated based on
-                      your Grade 12 (Matric) subject marks. Each subject is
-                      assigned points according to the percentage achieved:
-                    </p>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Percentage</TableHead>
-                          <TableHead>APS Points</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>80-100%</TableCell>
-                          <TableCell>7</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>70-79%</TableCell>
-                          <TableCell>6</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>60-69%</TableCell>
-                          <TableCell>5</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>50-59%</TableCell>
-                          <TableCell>4</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>40-49%</TableCell>
-                          <TableCell>3</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>30-39%</TableCell>
-                          <TableCell>2</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>0-29%</TableCell>
-                          <TableCell>1</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>
-                    Do all universities calculate APS the same way?
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p>
-                      No, different universities may have slightly different APS
-                      calculation methods:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-1">
-                      <li>
-                        Some universities include Life Orientation in the
-                        calculation, while others don't.
-                      </li>
-                      <li>
-                        Some universities may give additional points for certain
-                        subjects relevant to specific degrees.
-                      </li>
-                      <li>
-                        Some may use a different point scale (e.g., out of 8 or
-                        out of 10).
-                      </li>
-                      <li>
-                        Some may only count a specific number of subjects (e.g.,
-                        best 6 subjects).
-                      </li>
-                    </ul>
-                    <p className="mt-2">
-                      Always check the specific requirements for each university
-                      and program you're interested in.
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>
-                    What else do universities consider besides APS?
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <p>
-                      While APS is important, universities also consider other
-                      factors:
-                    </p>
-                    <ul className="list-disc list-inside mt-2 space-y-1">
-                      <li>
-                        Specific subject requirements (e.g., minimum level for
-                        Mathematics)
-                      </li>
-                      <li>
-                        National Benchmark Tests (NBTs) for some universities
-                      </li>
-                      <li>Faculty-specific selection tests or interviews</li>
-                      <li>
-                        Portfolio submissions (for creative arts programs)
-                      </li>
-                      <li>Previous academic performance and academic record</li>
-                      <li>
-                        Extracurricular activities and leadership experience
-                      </li>
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              {savedCalculations.length === 0 ? (
+                <div className="text-center py-8">
+                  <Save className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600">No saved calculations yet.</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Calculate your APS and save it for future reference.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {savedCalculations.map((calc, index) => (
+                    <div
+                      key={calc.id || index}
+                      className="border rounded-lg p-4"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-medium">{calc.name}</h3>
+                        <div className="flex items-center space-x-2">
+                          <Badge>{calc.totalScore} APS</Badge>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const updatedCalcs = savedCalculations.filter(
+                                (_, i) => i !== index,
+                              );
+                              setSavedCalculations(updatedCalcs);
+                              toast.success("Calculation deleted");
+                            }}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Saved on {new Date(calc.createdAt).toLocaleDateString()}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSubjects(calc.subjects);
+                          setActiveTab("calculator");
+                          toast.success("Calculation loaded");
+                        }}
+                      >
+                        Load Calculation
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+
+        <TabsContent value="help" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <HelpCircle className="w-5 h-5" />
+                <span>How to Use the APS Calculator</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-medium mb-2">
+                    Step 1: Enter Your Subjects
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Select your National Senior Certificate subjects from the
+                    dropdown menus. You need at least English (Home Language or
+                    First Additional Language) and Mathematics or Mathematical
+                    Literacy.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium mb-2">Step 2: Enter Your Marks</h3>
+                  <p className="text-sm text-gray-600">
+                    Enter your final examination marks (0-100%) for each
+                    subject. The system will automatically convert these to APS
+                    points.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium mb-2">
+                    Step 3: Calculate Your APS
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Click "Calculate APS & Find Programs" to see your total APS
+                    score and discover which university programs you qualify
+                    for.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium mb-2">Step 4: Explore Results</h3>
+                  <p className="text-sm text-gray-600">
+                    Filter and sort through available programs, bookmark
+                    interesting options, and explore related textbooks and
+                    university information.
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="font-medium mb-2">Important Notes</h3>
+                <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                  <li>Life Orientation is excluded from APS calculations</li>
+                  <li>
+                    You need a minimum of 4 subjects for university admission
+                  </li>
+                  <li>
+                    Different programs have different subject requirements
+                  </li>
+                  <li>APS requirements may vary by year and university</li>
+                  <li>
+                    Always check with universities for the most current
+                    requirements
+                  </li>
+                </ul>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="font-medium mb-2">APS Points Scale</h3>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span>7 points:</span>
+                    <span>80-100% (Outstanding Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>6 points:</span>
+                    <span>70-79% (Meritorious Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>5 points:</span>
+                    <span>60-69% (Substantial Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>4 points:</span>
+                    <span>50-59% (Adequate Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>3 points:</span>
+                    <span>40-49% (Moderate Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>2 points:</span>
+                    <span>30-39% (Elementary Achievement)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>1 point:</span>
+                    <span>0-29% (Not Achieved)</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

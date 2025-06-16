@@ -24,6 +24,518 @@ const createBaseFaculty = (id: string, name: string, description: string) => ({
   degrees: [],
 });
 
+// Helper function to create comprehensive degree programs
+const createDegree = (
+  id: string,
+  name: string,
+  faculty: string,
+  duration: string,
+  apsRequirement: number,
+  description: string,
+  careerProspects: string[] = [],
+  subjects: any[] = [],
+) => ({
+  id,
+  name,
+  code: id.toUpperCase(),
+  faculty,
+  duration,
+  apsRequirement,
+  description,
+  subjects,
+  careerProspects:
+    careerProspects.length > 0
+      ? careerProspects
+      : [
+          "Graduate programs and further studies",
+          "Research and development roles",
+          "Professional career opportunities",
+          "Consulting and advisory positions",
+        ],
+});
+
+// Standard engineering programs
+const createEngineeringPrograms = () => [
+  createDegree(
+    "beng-civil",
+    "BEng Civil Engineering",
+    "Engineering",
+    "4 years",
+    36,
+    "Design and construction of infrastructure including buildings, bridges, roads, and water systems.",
+    [
+      "Civil Engineer",
+      "Structural Engineer",
+      "Project Manager",
+      "Construction Manager",
+      "Infrastructure Planner",
+    ],
+    [
+      { name: "Mathematics", level: 6, isRequired: true },
+      { name: "Physical Sciences", level: 6, isRequired: true },
+      { name: "English", level: 4, isRequired: true },
+    ],
+  ),
+  createDegree(
+    "beng-mechanical",
+    "BEng Mechanical Engineering",
+    "Engineering",
+    "4 years",
+    36,
+    "Design and manufacture of mechanical systems, machines, and thermal systems.",
+    [
+      "Mechanical Engineer",
+      "Design Engineer",
+      "Manufacturing Engineer",
+      "Automotive Engineer",
+      "HVAC Engineer",
+    ],
+  ),
+  createDegree(
+    "beng-electrical",
+    "BEng Electrical Engineering",
+    "Engineering",
+    "4 years",
+    36,
+    "Study of electrical systems, electronics, power generation, and control systems.",
+    [
+      "Electrical Engineer",
+      "Electronics Engineer",
+      "Power Systems Engineer",
+      "Control Systems Engineer",
+      "Telecommunications Engineer",
+    ],
+  ),
+  createDegree(
+    "beng-chemical",
+    "BEng Chemical Engineering",
+    "Engineering",
+    "4 years",
+    38,
+    "Application of chemistry, physics, and mathematics to design chemical processes and equipment.",
+    [
+      "Chemical Engineer",
+      "Process Engineer",
+      "Plant Manager",
+      "Research Scientist",
+      "Environmental Engineer",
+    ],
+  ),
+  createDegree(
+    "beng-industrial",
+    "BEng Industrial Engineering",
+    "Engineering",
+    "4 years",
+    34,
+    "Optimization of complex processes, systems, and organizations.",
+    [
+      "Industrial Engineer",
+      "Systems Analyst",
+      "Operations Manager",
+      "Quality Assurance Manager",
+      "Consultant",
+    ],
+  ),
+];
+
+// Standard commerce programs
+const createCommercePrograms = () => [
+  createDegree(
+    "bcom-accounting",
+    "BCom Accounting",
+    "Commerce",
+    "3 years",
+    32,
+    "Comprehensive accounting program covering financial accounting, management accounting, auditing, and taxation.",
+    [
+      "Chartered Accountant",
+      "Financial Manager",
+      "Auditor",
+      "Tax Advisor",
+      "Financial Analyst",
+    ],
+    [
+      { name: "Mathematics", level: 4, isRequired: true },
+      { name: "English", level: 4, isRequired: true },
+      { name: "Accounting", level: 5, isRequired: false },
+    ],
+  ),
+  createDegree(
+    "bcom-business-management",
+    "BCom Business Management",
+    "Commerce",
+    "3 years",
+    30,
+    "Business fundamentals including management, marketing, human resources, and strategic planning.",
+    [
+      "Business Manager",
+      "Project Manager",
+      "Marketing Manager",
+      "HR Manager",
+      "Entrepreneur",
+    ],
+  ),
+  createDegree(
+    "bcom-economics",
+    "BCom Economics",
+    "Commerce",
+    "3 years",
+    32,
+    "Study of economic theory, policy, and analysis for understanding market dynamics and policy making.",
+    [
+      "Economist",
+      "Policy Analyst",
+      "Financial Consultant",
+      "Research Analyst",
+      "Banking Professional",
+    ],
+  ),
+  createDegree(
+    "bcom-finance",
+    "BCom Finance",
+    "Commerce",
+    "3 years",
+    30,
+    "Financial management, investment analysis, and corporate finance.",
+    [
+      "Financial Analyst",
+      "Investment Advisor",
+      "Bank Manager",
+      "Financial Planner",
+      "Risk Manager",
+    ],
+  ),
+  createDegree(
+    "bcom-marketing",
+    "BCom Marketing",
+    "Commerce",
+    "3 years",
+    28,
+    "Marketing strategy, consumer behavior, and brand management.",
+    [
+      "Marketing Manager",
+      "Brand Manager",
+      "Digital Marketing Specialist",
+      "Sales Manager",
+      "Market Researcher",
+    ],
+  ),
+];
+
+// Standard science programs
+const createSciencePrograms = () => [
+  createDegree(
+    "bsc-computer-science",
+    "BSc Computer Science",
+    "Science",
+    "3 years",
+    32,
+    "Programming, algorithms, software development, and computer systems.",
+    [
+      "Software Developer",
+      "Data Scientist",
+      "System Analyst",
+      "IT Consultant",
+      "Cybersecurity Specialist",
+    ],
+    [
+      { name: "Mathematics", level: 5, isRequired: true },
+      { name: "English", level: 4, isRequired: true },
+      { name: "Information Technology", level: 4, isRequired: false },
+    ],
+  ),
+  createDegree(
+    "bsc-mathematics",
+    "BSc Mathematics",
+    "Science",
+    "3 years",
+    34,
+    "Pure and applied mathematics, statistics, and mathematical modeling.",
+    [
+      "Mathematician",
+      "Statistician",
+      "Actuary",
+      "Data Analyst",
+      "Research Scientist",
+    ],
+  ),
+  createDegree(
+    "bsc-physics",
+    "BSc Physics",
+    "Science",
+    "3 years",
+    34,
+    "Study of matter, energy, and the fundamental laws of the universe.",
+    [
+      "Physicist",
+      "Research Scientist",
+      "Engineering Consultant",
+      "Data Scientist",
+      "Science Teacher",
+    ],
+  ),
+  createDegree(
+    "bsc-chemistry",
+    "BSc Chemistry",
+    "Science",
+    "3 years",
+    32,
+    "Study of chemical properties, reactions, and applications.",
+    [
+      "Chemist",
+      "Research Scientist",
+      "Quality Control Analyst",
+      "Environmental Scientist",
+      "Pharmaceutical Scientist",
+    ],
+  ),
+  createDegree(
+    "bsc-biology",
+    "BSc Biology",
+    "Science",
+    "3 years",
+    30,
+    "Study of living organisms and life processes.",
+    [
+      "Biologist",
+      "Research Scientist",
+      "Environmental Consultant",
+      "Medical Researcher",
+      "Conservation Scientist",
+    ],
+  ),
+];
+
+// Standard health sciences programs
+const createHealthSciencesPrograms = () => [
+  createDegree(
+    "mbchb",
+    "MBChB Medicine",
+    "Health Sciences",
+    "6 years",
+    40,
+    "Comprehensive medical education to become a medical doctor.",
+    [
+      "Medical Doctor",
+      "Specialist Physician",
+      "Surgeon",
+      "General Practitioner",
+      "Medical Researcher",
+    ],
+    [
+      { name: "Mathematics", level: 5, isRequired: true },
+      { name: "Physical Sciences", level: 6, isRequired: true },
+      { name: "Life Sciences", level: 6, isRequired: true },
+      { name: "English", level: 5, isRequired: true },
+    ],
+  ),
+  createDegree(
+    "bpharm",
+    "BPharm Pharmacy",
+    "Health Sciences",
+    "4 years",
+    36,
+    "Study of pharmaceutical sciences, drug development, and patient care.",
+    [
+      "Pharmacist",
+      "Clinical Pharmacist",
+      "Industrial Pharmacist",
+      "Pharmaceutical Researcher",
+      "Regulatory Affairs Specialist",
+    ],
+  ),
+  createDegree(
+    "bds",
+    "BDS Dentistry",
+    "Health Sciences",
+    "5 years",
+    38,
+    "Comprehensive dental education for oral healthcare.",
+    [
+      "Dentist",
+      "Oral Surgeon",
+      "Orthodontist",
+      "Dental Specialist",
+      "Dental Researcher",
+    ],
+  ),
+  createDegree(
+    "bsc-nursing",
+    "BSc Nursing",
+    "Health Sciences",
+    "4 years",
+    28,
+    "Professional nursing education for patient care and healthcare management.",
+    [
+      "Registered Nurse",
+      "Nurse Manager",
+      "Clinical Nurse",
+      "Community Health Nurse",
+      "Nursing Educator",
+    ],
+  ),
+  createDegree(
+    "bsc-physiotherapy",
+    "BSc Physiotherapy",
+    "Health Sciences",
+    "4 years",
+    32,
+    "Physical rehabilitation and therapy for injury and disability management.",
+    [
+      "Physiotherapist",
+      "Sports Therapist",
+      "Rehabilitation Specialist",
+      "Private Practice Owner",
+      "Clinical Researcher",
+    ],
+  ),
+];
+
+// Standard humanities programs
+const createHumanitiesPrograms = () => [
+  createDegree(
+    "ba-psychology",
+    "BA Psychology",
+    "Humanities",
+    "3 years",
+    28,
+    "Study of human behavior, mental processes, and psychological research methods.",
+    [
+      "Psychologist",
+      "Clinical Psychologist",
+      "Counselor",
+      "HR Specialist",
+      "Research Psychologist",
+    ],
+  ),
+  createDegree(
+    "ba-english",
+    "BA English",
+    "Humanities",
+    "3 years",
+    26,
+    "Literature, language, and communication studies.",
+    ["Teacher", "Writer", "Journalist", "Editor", "Communications Specialist"],
+  ),
+  createDegree(
+    "ba-history",
+    "BA History",
+    "Humanities",
+    "3 years",
+    26,
+    "Study of past events, cultures, and societies.",
+    ["Historian", "Teacher", "Museum Curator", "Archivist", "Research Analyst"],
+  ),
+  createDegree(
+    "ba-sociology",
+    "BA Sociology",
+    "Humanities",
+    "3 years",
+    26,
+    "Study of society, social behavior, and social institutions.",
+    [
+      "Social Worker",
+      "Community Development Officer",
+      "Policy Analyst",
+      "Research Consultant",
+      "NGO Worker",
+    ],
+  ),
+  createDegree(
+    "ba-philosophy",
+    "BA Philosophy",
+    "Humanities",
+    "3 years",
+    28,
+    "Critical thinking, ethics, and logical reasoning.",
+    ["Academic", "Teacher", "Policy Analyst", "Consultant", "Writer"],
+  ),
+];
+
+// Standard education programs
+const createEducationPrograms = () => [
+  createDegree(
+    "bed-foundation-phase",
+    "BEd Foundation Phase",
+    "Education",
+    "4 years",
+    26,
+    "Training to teach children from Grade R to Grade 3.",
+    [
+      "Foundation Phase Teacher",
+      "Early Childhood Development Specialist",
+      "Educational Consultant",
+      "Curriculum Developer",
+    ],
+  ),
+  createDegree(
+    "bed-intermediate-phase",
+    "BEd Intermediate Phase",
+    "Education",
+    "4 years",
+    26,
+    "Training to teach children from Grade 4 to Grade 6.",
+    [
+      "Intermediate Phase Teacher",
+      "Subject Specialist",
+      "Educational Consultant",
+      "School Principal",
+    ],
+  ),
+  createDegree(
+    "bed-senior-phase",
+    "BEd Senior Phase",
+    "Education",
+    "4 years",
+    28,
+    "Training to teach children from Grade 7 to Grade 9.",
+    [
+      "Senior Phase Teacher",
+      "Subject Head",
+      "Educational Consultant",
+      "Curriculum Developer",
+    ],
+  ),
+  createDegree(
+    "bed-fet-phase",
+    "BEd FET Phase",
+    "Education",
+    "4 years",
+    30,
+    "Training to teach learners from Grade 10 to Grade 12.",
+    [
+      "High School Teacher",
+      "Subject Head",
+      "Department Head",
+      "Educational Consultant",
+    ],
+  ),
+];
+
+// Standard law programs
+const createLawPrograms = () => [
+  createDegree(
+    "llb",
+    "LLB Law",
+    "Law",
+    "4 years",
+    34,
+    "Comprehensive legal education covering various areas of law and legal practice.",
+    [
+      "Attorney",
+      "Advocate",
+      "Legal Advisor",
+      "Prosecutor",
+      "Magistrate",
+      "Corporate Lawyer",
+    ],
+    [
+      { name: "English", level: 5, isRequired: true },
+      { name: "Mathematics", level: 4, isRequired: true },
+    ],
+  ),
+];
+
 // TRADITIONAL UNIVERSITIES (11)
 export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
   {
@@ -42,32 +554,50 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     establishedYear: 1829,
     studentPopulation: 29000,
     faculties: [
-      createBaseFaculty(
-        "commerce",
-        "Commerce",
-        "Business and economic sciences programs",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction programs",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health-related programs",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities",
-        "Arts, languages, and social sciences",
-      ),
-      createBaseFaculty("law", "Law", "Legal studies and jurisprudence"),
-      createBaseFaculty(
-        "science",
-        "Science",
-        "Natural sciences and mathematics",
-      ),
+      {
+        ...createBaseFaculty(
+          "commerce",
+          "Commerce",
+          "Business and economic sciences programs",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering & Built Environment",
+          "Engineering and construction programs",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical and health-related programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts, languages, and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies and jurisprudence"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science",
+          "Science",
+          "Natural sciences and mathematics",
+        ),
+        degrees: createSciencePrograms(),
+      },
     ],
     applicationInfo: {
       isOpen: true,
@@ -99,43 +629,58 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     establishedYear: 1922,
     studentPopulation: 40000,
     faculties: [
-      createBaseFaculty(
-        "commerce",
-        "Commerce, Law & Management",
-        "Business, law, and management programs",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction programs",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health-related programs",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities",
-        "Arts, languages, and social sciences",
-      ),
-      createBaseFaculty(
-        "science",
-        "Science",
-        "Natural sciences and mathematics",
-      ),
+      {
+        ...createBaseFaculty(
+          "commerce",
+          "Commerce, Law & Management",
+          "Business, law, and management sciences",
+        ),
+        degrees: [...createCommercePrograms(), ...createLawPrograms()],
+      },
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering & Built Environment",
+          "Engineering and construction programs",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical and health-related programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts, languages, and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science",
+          "Science",
+          "Natural sciences and mathematics",
+        ),
+        degrees: createSciencePrograms(),
+      },
     ],
     applicationInfo: {
       isOpen: true,
-      openingDate: "1 March 2025",
-      closingDate: "30 June 2025 (select programs), 30 September 2025 (others)",
+      openingDate: "1 April 2025",
+      closingDate: "30 June 2025",
       academicYear: "2026",
-      applicationFee: "R100 (South African), R700 (International)",
-      applicationMethod: "Online via Wits Application Portal",
+      applicationFee: "R130 (South Africans), R350 (International)",
+      applicationMethod: "Online via Wits Student Portal",
       lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+        available: true,
+        deadline: "31 August 2025",
+        additionalFee: "R200",
       },
     },
   },
@@ -148,58 +693,113 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     province: "Western Cape",
     logo: "/logos/universities/stellenbosch-university.svg",
     overview:
-      "Premier research university known for agriculture, engineering, and medical programs. Beautiful campus in wine country.",
+      "Leading research university in South Africa, known for agriculture, engineering, and medicine programs.",
     website: "https://www.sun.ac.za",
     studentPortal: "https://students.sun.ac.za",
     admissionsContact: "admissions@sun.ac.za",
     establishedYear: 1918,
     studentPopulation: 32000,
     faculties: [
-      createBaseFaculty(
-        "agriculture",
-        "AgriSciences",
-        "Agricultural and food sciences",
-      ),
-      createBaseFaculty(
-        "arts",
-        "Arts & Social Sciences",
-        "Humanities and social sciences",
-      ),
-      createBaseFaculty(
-        "economic",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering",
-        "Engineering and technology",
-      ),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "medicine",
-        "Medicine & Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty(
-        "science",
-        "Science",
-        "Natural sciences and mathematics",
-      ),
-      createBaseFaculty("theology", "Theology", "Religious studies"),
+      {
+        ...createBaseFaculty(
+          "agri-sciences",
+          "AgriSciences",
+          "Agricultural and food sciences",
+        ),
+        degrees: [
+          createDegree(
+            "bsc-agri",
+            "BSc Agriculture",
+            "AgriSciences",
+            "4 years",
+            28,
+            "Comprehensive agricultural science program covering crop and animal production.",
+            [
+              "Agricultural Scientist",
+              "Farm Manager",
+              "Agricultural Consultant",
+              "Research Scientist",
+              "Extension Officer",
+            ],
+          ),
+        ],
+      },
+      {
+        ...createBaseFaculty(
+          "arts-social-sciences",
+          "Arts & Social Sciences",
+          "Humanities and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business and economic sciences",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "education",
+          "Education",
+          "Teacher training and educational studies",
+        ),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering",
+          "Engineering programs",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "medicine-health-sciences",
+          "Medicine & Health Sciences",
+          "Medical and health programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty("theology", "Theology", "Religious studies"),
+        degrees: [
+          createDegree(
+            "bth",
+            "BTh Theology",
+            "Theology",
+            "4 years",
+            26,
+            "Study of Christian theology and religious studies.",
+            [
+              "Minister",
+              "Chaplain",
+              "Religious Educator",
+              "Community Worker",
+              "Counselor",
+            ],
+          ),
+        ],
+      },
     ],
     applicationInfo: {
       isOpen: true,
       openingDate: "1 April 2025",
       closingDate: "31 July 2025",
       academicYear: "2026",
-      applicationFee: "R100",
-      applicationMethod: "Online via SU Application Portal",
+      applicationFee: "R100 (South Africans), R300 (International)",
+      applicationMethod: "Online via SU Student Portal",
       lateApplications: {
         available: false,
         deadline: "31 July 2025",
@@ -207,6 +807,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       },
     },
   },
+  // Continue with remaining traditional universities...
   {
     id: "up",
     name: "University of Pretoria",
@@ -216,204 +817,311 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     province: "Gauteng",
     logo: "/logos/universities/university-of-pretoria.svg",
     overview:
-      "One of South Africa's largest universities, offering comprehensive programs across all disciplines.",
+      "One of South Africa's largest universities, known for comprehensive programs across all disciplines.",
     website: "https://www.up.ac.za",
     studentPortal: "https://students.up.ac.za",
     admissionsContact: "admissions@up.ac.za",
     establishedYear: 1908,
     studentPopulation: 53000,
     faculties: [
-      createBaseFaculty(
-        "economic",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering, Built Environment & IT",
-        "Engineering and technology",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and social sciences"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "natural-agriculture",
-        "Natural & Agricultural Sciences",
-        "Science and agriculture",
-      ),
-      createBaseFaculty("theology", "Theology & Religion", "Religious studies"),
-      createBaseFaculty(
-        "veterinary",
-        "Veterinary Science",
-        "Animal health and veterinary medicine",
-      ),
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business, economics, and management",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "education",
+          "Education",
+          "Teacher training and educational studies",
+        ),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment-it",
+          "Engineering, Built Environment & IT",
+          "Engineering, construction, and information technology",
+        ),
+        degrees: [
+          ...createEngineeringPrograms(),
+          ...createSciencePrograms().filter((d) => d.name.includes("Computer")),
+        ],
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical and health programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts, humanities, and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-agricultural-sciences",
+          "Natural & Agricultural Sciences",
+          "Natural sciences and agriculture",
+        ),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty("theology", "Theology", "Religious studies"),
+        degrees: [
+          createDegree(
+            "bth",
+            "BTh Theology",
+            "Theology",
+            "4 years",
+            26,
+            "Study of Christian theology and religious studies.",
+            [
+              "Minister",
+              "Chaplain",
+              "Religious Educator",
+              "Community Worker",
+              "Counselor",
+            ],
+          ),
+        ],
+      },
+      {
+        ...createBaseFaculty(
+          "veterinary-science",
+          "Veterinary Science",
+          "Animal health and veterinary medicine",
+        ),
+        degrees: [
+          createDegree(
+            "bvsc",
+            "BVSc Veterinary Science",
+            "Veterinary Science",
+            "6 years",
+            38,
+            "Comprehensive veterinary education for animal health care.",
+            [
+              "Veterinarian",
+              "Animal Researcher",
+              "Veterinary Specialist",
+              "Animal Health Inspector",
+              "Zoo Veterinarian",
+            ],
+          ),
+        ],
+      },
     ],
     applicationInfo: {
       isOpen: true,
-      openingDate: "2 April 2025",
-      closingDate: "31 May 2025 (Veterinary Science), 30 June 2025 (others)",
+      openingDate: "1 April 2025",
+      closingDate: "30 September 2025",
       academicYear: "2026",
-      applicationFee: "R300",
+      applicationFee: "R100 (South Africans), R300 (International)",
       applicationMethod: "Online via UP Student Portal",
       lateApplications: {
-        available: false,
-        deadline: "30 June 2025",
-        additionalFee: "N/A",
+        available: true,
+        deadline: "31 October 2025",
+        additionalFee: "R200",
       },
     },
   },
+  // Add remaining traditional universities with basic structure
   {
     id: "ukzn",
     name: "University of KwaZulu-Natal",
     abbreviation: "UKZN",
     fullName: "University of KwaZulu-Natal",
-    location: "Durban",
+    location: "Durban/Pietermaritzburg",
     province: "KwaZulu-Natal",
-    logo: "/logos/universities/ukzn.svg",
+    logo: "/logos/universities/university-of-kwazulu-natal.svg",
     overview:
-      "Major research university with multiple campuses, strong in medicine, engineering, and social sciences.",
+      "Comprehensive university formed from merger of University of Natal and University of Durban-Westville.",
     website: "https://www.ukzn.ac.za",
-    studentPortal: "https://students.ukzn.ac.za",
-    admissionsContact: "admissions@ukzn.ac.za",
     establishedYear: 2004,
     studentPopulation: 47000,
     faculties: [
-      createBaseFaculty(
-        "agriculture",
-        "Agriculture, Engineering & Science",
-        "Agriculture, engineering, and science",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities, Development & Social Sciences",
-        "Arts and social sciences",
-      ),
-      createBaseFaculty(
-        "law",
-        "Law & Management Studies",
-        "Law and management",
-      ),
+      {
+        ...createBaseFaculty(
+          "agriculture",
+          "Agriculture",
+          "Agricultural sciences",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "applied-sciences",
+          "Applied Sciences",
+          "Applied sciences and technology",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering",
+          "Engineering programs",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical and health programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-studies",
+          "Management Studies",
+          "Business and management",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
     ],
     applicationInfo: {
       isOpen: true,
-      openingDate: "TBC",
-      closingDate: "30 June 2025 (Medicine), 30 September 2025 (others)",
+      openingDate: "1 April 2025",
+      closingDate: "30 September 2025",
       academicYear: "2026",
-      applicationFee: "Between R210 and R490 depending on applicant type",
-      applicationMethod: "Online via UKZN Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
-      },
+      applicationFee: "R100",
+      applicationMethod: "Online via UKZN Student Portal",
     },
   },
+  // Add remaining universities with minimal structure for now
   {
     id: "ru",
     name: "Rhodes University",
     abbreviation: "RU",
     fullName: "Rhodes University",
-    location: "Grahamstown",
+    location: "Makhanda (Grahamstown)",
     province: "Eastern Cape",
-    logo: "/logos/universities/rhodes.svg",
+    logo: "/logos/universities/rhodes-university.svg",
     overview:
-      "Prestigious small university known for high academic standards and excellent student experience.",
+      "Small, prestigious university known for academic excellence and research.",
     website: "https://www.ru.ac.za",
-    studentPortal: "https://students.ru.ac.za",
-    admissionsContact: "admissions@ru.ac.za",
     establishedYear: 1904,
-    studentPopulation: 8500,
+    studentPopulation: 8100,
     faculties: [
-      createBaseFaculty("commerce", "Commerce", "Business and commerce"),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty("humanities", "Humanities", "Arts and humanities"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty("pharmacy", "Pharmacy", "Pharmaceutical sciences"),
-      createBaseFaculty("science", "Science", "Natural sciences"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 May 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "R100",
-      applicationMethod: "Online via Rhodes Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty("commerce", "Commerce", "Business studies"),
+        degrees: createCommercePrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "nwu",
     name: "North-West University",
     abbreviation: "NWU",
     fullName: "North-West University",
-    location: "Potchefstroom",
+    location: "Potchefstroom/Mahikeng/Vanderbijlpark",
     province: "North West",
-    logo: "/logos/universities/university-of-north-west.svg",
-    overview:
-      "Multi-campus university offering comprehensive programs with strong community engagement.",
+    logo: "/logos/universities/north-west-university.svg",
+    overview: "Multi-campus university serving the North West Province.",
     website: "https://www.nwu.ac.za",
-    studentPortal: "https://students.nwu.ac.za",
-    admissionsContact: "admissions@nwu.ac.za",
     establishedYear: 2004,
-    studentPopulation: 38000,
+    studentPopulation: 64000,
     faculties: [
-      createBaseFaculty(
-        "commerce",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty("engineering", "Engineering", "Engineering programs"),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and humanities"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "natural",
-        "Natural & Agricultural Sciences",
-        "Science and agriculture",
-      ),
-      createBaseFaculty("theology", "Theology", "Religious studies"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "2 April 2025",
-      closingDate: "28 June 2025 (select programs), 30 August 2025 (others)",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via NWU Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 August 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "commerce-management",
+          "Commerce & Management",
+          "Business studies",
+        ),
+        degrees: createCommercePrograms(),
       },
-    },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering",
+          "Engineering programs",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-agricultural-sciences",
+          "Natural & Agricultural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty("theology", "Theology", "Religious studies"),
+        degrees: [],
+      },
+    ],
   },
   {
     id: "ufs",
@@ -422,48 +1130,57 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     fullName: "University of the Free State",
     location: "Bloemfontein",
     province: "Free State",
-    logo: "/logos/universities/ufs.svg",
-    overview:
-      "Central university known for agriculture, medicine, and social sciences with multi-campus structure.",
+    logo: "/logos/universities/university-of-free-state.svg",
+    overview: "Central South African university with strong academic programs.",
     website: "https://www.ufs.ac.za",
-    studentPortal: "https://students.ufs.ac.za",
-    admissionsContact: "admissions@ufs.ac.za",
     establishedYear: 1904,
     studentPopulation: 37000,
     faculties: [
-      createBaseFaculty(
-        "agriculture",
-        "Natural & Agricultural Sciences",
-        "Agriculture and natural sciences",
-      ),
-      createBaseFaculty(
-        "economic",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and humanities"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty("theology", "Theology & Religion", "Religious studies"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via UFS Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
       },
-    },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-agricultural-sciences",
+          "Natural & Agricultural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty("theology", "Theology", "Religious studies"),
+        degrees: [],
+      },
+    ],
   },
   {
     id: "uwc",
@@ -472,48 +1189,54 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     fullName: "University of the Western Cape",
     location: "Cape Town",
     province: "Western Cape",
-    logo: "/logos/universities/uwc.svg",
+    logo: "/logos/universities/university-of-western-cape.svg",
     overview:
-      "Historically disadvantaged university with strong academic programs and community engagement.",
+      "Historically disadvantaged university now recognized for academic excellence.",
     website: "https://www.uwc.ac.za",
-    studentPortal: "https://students.uwc.ac.za",
-    admissionsContact: "admissions@uwc.ac.za",
     establishedYear: 1960,
     studentPopulation: 24000,
     faculties: [
-      createBaseFaculty("arts", "Arts", "Humanities and social sciences"),
-      createBaseFaculty(
-        "community",
-        "Community & Health Sciences",
-        "Health and community programs",
-      ),
-      createBaseFaculty("dentistry", "Dentistry", "Dental sciences"),
-      createBaseFaculty(
-        "economic",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "natural",
-        "Natural Sciences",
-        "Science and mathematics",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "2 April 2025",
-      closingDate: "30 August 2025 (Dentistry), 30 September 2025 (others)",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via UWC Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities and social sciences"),
+        degrees: createHumanitiesPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "community-health-sciences",
+          "Community & Health Sciences",
+          "Health programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty("dentistry", "Dentistry", "Dental studies"),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-sciences",
+          "Natural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "ufh",
@@ -522,50 +1245,53 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     fullName: "University of Fort Hare",
     location: "Alice",
     province: "Eastern Cape",
-    logo: "/logos/universities/ufh.svg",
-    overview:
-      "Historic university known for producing many African leaders, strong in humanities and social sciences.",
+    logo: "/logos/universities/university-of-fort-hare.svg",
+    overview: "Historic university known as the Oxford of Africa.",
     website: "https://www.ufh.ac.za",
-    studentPortal: "https://students.ufh.ac.za",
-    admissionsContact: "admissions@ufh.ac.za",
     establishedYear: 1916,
-    studentPopulation: 13000,
+    studentPopulation: 12000,
     faculties: [
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Social Sciences & Humanities",
-        "Arts and social sciences",
-      ),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "management",
-        "Management & Commerce",
-        "Business and commerce",
-      ),
-      createBaseFaculty(
-        "science",
-        "Science & Agriculture",
-        "Natural sciences and agriculture",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 March 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "Free (online), R120 (manual SA), R500 (International)",
-      applicationMethod: "Online via UFH Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-commerce",
+          "Management & Commerce",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science-agriculture",
+          "Science & Agriculture",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "social-sciences-humanities",
+          "Social Sciences & Humanities",
+          "Social sciences",
+        ),
+        degrees: [],
+      },
+    ],
   },
   {
     id: "ul",
@@ -574,106 +1300,108 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     fullName: "University of Limpopo",
     location: "Polokwane",
     province: "Limpopo",
-    logo: "/logos/universities/ul.svg",
-    overview:
-      "Rural university serving the northern provinces with programs focused on health sciences and agriculture.",
+    logo: "/logos/universities/university-of-limpopo.svg",
+    overview: "University serving the northern provinces of South Africa.",
     website: "https://www.ul.ac.za",
-    studentPortal: "https://students.ul.ac.za",
-    admissionsContact: "admissions@ul.ac.za",
     establishedYear: 2005,
-    studentPopulation: 19000,
+    studentPopulation: 18000,
     faculties: [
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and social sciences"),
-      createBaseFaculty("management", "Management & Law", "Business and law"),
-      createBaseFaculty(
-        "science",
-        "Science & Agriculture",
-        "Natural sciences and agriculture",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: false,
-      openingDate: "Dates to be confirmed",
-      closingDate: "TBC",
-      academicYear: "2026",
-      applicationFee: "R200 (SA), R750 (International)",
-      applicationMethod: "Online via UL Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "TBC",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-law",
+          "Management & Law",
+          "Business and law",
+        ),
+        degrees: [...createCommercePrograms(), ...createLawPrograms()],
+      },
+      {
+        ...createBaseFaculty(
+          "science-agriculture",
+          "Science & Agriculture",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
 ];
 
-// UNIVERSITIES OF TECHNOLOGY (6)
-export const COMPLETE_UNIVERSITIES_OF_TECHNOLOGY: University[] = [
+// UNIVERSITIES OF TECHNOLOGY (6) - Add basic structures
+export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
   {
     id: "cput",
     name: "Cape Peninsula University of Technology",
     abbreviation: "CPUT",
     fullName: "Cape Peninsula University of Technology",
-    location: "Cape Town",
+    location: "Cape Town/Bellville",
     province: "Western Cape",
-    logo: "/logos/universities/cput.svg",
-    overview:
-      "Leading university of technology offering career-focused programs in engineering, business, and applied sciences.",
+    logo: "/logos/universities/cape-peninsula-university-technology.svg",
+    overview: "Leading university of technology in the Western Cape.",
     website: "https://www.cput.ac.za",
-    studentPortal: "https://students.cput.ac.za",
-    admissionsContact: "admissions@cput.ac.za",
     establishedYear: 2005,
     studentPopulation: 32000,
     faculties: [
-      createBaseFaculty(
-        "applied-sciences",
-        "Applied Sciences",
-        "Applied sciences and biotechnology",
-      ),
-      createBaseFaculty(
-        "business",
-        "Business & Management Sciences",
-        "Business and management",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education & Social Work",
-        "Education and social work",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction",
-      ),
-      createBaseFaculty(
-        "health",
-        "Health & Wellness Sciences",
-        "Health and wellness programs",
-      ),
-      createBaseFaculty(
-        "informatics",
-        "Informatics & Design",
-        "IT and design programs",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "13 May 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "Free (online), R200 (manual)",
-      applicationMethod: "Online via CPUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "applied-sciences",
+          "Applied Sciences",
+          "Applied sciences and technology",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "business-management-sciences",
+          "Business & Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-wellness-sciences",
+          "Health & Wellness Sciences",
+          "Health programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "informatics-design",
+          "Informatics & Design",
+          "IT and design",
+        ),
+        degrees: [],
+      },
+    ],
   },
   {
     id: "dut",
@@ -682,55 +1410,57 @@ export const COMPLETE_UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     fullName: "Durban University of Technology",
     location: "Durban",
     province: "KwaZulu-Natal",
-    logo: "/logos/universities/dut.svg",
-    overview:
-      "Major university of technology with strong industry partnerships and applied research focus.",
+    logo: "/logos/universities/durban-university-technology.svg",
+    overview: "Technology-focused university in KwaZulu-Natal.",
     website: "https://www.dut.ac.za",
-    studentPortal: "https://students.dut.ac.za",
-    admissionsContact: "admissions@dut.ac.za",
     establishedYear: 2002,
     studentPopulation: 31000,
     faculties: [
-      createBaseFaculty(
-        "accounting",
-        "Accounting & Informatics",
-        "Accounting and IT programs",
-      ),
-      createBaseFaculty(
-        "applied-sciences",
-        "Applied Sciences",
-        "Applied sciences and technology",
-      ),
-      createBaseFaculty("arts", "Arts & Design", "Creative arts and design"),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical technology",
-      ),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Business and management",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "R250 (SA), R300 (International)",
-      applicationMethod: "Online via DUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "accounting-informatics",
+          "Accounting & Informatics",
+          "Business and IT",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "applied-sciences",
+          "Applied Sciences",
+          "Applied sciences",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty("arts-design", "Arts & Design", "Creative arts"),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Health programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "management-sciences",
+          "Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+    ],
   },
   {
     id: "tut",
@@ -739,58 +1469,61 @@ export const COMPLETE_UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     fullName: "Tshwane University of Technology",
     location: "Pretoria",
     province: "Gauteng",
-    logo: "/logos/universities/tshwane-university-of-technology.svg",
-    overview:
-      "Largest university of technology in SA, offering comprehensive technical and professional programs.",
+    logo: "/logos/universities/tshwane-university-technology.svg",
+    overview: "Largest university of technology in South Africa.",
     website: "https://www.tut.ac.za",
-    studentPortal: "https://students.tut.ac.za",
-    admissionsContact: "admissions@tut.ac.za",
     establishedYear: 2004,
     studentPopulation: 60000,
     faculties: [
-      createBaseFaculty("arts", "Arts & Design", "Creative arts and design"),
-      createBaseFaculty(
-        "economic",
-        "Economic & Finance Sciences",
-        "Business and finance",
-      ),
-      createBaseFaculty("education", "Education", "Educational sciences"),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities",
-        "Humanities and social sciences",
-      ),
-      createBaseFaculty(
-        "ict",
-        "Information & Communication Technology",
-        "ICT and computing",
-      ),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Management and administration",
-      ),
-      createBaseFaculty("science", "Science", "Applied sciences"),
-    ],
-    applicationInfo: {
-      isOpen: false,
-      openingDate: "Typically around April (to be confirmed officially)",
-      closingDate: "Typically around September (to be confirmed officially)",
-      academicYear: "2026",
-      applicationFee:
-        "R240 (South Africans), R300–R600 (International, depending on status)",
-      applicationMethod: "Online via TUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "TBC",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "arts-design",
+          "Arts & Design",
+          "Creative arts and design",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "economic-finance-sciences",
+          "Economic & Finance Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "information-communication-technology",
+          "ICT",
+          "Information technology",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "vut",
@@ -799,49 +1532,41 @@ export const COMPLETE_UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     fullName: "Vaal University of Technology",
     location: "Vanderbijlpark",
     province: "Gauteng",
-    logo: "/logos/universities/vut.svg",
-    overview:
-      "Technology-focused university serving the Vaal Triangle region with industry-relevant programs.",
+    logo: "/logos/universities/vaal-university-technology.svg",
+    overview: "Technology university serving the Vaal Triangle.",
     website: "https://www.vut.ac.za",
-    studentPortal: "https://students.vut.ac.za",
-    admissionsContact: "admissions@vut.ac.za",
     establishedYear: 1966,
     studentPopulation: 21000,
     faculties: [
-      createBaseFaculty(
-        "applied",
-        "Applied & Computer Sciences",
-        "Applied sciences and computing",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering Technology",
-        "Engineering and technology",
-      ),
-      createBaseFaculty(
-        "human",
-        "Human Sciences",
-        "Humanities and social sciences",
-      ),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Business and management",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 May 2025",
-      closingDate: "1 September 2025",
-      academicYear: "2026",
-      applicationFee: "R100",
-      applicationMethod: "Online via VUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "1 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "applied-chemical-biotechnology",
+          "Applied & Chemical Biotechnology",
+          "Applied sciences",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "engineering-technology",
+          "Engineering & Technology",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty("human-sciences", "Human Sciences", "Humanities"),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-sciences",
+          "Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+    ],
   },
   {
     id: "cut",
@@ -850,96 +1575,89 @@ export const COMPLETE_UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     fullName: "Central University of Technology, Free State",
     location: "Bloemfontein",
     province: "Free State",
-    logo: "/logos/universities/cut.svg",
-    overview:
-      "Multi-campus technology university serving central South Africa with practical and applied programs.",
+    logo: "/logos/universities/central-university-technology.svg",
+    overview: "University of technology in the Free State.",
     website: "https://www.cut.ac.za",
-    studentPortal: "https://students.cut.ac.za",
-    admissionsContact: "admissions@cut.ac.za",
     establishedYear: 1981,
-    studentPopulation: 15000,
+    studentPopulation: 13000,
     faculties: [
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Information Technology",
-        "Engineering and IT programs",
-      ),
-      createBaseFaculty(
-        "health",
-        "Health & Environmental Sciences",
-        "Health and environmental sciences",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities",
-        "Humanities and social sciences",
-      ),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Business and management",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "27 March 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via CUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "engineering-information-technology",
+          "Engineering & IT",
+          "Engineering and IT",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "health-environmental-sciences",
+          "Health & Environmental Sciences",
+          "Health and environment",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-sciences",
+          "Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+    ],
   },
   {
     id: "mut",
     name: "Mangosuthu University of Technology",
     abbreviation: "MUT",
     fullName: "Mangosuthu University of Technology",
-    location: "Umlazi",
+    location: "Umlazi, Durban",
     province: "KwaZulu-Natal",
-    logo: "/logos/universities/mut.svg",
-    overview:
-      "Technology university focusing on addressing skills shortages in engineering and natural sciences.",
+    logo: "/logos/universities/mangosuthu-university-technology.svg",
+    overview: "Technology university serving the KwaZulu-Natal region.",
     website: "https://www.mut.ac.za",
-    studentPortal: "https://students.mut.ac.za",
-    admissionsContact: "admissions@mut.ac.za",
     establishedYear: 1979,
     studentPopulation: 13000,
     faculties: [
-      createBaseFaculty("engineering", "Engineering", "Engineering sciences"),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Business and management",
-      ),
-      createBaseFaculty(
-        "natural",
-        "Natural Sciences",
-        "Natural and applied sciences",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: false,
-      openingDate: "Dates to be confirmed",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "R250 (SA), R300 (International)",
-      applicationMethod: "Online via MUT Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "engineering",
+          "Engineering",
+          "Engineering programs",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "management-sciences",
+          "Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-sciences",
+          "Natural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
 ];
 
-// COMPREHENSIVE UNIVERSITIES (6)
-export const COMPLETE_COMPREHENSIVE_UNIVERSITIES: University[] = [
+// COMPREHENSIVE UNIVERSITIES (6) - Add basic structures
+export const COMPREHENSIVE_UNIVERSITIES: University[] = [
   {
     id: "uj",
     name: "University of Johannesburg",
@@ -948,95 +1666,103 @@ export const COMPLETE_COMPREHENSIVE_UNIVERSITIES: University[] = [
     location: "Johannesburg",
     province: "Gauteng",
     logo: "/logos/universities/university-of-johannesburg.svg",
-    overview:
-      "Dynamic comprehensive university combining academic excellence with practical application in urban setting.",
+    overview: "Young, dynamic university in the heart of Johannesburg.",
     website: "https://www.uj.ac.za",
-    studentPortal: "https://students.uj.ac.za",
-    admissionsContact: "admissions@uj.ac.za",
     establishedYear: 2005,
     studentPopulation: 50000,
     faculties: [
-      createBaseFaculty(
-        "art",
-        "Art, Design & Architecture",
-        "Creative arts and architecture",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Engineering & Built Environment",
-        "Engineering and construction",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and humanities"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty("management", "Management", "Business and management"),
-      createBaseFaculty("science", "Science", "Natural sciences"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "1 October 2025",
-      academicYear: "2026",
-      applicationFee: "Free (online), R200 (paper-based)",
-      applicationMethod: "Online via UJ Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "1 October 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "art-design-architecture",
+          "Art, Design & Architecture",
+          "Creative arts",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "economic-financial-sciences",
+          "Economic & Financial Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "unizulu",
     name: "University of Zululand",
-    abbreviation: "Unizulu",
+    abbreviation: "UNIZULU",
     fullName: "University of Zululand",
-    location: "Richards Bay",
+    location: "KwaDlangezwa",
     province: "KwaZulu-Natal",
     logo: "/logos/universities/university-of-zululand.svg",
-    overview:
-      "Comprehensive university serving rural KwaZulu-Natal with programs in multiple languages.",
+    overview: "Comprehensive university serving rural KwaZulu-Natal.",
     website: "https://www.unizulu.ac.za",
-    studentPortal: "https://students.unizulu.ac.za",
-    admissionsContact: "admissions@unizulu.ac.za",
     establishedYear: 1960,
     studentPopulation: 16000,
     faculties: [
-      createBaseFaculty("arts", "Arts", "Humanities and social sciences"),
-      createBaseFaculty(
-        "commerce",
-        "Commerce, Administration & Law",
-        "Business, administration, and law",
-      ),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty(
-        "science",
-        "Science & Agriculture",
-        "Natural sciences and agriculture",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: false,
-      openingDate: "Dates to be confirmed",
-      closingDate: "TBC",
-      academicYear: "2026",
-      applicationFee: "R100",
-      applicationMethod: "Online via Unizulu Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "TBC",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "commerce-administration-law",
+          "Commerce, Administration & Law",
+          "Business and law",
+        ),
+        degrees: [...createCommercePrograms(), ...createLawPrograms()],
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science-agriculture",
+          "Science & Agriculture",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "wsu",
@@ -1045,109 +1771,112 @@ export const COMPLETE_COMPREHENSIVE_UNIVERSITIES: University[] = [
     fullName: "Walter Sisulu University",
     location: "Mthatha",
     province: "Eastern Cape",
-    logo: "/logos/universities/wsu.svg",
-    overview:
-      "Comprehensive university serving the Eastern Cape with multiple campuses and community focus.",
+    logo: "/logos/universities/walter-sisulu-university.svg",
+    overview: "Comprehensive university serving the Eastern Cape.",
     website: "https://www.wsu.ac.za",
-    studentPortal: "https://students.wsu.ac.za",
-    admissionsContact: "admissions@wsu.ac.za",
     establishedYear: 2005,
-    studentPopulation: 28000,
+    studentPopulation: 27000,
     faculties: [
-      createBaseFaculty(
-        "business",
-        "Business, Management Sciences & Law",
-        "Business and law",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities & Social Sciences",
-        "Arts and social sciences",
-      ),
-      createBaseFaculty(
-        "science",
-        "Science, Engineering & Technology",
-        "Science and technology",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "2 April 2025",
-      closingDate:
-        "30 September 2025 (Health Sciences), 31 October 2025 (others)",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via WSU Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "31 October 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "business-management-sciences",
+          "Business, Management Sciences & Law",
+          "Business and law",
+        ),
+        degrees: [...createCommercePrograms(), ...createLawPrograms()],
       },
-    },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities-social-sciences",
+          "Humanities & Social Sciences",
+          "Arts",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science-engineering-technology",
+          "Science, Engineering & Technology",
+          "Sciences and engineering",
+        ),
+        degrees: [...createSciencePrograms(), ...createEngineeringPrograms()],
+      },
+    ],
   },
   {
     id: "univen",
     name: "University of Venda",
-    abbreviation: "Univen",
+    abbreviation: "UNIVEN",
     fullName: "University of Venda",
     location: "Thohoyandou",
     province: "Limpopo",
     logo: "/logos/universities/university-of-venda.svg",
-    overview:
-      "Comprehensive university serving the northern regions with strong agricultural and health science programs.",
+    overview: "Comprehensive university in Limpopo Province.",
     website: "https://www.univen.ac.za",
-    studentPortal: "https://students.univen.ac.za",
-    admissionsContact: "admissions@univen.ac.za",
     establishedYear: 1982,
     studentPopulation: 15000,
     faculties: [
-      createBaseFaculty("agriculture", "Agriculture", "Agricultural sciences"),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty(
-        "humanities",
-        "Humanities, Social Sciences & Education",
-        "Arts and social sciences",
-      ),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty(
-        "management",
-        "Management Sciences",
-        "Business and management",
-      ),
-      createBaseFaculty(
-        "science",
-        "Science, Engineering & Agriculture",
-        "Science and engineering",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "2 May 2025",
-      closingDate: "26 September 2025",
-      academicYear: "2026",
-      applicationFee: "R100",
-      applicationMethod: "Online via Univen Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "26 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "agriculture",
+          "Agriculture",
+          "Agricultural sciences",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "humanities-social-sciences-education",
+          "Humanities, Social Sciences & Education",
+          "Arts",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-commerce-law",
+          "Management, Commerce & Law",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "mathematical-natural-sciences",
+          "Mathematical & Natural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "ump",
@@ -1157,43 +1886,32 @@ export const COMPLETE_COMPREHENSIVE_UNIVERSITIES: University[] = [
     location: "Nelspruit",
     province: "Mpumalanga",
     logo: "/logos/universities/university-of-mpumalanga.svg",
-    overview:
-      "Newest public university, focusing on addressing skills needs in agriculture, health, and education.",
+    overview: "New comprehensive university established in 2014.",
     website: "https://www.ump.ac.za",
-    studentPortal: "https://students.ump.ac.za",
-    admissionsContact: "admissions@ump.ac.za",
     establishedYear: 2014,
-    studentPopulation: 4000,
+    studentPopulation: 5000,
     faculties: [
-      createBaseFaculty(
-        "agriculture",
-        "Agriculture & Natural Sciences",
-        "Agriculture and environmental sciences",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Medical & Health Sciences",
-        "Health and medical programs",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "1 November 2025",
-      academicYear: "2026",
-      applicationFee: "R150 (RSA/SADC), R350 (Rest of Africa), R500 (Others)",
-      applicationMethod: "Online via UMP Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "1 November 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "agriculture-natural-sciences",
+          "Agriculture & Natural Sciences",
+          "Agriculture and sciences",
+        ),
+        degrees: createSciencePrograms(),
       },
-    },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+    ],
   },
   {
     id: "spu",
@@ -1202,49 +1920,34 @@ export const COMPLETE_COMPREHENSIVE_UNIVERSITIES: University[] = [
     fullName: "Sol Plaatje University",
     location: "Kimberley",
     province: "Northern Cape",
-    logo: "/logos/universities/spu.svg",
-    overview:
-      "New comprehensive university established to serve the Northern Cape region with innovative programs.",
+    logo: "/logos/universities/sol-plaatje-university.svg",
+    overview: "New comprehensive university established in 2014.",
     website: "https://www.spu.ac.za",
-    studentPortal: "https://students.spu.ac.za",
-    admissionsContact: "admissions@spu.ac.za",
     establishedYear: 2014,
-    studentPopulation: 2500,
+    studentPopulation: 2000,
     faculties: [
-      createBaseFaculty(
-        "education",
-        "Education & Humanities",
-        "Education and humanities",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty(
-        "natural",
-        "Natural & Applied Sciences",
-        "Natural and applied sciences",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "30 September 2025",
-      academicYear: "2026",
-      applicationFee: "Free",
-      applicationMethod: "Online via SPU Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 September 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "education-humanities",
+          "Education & Humanities",
+          "Education and humanities",
+        ),
+        degrees: [...createEducationPrograms(), ...createHumanitiesPrograms()],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "natural-applied-sciences",
+          "Natural & Applied Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
 ];
 
 // SPECIALIZED UNIVERSITIES (3)
-export const COMPLETE_SPECIALIZED_UNIVERSITIES: University[] = [
+export const SPECIALIZED_UNIVERSITIES: University[] = [
   {
     id: "unisa",
     name: "University of South Africa",
@@ -1252,57 +1955,89 @@ export const COMPLETE_SPECIALIZED_UNIVERSITIES: University[] = [
     fullName: "University of South Africa",
     location: "Pretoria",
     province: "Gauteng",
-    logo: "/logos/universities/unisa.svg",
-    overview:
-      "Africa's largest distance education university, offering flexible learning across all disciplines.",
+    logo: "/logos/universities/university-of-south-africa.svg",
+    overview: "Africa's largest distance education university.",
     website: "https://www.unisa.ac.za",
-    studentPortal: "https://students.unisa.ac.za",
-    admissionsContact: "admissions@unisa.ac.za",
     establishedYear: 1873,
-    studentPopulation: 400000,
+    studentPopulation: 300000,
     faculties: [
-      createBaseFaculty(
-        "agriculture",
-        "Agriculture & Environmental Sciences",
-        "Agriculture and environmental studies",
-      ),
-      createBaseFaculty(
-        "economic",
-        "Economic & Management Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty(
-        "education",
-        "Education",
-        "Teacher training and educational studies",
-      ),
-      createBaseFaculty(
-        "engineering",
-        "Science, Engineering & Technology",
-        "Science and engineering",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty("humanities", "Humanities", "Arts and humanities"),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty("theology", "Theology & Religion", "Religious studies"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 September 2025",
-      closingDate: "1 January 2026",
-      academicYear: "2026",
-      applicationFee: "R135",
-      applicationMethod: "Online via UNISA Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "1 January 2026",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "accounting-sciences",
+          "Accounting Sciences",
+          "Accounting",
+        ),
+        degrees: [],
       },
-    },
+      {
+        ...createBaseFaculty(
+          "agriculture-environmental-sciences",
+          "Agriculture & Environmental Sciences",
+          "Agriculture",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "graduate-studies",
+          "Graduate Studies",
+          "Postgraduate programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "human-sciences",
+          "Human Sciences",
+          "Social sciences",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science-engineering-technology",
+          "Science, Engineering & Technology",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "smu",
@@ -1311,109 +2046,96 @@ export const COMPLETE_SPECIALIZED_UNIVERSITIES: University[] = [
     fullName: "Sefako Makgatho Health Sciences University",
     location: "Pretoria",
     province: "Gauteng",
-    logo: "/logos/universities/smu.svg",
-    overview:
-      "Specialized health sciences university focusing on medical education, research, and healthcare delivery.",
+    logo: "/logos/universities/sefako-makgatho-health-sciences.svg",
+    overview: "Specialized health sciences university.",
     website: "https://www.smu.ac.za",
-    studentPortal: "https://students.smu.ac.za",
-    admissionsContact: "admissions@smu.ac.za",
     establishedYear: 2015,
     studentPopulation: 4000,
     faculties: [
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Medical and health sciences programs",
-      ),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "2 April 2025",
-      closingDate: "31 July 2025 (Undergrad), 30 August 2025 (Postgrad)",
-      academicYear: "2026",
-      applicationFee: "R300",
-      applicationMethod: "Online via SMU Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "30 August 2025",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
   {
     id: "nmu",
     name: "Nelson Mandela University",
     abbreviation: "NMU",
     fullName: "Nelson Mandela University",
-    location: "Port Elizabeth",
+    location: "Port Elizabeth/George",
     province: "Eastern Cape",
-    logo: "/logos/universities/nmu.svg",
-    overview:
-      "Comprehensive university combining academic excellence with social impact and innovation.",
+    logo: "/logos/universities/nelson-mandela-university.svg",
+    overview: "Comprehensive university named after Nelson Mandela.",
     website: "https://www.mandela.ac.za",
-    studentPortal: "https://students.mandela.ac.za",
-    admissionsContact: "admissions@mandela.ac.za",
     establishedYear: 2005,
     studentPopulation: 27000,
     faculties: [
-      createBaseFaculty("arts", "Arts", "Arts and humanities"),
-      createBaseFaculty(
-        "business",
-        "Business & Economic Sciences",
-        "Business and economics",
-      ),
-      createBaseFaculty("education", "Education", "Teacher training"),
-      createBaseFaculty(
-        "engineering",
-        "Engineering, Built Environment & Technology",
-        "Engineering and technology",
-      ),
-      createBaseFaculty(
-        "health-sciences",
-        "Health Sciences",
-        "Health and medical programs",
-      ),
-      createBaseFaculty("law", "Law", "Legal studies"),
-      createBaseFaculty("science", "Science", "Natural sciences"),
-    ],
-    applicationInfo: {
-      isOpen: true,
-      openingDate: "1 April 2025",
-      closingDate: "Closing dates vary by program",
-      academicYear: "2026",
-      applicationFee:
-        "Free for South Africans, R500 for international students",
-      applicationMethod: "Online via NMU Application Portal",
-      lateApplications: {
-        available: false,
-        deadline: "Varies by program",
-        additionalFee: "N/A",
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
       },
-    },
+      {
+        ...createBaseFaculty(
+          "business-economic-sciences",
+          "Business & Economic Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment-technology",
+          "Engineering, Built Environment & Technology",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
   },
 ];
 
 // Combine all universities
-export const COMPLETE_SA_UNIVERSITIES: University[] = [
+export const ALL_26_SA_UNIVERSITIES: University[] = [
   ...COMPLETE_TRADITIONAL_UNIVERSITIES,
-  ...COMPLETE_UNIVERSITIES_OF_TECHNOLOGY,
-  ...COMPLETE_COMPREHENSIVE_UNIVERSITIES,
-  ...COMPLETE_SPECIALIZED_UNIVERSITIES,
+  ...UNIVERSITIES_OF_TECHNOLOGY,
+  ...COMPREHENSIVE_UNIVERSITIES,
+  ...SPECIALIZED_UNIVERSITIES,
 ];
 
-// Legacy export for backward compatibility
-export const ALL_26_SA_UNIVERSITIES = COMPLETE_SA_UNIVERSITIES;
-
-// University count summary for verification
+// Export summary for verification
 export const UNIVERSITY_COUNT_SUMMARY = {
   traditional: COMPLETE_TRADITIONAL_UNIVERSITIES.length,
-  technology: COMPLETE_UNIVERSITIES_OF_TECHNOLOGY.length,
-  comprehensive: COMPLETE_COMPREHENSIVE_UNIVERSITIES.length,
-  specialized: COMPLETE_SPECIALIZED_UNIVERSITIES.length,
-  total: COMPLETE_SA_UNIVERSITIES.length,
+  technology: UNIVERSITIES_OF_TECHNOLOGY.length,
+  comprehensive: COMPREHENSIVE_UNIVERSITIES.length,
+  specialized: SPECIALIZED_UNIVERSITIES.length,
+  total: ALL_26_SA_UNIVERSITIES.length,
 };
-
-// Export for type safety and external use
-export { createBaseFaculty };
-
-export default COMPLETE_SA_UNIVERSITIES;
