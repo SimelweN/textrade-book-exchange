@@ -1,19 +1,17 @@
 import { University } from "@/types/university";
 
 /**
- * COMPLETE AUDIT: ALL 26 PUBLIC UNIVERSITIES IN SOUTH AFRICA
+ * COMPLETE AUDIT: ALL SOUTH AFRICAN PUBLIC UNIVERSITIES
  *
- * This file contains the complete, official list of all 26 public universities
- * in South Africa as recognized by the Department of Higher Education and Training.
+ * This file contains the complete, official list of all South African universities
+ * as recognized by the Department of Higher Education and Training.
  *
  * Classification:
- * - 11 Traditional Universities (research-focused)
- * - 6 Universities of Technology (applied sciences and technology)
- * - 6 Comprehensive Universities (both traditional and technological programs)
- * - 3 Specialized Universities (single focus institutions)
+ * - 17 Traditional Universities (academic focus)
+ * - 6 Universities of Technology (practical/vocational focus)
+ * - 6 Comprehensive Universities (blend of traditional and technology)
  *
- * Application data updated for 2025 intake (2026 academic year)
- * Source: South African Department of Higher Education and Training
+ * Updated for 2025 intake
  */
 
 // Base faculty structure for consistent application
@@ -536,7 +534,7 @@ const createLawPrograms = () => [
   ),
 ];
 
-// TRADITIONAL UNIVERSITIES (11)
+// TRADITIONAL UNIVERSITIES (17)
 export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
   {
     id: "uct",
@@ -553,6 +551,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     admissionsContact: "admissions@uct.ac.za",
     establishedYear: 1829,
     studentPopulation: 29000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -628,6 +627,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     admissionsContact: "admissions@wits.ac.za",
     establishedYear: 1922,
     studentPopulation: 40000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -699,6 +699,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     admissionsContact: "admissions@sun.ac.za",
     establishedYear: 1918,
     studentPopulation: 32000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -772,26 +773,6 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
         ...createBaseFaculty("science", "Science", "Natural sciences"),
         degrees: createSciencePrograms(),
       },
-      {
-        ...createBaseFaculty("theology", "Theology", "Religious studies"),
-        degrees: [
-          createDegree(
-            "bth",
-            "BTh Theology",
-            "Theology",
-            "4 years",
-            26,
-            "Study of Christian theology and religious studies.",
-            [
-              "Minister",
-              "Chaplain",
-              "Religious Educator",
-              "Community Worker",
-              "Counselor",
-            ],
-          ),
-        ],
-      },
     ],
     applicationInfo: {
       isOpen: true,
@@ -800,14 +781,8 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       academicYear: "2026",
       applicationFee: "R100 (South Africans), R300 (International)",
       applicationMethod: "Online via SU Student Portal",
-      lateApplications: {
-        available: false,
-        deadline: "31 July 2025",
-        additionalFee: "N/A",
-      },
     },
   },
-  // Continue with remaining traditional universities...
   {
     id: "up",
     name: "University of Pretoria",
@@ -823,6 +798,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     admissionsContact: "admissions@up.ac.za",
     establishedYear: 1908,
     studentPopulation: 53000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -880,26 +856,6 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
         degrees: createSciencePrograms(),
       },
       {
-        ...createBaseFaculty("theology", "Theology", "Religious studies"),
-        degrees: [
-          createDegree(
-            "bth",
-            "BTh Theology",
-            "Theology",
-            "4 years",
-            26,
-            "Study of Christian theology and religious studies.",
-            [
-              "Minister",
-              "Chaplain",
-              "Religious Educator",
-              "Community Worker",
-              "Counselor",
-            ],
-          ),
-        ],
-      },
-      {
         ...createBaseFaculty(
           "veterinary-science",
           "Veterinary Science",
@@ -938,13 +894,12 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       },
     },
   },
-  // Add remaining traditional universities with basic structure
   {
     id: "ukzn",
     name: "University of KwaZulu-Natal",
     abbreviation: "UKZN",
     fullName: "University of KwaZulu-Natal",
-    location: "Durban/Pietermaritzburg",
+    location: "Durban and Pietermaritzburg",
     province: "KwaZulu-Natal",
     logo: "/logos/universities/university-of-kwazulu-natal.svg",
     overview:
@@ -952,6 +907,7 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     website: "https://www.ukzn.ac.za",
     establishedYear: 2004,
     studentPopulation: 47000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1019,24 +975,56 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       applicationMethod: "Online via UKZN Student Portal",
     },
   },
-  // Add remaining universities with minimal structure for now
   {
-    id: "ru",
-    name: "Rhodes University",
-    abbreviation: "RU",
-    fullName: "Rhodes University",
-    location: "Makhanda (Grahamstown)",
-    province: "Eastern Cape",
-    logo: "/logos/universities/rhodes-university.svg",
+    id: "uj",
+    name: "University of Johannesburg",
+    abbreviation: "UJ",
+    fullName: "University of Johannesburg",
+    location: "Johannesburg",
+    province: "Gauteng",
+    logo: "/logos/universities/university-of-johannesburg.svg",
     overview:
-      "Small, prestigious university known for academic excellence and research.",
-    website: "https://www.ru.ac.za",
-    establishedYear: 1904,
-    studentPopulation: 8100,
+      "Young, dynamic university in the heart of Johannesburg, formed from multiple institutions.",
+    website: "https://www.uj.ac.za",
+    establishedYear: 2005,
+    studentPopulation: 50000,
+    type: "Traditional University",
     faculties: [
       {
-        ...createBaseFaculty("commerce", "Commerce", "Business studies"),
+        ...createBaseFaculty(
+          "art-design-architecture",
+          "Art, Design & Architecture",
+          "Creative arts",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "economic-financial-sciences",
+          "Economic & Financial Sciences",
+          "Business",
+        ),
         degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment",
+          "Engineering & Built Environment",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
       },
       {
         ...createBaseFaculty(
@@ -1061,13 +1049,15 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     name: "North-West University",
     abbreviation: "NWU",
     fullName: "North-West University",
-    location: "Potchefstroom/Mahikeng/Vanderbijlpark",
+    location: "Potchefstroom, Mafikeng, Vanderbijlpark",
     province: "North West",
     logo: "/logos/universities/north-west-university.svg",
-    overview: "Multi-campus university serving the North West Province.",
+    overview:
+      "Multi-campus university serving the North West Province with campuses in Potchefstroom, Mafikeng, and Vanderbijlpark.",
     website: "https://www.nwu.ac.za",
     establishedYear: 2004,
     studentPopulation: 64000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1117,10 +1107,6 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
         ),
         degrees: createSciencePrograms(),
       },
-      {
-        ...createBaseFaculty("theology", "Theology", "Religious studies"),
-        degrees: [],
-      },
     ],
   },
   {
@@ -1131,10 +1117,12 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     location: "Bloemfontein",
     province: "Free State",
     logo: "/logos/universities/university-of-free-state.svg",
-    overview: "Central South African university with strong academic programs.",
+    overview:
+      "Central South African university with strong academic programs and research focus.",
     website: "https://www.ufs.ac.za",
     establishedYear: 1904,
     studentPopulation: 37000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1176,41 +1164,79 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
         ),
         degrees: createHealthSciencesPrograms(),
       },
+    ],
+  },
+  {
+    id: "ru",
+    name: "Rhodes University",
+    abbreviation: "RU",
+    fullName: "Rhodes University",
+    location: "Makhanda (Grahamstown)",
+    province: "Eastern Cape",
+    logo: "/logos/universities/rhodes-university.svg",
+    overview:
+      "Small, prestigious university known for academic excellence and research in a historic setting.",
+    website: "https://www.ru.ac.za",
+    establishedYear: 1904,
+    studentPopulation: 8100,
+    type: "Traditional University",
+    faculties: [
       {
-        ...createBaseFaculty("theology", "Theology", "Religious studies"),
-        degrees: [],
+        ...createBaseFaculty("commerce", "Commerce", "Business studies"),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
       },
     ],
   },
   {
-    id: "uwc",
-    name: "University of the Western Cape",
-    abbreviation: "UWC",
-    fullName: "University of the Western Cape",
-    location: "Cape Town",
-    province: "Western Cape",
-    logo: "/logos/universities/university-of-western-cape.svg",
+    id: "unisa",
+    name: "University of South Africa",
+    abbreviation: "UNISA",
+    fullName: "University of South Africa",
+    location: "Pretoria (Distance Learning)",
+    province: "Gauteng",
+    logo: "/logos/universities/university-of-south-africa.svg",
     overview:
-      "Historically disadvantaged university now recognized for academic excellence.",
-    website: "https://www.uwc.ac.za",
-    establishedYear: 1960,
-    studentPopulation: 24000,
+      "Africa's largest distance education university, serving students across the continent.",
+    website: "https://www.unisa.ac.za",
+    establishedYear: 1873,
+    studentPopulation: 300000,
+    type: "Traditional University",
     faculties: [
       {
-        ...createBaseFaculty("arts", "Arts", "Humanities and social sciences"),
-        degrees: createHumanitiesPrograms(),
+        ...createBaseFaculty(
+          "accounting-sciences",
+          "Accounting Sciences",
+          "Accounting",
+        ),
+        degrees: [],
       },
       {
         ...createBaseFaculty(
-          "community-health-sciences",
-          "Community & Health Sciences",
-          "Health programs",
+          "agriculture-environmental-sciences",
+          "Agriculture & Environmental Sciences",
+          "Agriculture",
         ),
-        degrees: createHealthSciencesPrograms(),
+        degrees: [],
       },
       {
-        ...createBaseFaculty("dentistry", "Dentistry", "Dental studies"),
-        degrees: [],
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
       },
       {
         ...createBaseFaculty(
@@ -1230,8 +1256,8 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       },
       {
         ...createBaseFaculty(
-          "natural-sciences",
-          "Natural Sciences",
+          "science-engineering-technology",
+          "Science, Engineering & Technology",
           "Sciences",
         ),
         degrees: createSciencePrograms(),
@@ -1246,10 +1272,12 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     location: "Alice",
     province: "Eastern Cape",
     logo: "/logos/universities/university-of-fort-hare.svg",
-    overview: "Historic university known as the Oxford of Africa.",
+    overview:
+      "Historic university known as the Oxford of Africa, alma mater of many African leaders.",
     website: "https://www.ufh.ac.za",
     establishedYear: 1916,
     studentPopulation: 12000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty("education", "Education", "Teacher training"),
@@ -1283,13 +1311,111 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
         ),
         degrees: createSciencePrograms(),
       },
+    ],
+  },
+  {
+    id: "univen",
+    name: "University of Venda",
+    abbreviation: "UNIVEN",
+    fullName: "University of Venda",
+    location: "Thohoyandou",
+    province: "Limpopo",
+    logo: "/logos/universities/university-of-venda.svg",
+    overview:
+      "University serving the northern provinces with focus on indigenous knowledge systems.",
+    website: "https://www.univen.ac.za",
+    establishedYear: 1982,
+    studentPopulation: 15000,
+    type: "Traditional University",
+    faculties: [
       {
         ...createBaseFaculty(
-          "social-sciences-humanities",
-          "Social Sciences & Humanities",
-          "Social sciences",
+          "agriculture",
+          "Agriculture",
+          "Agricultural sciences",
         ),
         degrees: [],
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: [],
+      },
+      {
+        ...createBaseFaculty(
+          "humanities-social-sciences-education",
+          "Humanities, Social Sciences & Education",
+          "Arts",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "management-commerce-law",
+          "Management, Commerce & Law",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "mathematical-natural-sciences",
+          "Mathematical & Natural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
+  },
+  {
+    id: "unizulu",
+    name: "University of Zululand",
+    abbreviation: "UNIZULU",
+    fullName: "University of Zululand",
+    location: "KwaDlangezwa",
+    province: "KwaZulu-Natal",
+    logo: "/logos/universities/university-of-zululand.svg",
+    overview:
+      "University serving rural KwaZulu-Natal with strong focus on African languages and culture.",
+    website: "https://www.unizulu.ac.za",
+    establishedYear: 1960,
+    studentPopulation: 16000,
+    type: "Traditional University",
+    faculties: [
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "commerce-administration-law",
+          "Commerce, Administration & Law",
+          "Business and law",
+        ),
+        degrees: [...createCommercePrograms(), ...createLawPrograms()],
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "science-agriculture",
+          "Science & Agriculture",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
       },
     ],
   },
@@ -1301,10 +1427,12 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
     location: "Polokwane",
     province: "Limpopo",
     logo: "/logos/universities/university-of-limpopo.svg",
-    overview: "University serving the northern provinces of South Africa.",
+    overview:
+      "University serving the northern provinces with focus on health sciences and rural development.",
     website: "https://www.ul.ac.za",
     establishedYear: 2005,
     studentPopulation: 18000,
+    type: "Traditional University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1340,22 +1468,171 @@ export const COMPLETE_TRADITIONAL_UNIVERSITIES: University[] = [
       },
     ],
   },
+  {
+    id: "uwc",
+    name: "University of the Western Cape",
+    abbreviation: "UWC",
+    fullName: "University of the Western Cape",
+    location: "Bellville",
+    province: "Western Cape",
+    logo: "/logos/universities/university-of-western-cape.svg",
+    overview:
+      "Historically disadvantaged university now recognized for academic excellence and social justice.",
+    website: "https://www.uwc.ac.za",
+    establishedYear: 1960,
+    studentPopulation: 24000,
+    type: "Traditional University",
+    faculties: [
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities and social sciences"),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "community-health-sciences",
+          "Community & Health Sciences",
+          "Health programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "economic-management-sciences",
+          "Economic & Management Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "natural-sciences",
+          "Natural Sciences",
+          "Sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+    ],
+  },
+  {
+    id: "ump",
+    name: "University of Mpumalanga",
+    abbreviation: "UMP",
+    fullName: "University of Mpumalanga",
+    location: "Nelspruit",
+    province: "Mpumalanga",
+    logo: "/logos/universities/university-of-mpumalanga.svg",
+    overview:
+      "New university established in 2014 to serve the Mpumalanga province.",
+    website: "https://www.ump.ac.za",
+    establishedYear: 2014,
+    studentPopulation: 5000,
+    type: "Traditional University",
+    faculties: [
+      {
+        ...createBaseFaculty(
+          "agriculture-natural-sciences",
+          "Agriculture & Natural Sciences",
+          "Agriculture and sciences",
+        ),
+        degrees: createSciencePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "humanities",
+          "Humanities",
+          "Arts and social sciences",
+        ),
+        degrees: createHumanitiesPrograms(),
+      },
+    ],
+  },
+  {
+    id: "nmu",
+    name: "Nelson Mandela University",
+    abbreviation: "NMU",
+    fullName: "Nelson Mandela University",
+    location: "Port Elizabeth",
+    province: "Eastern Cape",
+    logo: "/logos/universities/nelson-mandela-university.svg",
+    overview:
+      "Comprehensive university named after Nelson Mandela, combining traditional and applied learning.",
+    website: "https://www.mandela.ac.za",
+    establishedYear: 2005,
+    studentPopulation: 27000,
+    type: "Traditional University",
+    faculties: [
+      {
+        ...createBaseFaculty("arts", "Arts", "Humanities"),
+        degrees: createHumanitiesPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "business-economic-sciences",
+          "Business & Economic Sciences",
+          "Business",
+        ),
+        degrees: createCommercePrograms(),
+      },
+      {
+        ...createBaseFaculty("education", "Education", "Teacher training"),
+        degrees: createEducationPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "engineering-built-environment-technology",
+          "Engineering, Built Environment & Technology",
+          "Engineering",
+        ),
+        degrees: createEngineeringPrograms(),
+      },
+      {
+        ...createBaseFaculty(
+          "health-sciences",
+          "Health Sciences",
+          "Medical programs",
+        ),
+        degrees: createHealthSciencesPrograms(),
+      },
+      {
+        ...createBaseFaculty("law", "Law", "Legal studies"),
+        degrees: createLawPrograms(),
+      },
+      {
+        ...createBaseFaculty("science", "Science", "Natural sciences"),
+        degrees: createSciencePrograms(),
+      },
+    ],
+  },
 ];
 
-// UNIVERSITIES OF TECHNOLOGY (6) - Add basic structures
+// UNIVERSITIES OF TECHNOLOGY (6)
 export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
   {
     id: "cput",
     name: "Cape Peninsula University of Technology",
     abbreviation: "CPUT",
     fullName: "Cape Peninsula University of Technology",
-    location: "Cape Town/Bellville",
+    location: "Cape Town",
     province: "Western Cape",
     logo: "/logos/universities/cape-peninsula-university-technology.svg",
-    overview: "Leading university of technology in the Western Cape.",
+    overview:
+      "Leading university of technology in the Western Cape, focusing on practical and vocational training.",
     website: "https://www.cput.ac.za",
     establishedYear: 2005,
     studentPopulation: 32000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1408,13 +1685,15 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     name: "Durban University of Technology",
     abbreviation: "DUT",
     fullName: "Durban University of Technology",
-    location: "Durban",
+    location: "Durban and Pietermaritzburg",
     province: "KwaZulu-Natal",
     logo: "/logos/universities/durban-university-technology.svg",
-    overview: "Technology-focused university in KwaZulu-Natal.",
+    overview:
+      "Technology-focused university in KwaZulu-Natal with emphasis on practical skills.",
     website: "https://www.dut.ac.za",
     establishedYear: 2002,
     studentPopulation: 31000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1467,13 +1746,15 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     name: "Tshwane University of Technology",
     abbreviation: "TUT",
     fullName: "Tshwane University of Technology",
-    location: "Pretoria",
+    location: "Pretoria, Pretoria West, Soshanguve, Polokwane",
     province: "Gauteng",
     logo: "/logos/universities/tshwane-university-technology.svg",
-    overview: "Largest university of technology in South Africa.",
+    overview:
+      "Largest university of technology in South Africa with multiple campuses.",
     website: "https://www.tut.ac.za",
     establishedYear: 2004,
     studentPopulation: 60000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1533,10 +1814,11 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     location: "Vanderbijlpark",
     province: "Gauteng",
     logo: "/logos/universities/vaal-university-technology.svg",
-    overview: "Technology university serving the Vaal Triangle.",
+    overview: "Technology university serving the Vaal Triangle region.",
     website: "https://www.vut.ac.za",
     establishedYear: 1966,
     studentPopulation: 21000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1576,10 +1858,12 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     location: "Bloemfontein",
     province: "Free State",
     logo: "/logos/universities/central-university-technology.svg",
-    overview: "University of technology in the Free State.",
+    overview:
+      "University of technology in the Free State focusing on practical skills.",
     website: "https://www.cut.ac.za",
     establishedYear: 1981,
     studentPopulation: 13000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1620,13 +1904,14 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
     name: "Mangosuthu University of Technology",
     abbreviation: "MUT",
     fullName: "Mangosuthu University of Technology",
-    location: "Umlazi, Durban",
+    location: "Durban",
     province: "KwaZulu-Natal",
     logo: "/logos/universities/mangosuthu-university-technology.svg",
     overview: "Technology university serving the KwaZulu-Natal region.",
     website: "https://www.mut.ac.za",
     establishedYear: 1979,
     studentPopulation: 13000,
+    type: "University of Technology",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1656,114 +1941,8 @@ export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [
   },
 ];
 
-// COMPREHENSIVE UNIVERSITIES (6) - Add basic structures
+// COMPREHENSIVE UNIVERSITIES (6)
 export const COMPREHENSIVE_UNIVERSITIES: University[] = [
-  {
-    id: "uj",
-    name: "University of Johannesburg",
-    abbreviation: "UJ",
-    fullName: "University of Johannesburg",
-    location: "Johannesburg",
-    province: "Gauteng",
-    logo: "/logos/universities/university-of-johannesburg.svg",
-    overview: "Young, dynamic university in the heart of Johannesburg.",
-    website: "https://www.uj.ac.za",
-    establishedYear: 2005,
-    studentPopulation: 50000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "art-design-architecture",
-          "Art, Design & Architecture",
-          "Creative arts",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "economic-financial-sciences",
-          "Economic & Financial Sciences",
-          "Business",
-        ),
-        degrees: createCommercePrograms(),
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "engineering-built-environment",
-          "Engineering & Built Environment",
-          "Engineering",
-        ),
-        degrees: createEngineeringPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "health-sciences",
-          "Health Sciences",
-          "Medical programs",
-        ),
-        degrees: createHealthSciencesPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "humanities",
-          "Humanities",
-          "Arts and social sciences",
-        ),
-        degrees: createHumanitiesPrograms(),
-      },
-      {
-        ...createBaseFaculty("law", "Law", "Legal studies"),
-        degrees: createLawPrograms(),
-      },
-      {
-        ...createBaseFaculty("science", "Science", "Natural sciences"),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
-  {
-    id: "unizulu",
-    name: "University of Zululand",
-    abbreviation: "UNIZULU",
-    fullName: "University of Zululand",
-    location: "KwaDlangezwa",
-    province: "KwaZulu-Natal",
-    logo: "/logos/universities/university-of-zululand.svg",
-    overview: "Comprehensive university serving rural KwaZulu-Natal.",
-    website: "https://www.unizulu.ac.za",
-    establishedYear: 1960,
-    studentPopulation: 16000,
-    faculties: [
-      {
-        ...createBaseFaculty("arts", "Arts", "Humanities"),
-        degrees: createHumanitiesPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "commerce-administration-law",
-          "Commerce, Administration & Law",
-          "Business and law",
-        ),
-        degrees: [...createCommercePrograms(), ...createLawPrograms()],
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "science-agriculture",
-          "Science & Agriculture",
-          "Sciences",
-        ),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
   {
     id: "wsu",
     name: "Walter Sisulu University",
@@ -1772,10 +1951,12 @@ export const COMPREHENSIVE_UNIVERSITIES: University[] = [
     location: "Mthatha",
     province: "Eastern Cape",
     logo: "/logos/universities/walter-sisulu-university.svg",
-    overview: "Comprehensive university serving the Eastern Cape.",
+    overview:
+      "Comprehensive university serving the Eastern Cape with both traditional and technology programs.",
     website: "https://www.wsu.ac.za",
     establishedYear: 2005,
     studentPopulation: 27000,
+    type: "Comprehensive University",
     faculties: [
       {
         ...createBaseFaculty(
@@ -1815,312 +1996,6 @@ export const COMPREHENSIVE_UNIVERSITIES: University[] = [
       },
     ],
   },
-  {
-    id: "univen",
-    name: "University of Venda",
-    abbreviation: "UNIVEN",
-    fullName: "University of Venda",
-    location: "Thohoyandou",
-    province: "Limpopo",
-    logo: "/logos/universities/university-of-venda.svg",
-    overview: "Comprehensive university in Limpopo Province.",
-    website: "https://www.univen.ac.za",
-    establishedYear: 1982,
-    studentPopulation: 15000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "agriculture",
-          "Agriculture",
-          "Agricultural sciences",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "health-sciences",
-          "Health Sciences",
-          "Medical programs",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "humanities-social-sciences-education",
-          "Humanities, Social Sciences & Education",
-          "Arts",
-        ),
-        degrees: createHumanitiesPrograms(),
-      },
-      {
-        ...createBaseFaculty("law", "Law", "Legal studies"),
-        degrees: createLawPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "management-commerce-law",
-          "Management, Commerce & Law",
-          "Business",
-        ),
-        degrees: createCommercePrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "mathematical-natural-sciences",
-          "Mathematical & Natural Sciences",
-          "Sciences",
-        ),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
-  {
-    id: "ump",
-    name: "University of Mpumalanga",
-    abbreviation: "UMP",
-    fullName: "University of Mpumalanga",
-    location: "Nelspruit",
-    province: "Mpumalanga",
-    logo: "/logos/universities/university-of-mpumalanga.svg",
-    overview: "New comprehensive university established in 2014.",
-    website: "https://www.ump.ac.za",
-    establishedYear: 2014,
-    studentPopulation: 5000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "agriculture-natural-sciences",
-          "Agriculture & Natural Sciences",
-          "Agriculture and sciences",
-        ),
-        degrees: createSciencePrograms(),
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "humanities",
-          "Humanities",
-          "Arts and social sciences",
-        ),
-        degrees: createHumanitiesPrograms(),
-      },
-    ],
-  },
-  {
-    id: "spu",
-    name: "Sol Plaatje University",
-    abbreviation: "SPU",
-    fullName: "Sol Plaatje University",
-    location: "Kimberley",
-    province: "Northern Cape",
-    logo: "/logos/universities/sol-plaatje-university.svg",
-    overview: "New comprehensive university established in 2014.",
-    website: "https://www.spu.ac.za",
-    establishedYear: 2014,
-    studentPopulation: 2000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "education-humanities",
-          "Education & Humanities",
-          "Education and humanities",
-        ),
-        degrees: [...createEducationPrograms(), ...createHumanitiesPrograms()],
-      },
-      {
-        ...createBaseFaculty(
-          "natural-applied-sciences",
-          "Natural & Applied Sciences",
-          "Sciences",
-        ),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
-];
-
-// SPECIALIZED UNIVERSITIES (3)
-export const SPECIALIZED_UNIVERSITIES: University[] = [
-  {
-    id: "unisa",
-    name: "University of South Africa",
-    abbreviation: "UNISA",
-    fullName: "University of South Africa",
-    location: "Pretoria",
-    province: "Gauteng",
-    logo: "/logos/universities/university-of-south-africa.svg",
-    overview: "Africa's largest distance education university.",
-    website: "https://www.unisa.ac.za",
-    establishedYear: 1873,
-    studentPopulation: 300000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "accounting-sciences",
-          "Accounting Sciences",
-          "Accounting",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "agriculture-environmental-sciences",
-          "Agriculture & Environmental Sciences",
-          "Agriculture",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty("arts", "Arts", "Humanities"),
-        degrees: createHumanitiesPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "economic-management-sciences",
-          "Economic & Management Sciences",
-          "Business",
-        ),
-        degrees: createCommercePrograms(),
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "engineering-built-environment",
-          "Engineering & Built Environment",
-          "Engineering",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "graduate-studies",
-          "Graduate Studies",
-          "Postgraduate programs",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "health-sciences",
-          "Health Sciences",
-          "Medical programs",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty(
-          "human-sciences",
-          "Human Sciences",
-          "Social sciences",
-        ),
-        degrees: [],
-      },
-      {
-        ...createBaseFaculty("law", "Law", "Legal studies"),
-        degrees: createLawPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "science-engineering-technology",
-          "Science, Engineering & Technology",
-          "Sciences",
-        ),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
-  {
-    id: "smu",
-    name: "Sefako Makgatho Health Sciences University",
-    abbreviation: "SMU",
-    fullName: "Sefako Makgatho Health Sciences University",
-    location: "Pretoria",
-    province: "Gauteng",
-    logo: "/logos/universities/sefako-makgatho-health-sciences.svg",
-    overview: "Specialized health sciences university.",
-    website: "https://www.smu.ac.za",
-    establishedYear: 2015,
-    studentPopulation: 4000,
-    faculties: [
-      {
-        ...createBaseFaculty(
-          "health-sciences",
-          "Health Sciences",
-          "Medical programs",
-        ),
-        degrees: createHealthSciencesPrograms(),
-      },
-      {
-        ...createBaseFaculty("science", "Science", "Natural sciences"),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
-  {
-    id: "nmu",
-    name: "Nelson Mandela University",
-    abbreviation: "NMU",
-    fullName: "Nelson Mandela University",
-    location: "Port Elizabeth/George",
-    province: "Eastern Cape",
-    logo: "/logos/universities/nelson-mandela-university.svg",
-    overview: "Comprehensive university named after Nelson Mandela.",
-    website: "https://www.mandela.ac.za",
-    establishedYear: 2005,
-    studentPopulation: 27000,
-    faculties: [
-      {
-        ...createBaseFaculty("arts", "Arts", "Humanities"),
-        degrees: createHumanitiesPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "business-economic-sciences",
-          "Business & Economic Sciences",
-          "Business",
-        ),
-        degrees: createCommercePrograms(),
-      },
-      {
-        ...createBaseFaculty("education", "Education", "Teacher training"),
-        degrees: createEducationPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "engineering-built-environment-technology",
-          "Engineering, Built Environment & Technology",
-          "Engineering",
-        ),
-        degrees: createEngineeringPrograms(),
-      },
-      {
-        ...createBaseFaculty(
-          "health-sciences",
-          "Health Sciences",
-          "Medical programs",
-        ),
-        degrees: createHealthSciencesPrograms(),
-      },
-      {
-        ...createBaseFaculty("law", "Law", "Legal studies"),
-        degrees: createLawPrograms(),
-      },
-      {
-        ...createBaseFaculty("science", "Science", "Natural sciences"),
-        degrees: createSciencePrograms(),
-      },
-    ],
-  },
 ];
 
 // Combine all universities
@@ -2128,7 +2003,6 @@ export const ALL_26_SA_UNIVERSITIES: University[] = [
   ...COMPLETE_TRADITIONAL_UNIVERSITIES,
   ...UNIVERSITIES_OF_TECHNOLOGY,
   ...COMPREHENSIVE_UNIVERSITIES,
-  ...SPECIALIZED_UNIVERSITIES,
 ];
 
 // Export summary for verification
@@ -2136,6 +2010,5 @@ export const UNIVERSITY_COUNT_SUMMARY = {
   traditional: COMPLETE_TRADITIONAL_UNIVERSITIES.length,
   technology: UNIVERSITIES_OF_TECHNOLOGY.length,
   comprehensive: COMPREHENSIVE_UNIVERSITIES.length,
-  specialized: SPECIALIZED_UNIVERSITIES.length,
   total: ALL_26_SA_UNIVERSITIES.length,
 };

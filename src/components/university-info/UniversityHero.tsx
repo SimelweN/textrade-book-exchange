@@ -42,15 +42,15 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
   const stats = [
     {
       icon: Building,
-      value: "26",
+      value: "29",
       label: "Universities",
-      color: "text-blue-600",
+      color: "text-emerald-600",
     },
     {
       icon: BookOpen,
       value: "1000+",
       label: "Programs",
-      color: "text-green-600",
+      color: "text-blue-600",
     },
     { icon: Users, value: "1M+", label: "Students", color: "text-purple-600" },
     {
@@ -67,7 +67,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
       description: "Find out which programs you qualify for",
       icon: Calculator,
       action: () => onNavigateToTool("aps-calculator"),
-      color: "bg-blue-600 hover:bg-blue-700",
+      color: "bg-emerald-600 hover:bg-emerald-700",
       popular: true,
     },
     {
@@ -75,7 +75,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
       description: "Discover funding opportunities",
       icon: DollarSign,
       action: () => onNavigateToTool("bursaries"),
-      color: "bg-green-600 hover:bg-green-700",
+      color: "bg-blue-600 hover:bg-blue-700",
       popular: false,
     },
     {
@@ -89,22 +89,22 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
   ];
 
   return (
-    <div className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl overflow-hidden">
+    <div className="relative bg-gradient-to-br from-emerald-50 via-white to-blue-50 rounded-2xl overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-40 h-40 bg-blue-600 rounded-full -translate-x-20 -translate-y-20"></div>
-        <div className="absolute top-20 right-0 w-32 h-32 bg-purple-600 rounded-full translate-x-16 -translate-y-16"></div>
-        <div className="absolute bottom-0 left-1/3 w-24 h-24 bg-green-600 rounded-full translate-y-12"></div>
+        <div className="absolute top-0 left-0 w-40 h-40 bg-emerald-600 rounded-full -translate-x-20 -translate-y-20"></div>
+        <div className="absolute top-20 right-0 w-32 h-32 bg-blue-600 rounded-full translate-x-16 -translate-y-16"></div>
+        <div className="absolute bottom-0 left-1/3 w-24 h-24 bg-emerald-600 rounded-full translate-y-12"></div>
       </div>
 
       <div className="relative z-10 p-8 lg:p-12">
         {/* Header Section */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-2xl mr-4">
+            <div className="bg-emerald-600 p-3 rounded-2xl mr-4">
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
-            <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-3 py-1">
+            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 px-3 py-1">
               <Sparkles className="w-3 h-3 mr-1" />
               Your Campus Journey Starts Here
             </Badge>
@@ -112,7 +112,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
 
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Welcome to{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
               ReBooked Campus
             </span>
           </h1>
@@ -133,11 +133,11 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pl-12 pr-24 py-4 text-lg border-2 border-gray-200 focus:border-blue-500 rounded-xl"
+              className="pl-12 pr-24 py-4 text-lg border-2 border-gray-200 focus:border-emerald-500 rounded-xl"
             />
             <Button
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 text-white px-6"
             >
               Search
             </Button>
@@ -149,7 +149,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
           {quickActions.map((action, index) => (
             <Card
               key={index}
-              className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-200"
+              className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-emerald-200"
               onClick={action.action}
             >
               <CardContent className="p-6 text-center">
@@ -166,13 +166,13 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
                   )}
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
                   {action.title}
                 </h3>
 
                 <p className="text-gray-600 mb-4">{action.description}</p>
 
-                <div className="flex items-center justify-center text-blue-600 group-hover:text-blue-700 font-medium">
+                <div className="flex items-center justify-center text-emerald-600 group-hover:text-emerald-700 font-medium">
                   Get Started
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -233,7 +233,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
                 key={index}
                 className="bg-white/40 backdrop-blur-sm rounded-lg p-4 border border-white/40 hover:bg-white/60 transition-colors"
               >
-                <feature.icon className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                <feature.icon className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900 mb-1">
                   {feature.text}
                 </h3>
@@ -248,7 +248,7 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
           <Button
             onClick={() => onNavigateToTool("aps-calculator")}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <TrendingUp className="w-5 h-5 mr-2" />
             Start Your Journey - Calculate APS Now
