@@ -171,17 +171,17 @@ const CampusBooksSection = () => {
         );
       }
 
-      if (selectedUniversity) {
+      if (selectedUniversity && selectedUniversity !== "all") {
         filtered = filtered.filter(
           (book) => book.university === selectedUniversity,
         );
       }
 
-      if (selectedFaculty) {
+      if (selectedFaculty && selectedFaculty !== "all") {
         filtered = filtered.filter((book) => book.faculty === selectedFaculty);
       }
 
-      if (selectedLevel) {
+      if (selectedLevel && selectedLevel !== "all") {
         filtered = filtered.filter((book) => book.level === selectedLevel);
       }
 
