@@ -26,7 +26,7 @@ import {
 import {
   ALL_SOUTH_AFRICAN_UNIVERSITIES,
   UNIVERSITY_METADATA,
-} from "@/constants/universities";
+} from "@/constants/universities/index";
 
 /**
  * DEBUG COMPONENT: Program Assignment Validation
