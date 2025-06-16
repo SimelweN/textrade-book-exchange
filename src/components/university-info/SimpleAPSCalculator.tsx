@@ -1823,13 +1823,13 @@ const SimpleAPSCalculator: React.FC = () => {
     };
   }, [degreeAnalysis, universityMatches, totalAPS]);
 
-  // Filter degrees
+  // Filter degrees with pagination
   const filteredDegrees = useMemo(() => {
     let filtered = degreeAnalysis;
 
     if (totalAPS === 0) {
       // Show a sample of programs when no APS is entered
-      filtered = degreeAnalysis.slice(0, 20);
+      filtered = degreeAnalysis.slice(0, 50);
     } else {
       switch (selectedFilter) {
         case "eligible":
@@ -1845,8 +1845,14 @@ const SimpleAPSCalculator: React.FC = () => {
       }
     }
 
-    return filtered.slice(0, 20);
+    return filtered;
   }, [degreeAnalysis, selectedFilter, totalAPS]);
+
+  // Pagination for programs display
+  const displayedPrograms = useMemo(() => {
+    const limit = showAllPrograms ? filteredDegrees.length : 6;
+    return filteredDegrees.slice(0, limit);
+  }, [filteredDegrees, showAllPrograms]);
 
   const handleReset = () => {
     setSubjects(CORE_SUBJECTS);
