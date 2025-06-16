@@ -39,9 +39,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 const CampusBooksSection = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUniversity, setSelectedUniversity] = useState("");
-  const [selectedFaculty, setSelectedFaculty] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedUniversity, setSelectedUniversity] = useState("all");
+  const [selectedFaculty, setSelectedFaculty] = useState("all");
+  const [selectedLevel, setSelectedLevel] = useState("all");
 
   // Get universities safely
   const universities = useMemo(() => {
