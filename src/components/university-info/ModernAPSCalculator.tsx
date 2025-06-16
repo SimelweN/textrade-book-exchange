@@ -369,6 +369,11 @@ const ModernAPSCalculator: React.FC = () => {
     toast.success("Calculator reset to default values");
   };
 
+  const handleLoadSample = () => {
+    setSubjects(SAMPLE_SUBJECTS);
+    toast.success("Sample marks loaded (APS: 35)");
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero Header */}
