@@ -754,9 +754,14 @@ const ModernAPSCalculator: React.FC = () => {
                             </div>
                             <Progress
                               value={
-                                (university.eligiblePrograms /
-                                  university.totalPrograms) *
-                                100
+                                university.totalPrograms === 0
+                                  ? 0
+                                  : Math.min(
+                                      100,
+                                      (university.eligiblePrograms /
+                                        university.totalPrograms) *
+                                        100,
+                                    )
                               }
                               className="h-2 mt-2"
                             />
