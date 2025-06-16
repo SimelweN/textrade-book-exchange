@@ -389,13 +389,7 @@ const ModernAPSCalculator: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div
-                    className="space-y-8 max-h-[500px] overflow-y-auto"
-                    style={{
-                      scrollbarWidth: "thin",
-                      scrollbarColor: "#cbd5e1 #f1f5f9",
-                    }}
-                  >
+                  <div className="space-y-8 max-h-[500px] overflow-y-auto custom-scrollbar">
                     {Object.entries(programsByFaculty).map(
                       ([faculty, programs]) => (
                         <div key={faculty} className="space-y-4">
