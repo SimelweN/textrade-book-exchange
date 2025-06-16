@@ -191,7 +191,8 @@ function App() {
                   </Routes>
                 </ErrorBoundary>
               </div>
-              <BroadcastManager />
+              {/* TEMPORARY: Disabled to fix error spam */}
+              {/* <BroadcastManager /> */}
               {process.env.NODE_ENV === "development" && (
                 <>{/* Debug components removed from production */}</>
               )}
