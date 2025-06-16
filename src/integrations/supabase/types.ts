@@ -247,6 +247,7 @@ export type Database = {
         };
         Insert: {
           addresses_same?: boolean | null;
+          aps_score?: number | null;
           bio?: string | null;
           created_at?: string;
           email?: string | null;
