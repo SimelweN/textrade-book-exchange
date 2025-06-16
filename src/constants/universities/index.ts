@@ -117,13 +117,10 @@ export const SOUTH_AFRICAN_UNIVERSITIES_SIMPLE =
     }
   });
 
-// Export metadata for debugging - use comprehensive database stats
+// Export metadata for debugging
 export const UNIVERSITY_METADATA = {
-  ...COMPREHENSIVE_DATABASE_STATS,
+  totalUniversities: ALL_SOUTH_AFRICAN_UNIVERSITIES.length,
   lastUpdated: new Date().toISOString(),
-  version: "4.0.0-comprehensive",
-  facultyDistribution: FACULTY_DISTRIBUTION,
-  programDistribution: PROGRAM_DISTRIBUTION,
-  assignmentRulesApplied: true,
-  source: "comprehensive-programs-database",
+  version: "4.0.0",
+  source: "complete-sa-universities",
 };
