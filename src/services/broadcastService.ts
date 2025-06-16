@@ -176,6 +176,16 @@ export const broadcastService = {
     // that applies to the current user (or 'all').
     // For simplicity, let's get the most recent active one for now.
     // A more robust implementation would consider priority and target audience.
+
+    // Check if broadcasts are enabled/available
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("broadcasts_disabled") === "true"
+    ) {
+      console.log("📢 Broadcasts are disabled for this session");
+      return null;
+    }
+
     try {
       const { data, error } = await supabase
         .from("broadcasts")
@@ -188,25 +198,70 @@ export const broadcastService = {
         .maybeSingle();
 
       if (error) {
-        // Properly serialize the error object for logging
+        // Check for table not found error and disable broadcasts for this session
+        if (
+          error.code === "42P01" ||
+          error.message?.includes('relation "public.broadcasts" does not exist')
+        ) {
+          console.warn(
+            "📢 Broadcasts table does not exist. Disabling broadcasts for this session.",
+          );
+          if (typeof window !== "undefined") {
+            localStorage.setItem("broadcasts_disabled", "true");
+          }
+          return null;
+        }
+
+        // For other errors, log them properly but don't spam the console
         const errorDetails = {
           message: error.message || "Unknown error",
           code: error.code || "NO_CODE",
           details: error.details || "No details",
           hint: error.hint || "No hint",
         };
-        console.error("Error fetching latest broadcast:", errorDetails);
+
+        // Only log the first few errors to prevent spam
+        const errorCount =
+          parseInt(sessionStorage.getItem("broadcast_error_count") || "0") + 1;
+        if (errorCount <= 3) {
+          console.error("Error fetching latest broadcast:", errorDetails);
+          sessionStorage.setItem(
+            "broadcast_error_count",
+            errorCount.toString(),
+          );
+        } else if (errorCount === 4) {
+          console.warn(
+            "📢 Too many broadcast errors. Suppressing further error logs.",
+          );
+          sessionStorage.setItem(
+            "broadcast_error_count",
+            errorCount.toString(),
+          );
+        }
+
         return null;
       }
+
+      // Reset error count on success
+      sessionStorage.removeItem("broadcast_error_count");
+
       return data ? mapSupabaseBroadcast(data) : null;
     } catch (error) {
       // Properly handle and log caught exceptions
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      console.error("Failed to fetch latest broadcast:", errorMessage);
-      if (error instanceof Error && error.stack) {
-        console.error("Stack trace:", error.stack);
+
+      // Only log the first few errors to prevent spam
+      const errorCount =
+        parseInt(sessionStorage.getItem("broadcast_error_count") || "0") + 1;
+      if (errorCount <= 3) {
+        console.error("Failed to fetch latest broadcast:", errorMessage);
+        if (error instanceof Error && error.stack) {
+          console.error("Stack trace:", error.stack);
+        }
+        sessionStorage.setItem("broadcast_error_count", errorCount.toString());
       }
+
       return null;
     }
   },
