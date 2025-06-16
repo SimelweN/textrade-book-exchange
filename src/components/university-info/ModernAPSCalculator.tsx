@@ -953,8 +953,8 @@ const ModernAPSCalculator: React.FC = () => {
                           key={index}
                           className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
                         >
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+                            <div className="flex-1 min-w-0">
                               <h4 className="font-semibold text-slate-900 mb-1">
                                 {degree.name}
                               </h4>
@@ -965,22 +965,19 @@ const ModernAPSCalculator: React.FC = () => {
                                 {degree.description}
                               </p>
                             </div>
-                            <div className="flex flex-col items-end gap-2">
+                            <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
                               <Badge
                                 variant={
                                   degree.eligible ? "default" : "destructive"
                                 }
-                                className={
-                                  degree.eligible
-                                    ? "bg-emerald-600 hover:bg-emerald-700"
-                                    : ""
-                                }
+                                className={`${degree.eligible ? "bg-emerald-600 hover:bg-emerald-700" : ""} whitespace-nowrap`}
                               >
                                 APS {degree.apsRequirement}
                               </Badge>
                               <Badge
                                 variant="outline"
                                 className={cn(
+                                  "whitespace-nowrap",
                                   degree.competitiveness === "High"
                                     ? "border-red-200 text-red-700 bg-red-50"
                                     : degree.competitiveness === "Moderate"
@@ -993,8 +990,8 @@ const ModernAPSCalculator: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                               <span className="flex items-center gap-1 text-slate-600">
                                 <Calendar className="h-3 w-3" />
                                 {degree.duration}
@@ -1014,7 +1011,7 @@ const ModernAPSCalculator: React.FC = () => {
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="text-blue-600 hover:text-blue-700"
+                              className="text-blue-600 hover:text-blue-700 w-full sm:w-auto justify-center sm:justify-start"
                             >
                               View Details
                               <ChevronRight className="h-3 w-3 ml-1" />
