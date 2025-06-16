@@ -280,8 +280,13 @@ const UniversityInfo = () => {
         </div>
       </div>
 
-      {/* Debug component - shows in development */}
-      {import.meta.env.DEV && <UniversityDebug />}
+      {/* Debug components - shows in development */}
+      {import.meta.env.DEV && (
+        <div className="space-y-4">
+          <UniversityDebug />
+          <ProgramAssignmentDebug />
+        </div>
+      )}
     </>
   );
 };
