@@ -44,6 +44,7 @@ import { cn } from "@/lib/utils";
 import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
 import { SOUTH_AFRICAN_SUBJECTS } from "@/constants/subjects";
 import { toast } from "sonner";
+import APSTestComponent from "./APSTestComponent";
 
 // Types
 interface APSSubject {
