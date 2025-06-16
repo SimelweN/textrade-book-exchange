@@ -28,6 +28,7 @@ import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { logProgramVerification } from "@/utils/program-verification";
+import { logCriticalIssuesVerification } from "@/utils/critical-issues-verification";
 
 // Lazy load heavy components for better performance
 const APSCalculatorSection = lazy(
