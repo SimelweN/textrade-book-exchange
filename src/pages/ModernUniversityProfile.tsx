@@ -664,8 +664,8 @@ const ModernUniversityProfile: React.FC = () => {
             </TabsContent>
 
             {/* Contact Tab */}
-            <TabsContent value="contact" className="space-y-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <TabsContent value="contact" className="space-y-6 sm:space-y-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                 <Card className="bg-white border-0 shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-slate-900">
