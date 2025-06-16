@@ -493,9 +493,9 @@ const CampusBooksSection = () => {
               <Button
                 onClick={() => {
                   setSearchTerm("");
-                  setSelectedUniversity("");
-                  setSelectedFaculty("");
-                  setSelectedLevel("");
+                  setSelectedUniversity("all");
+                  setSelectedFaculty("all");
+                  setSelectedLevel("all");
                 }}
                 variant="outline"
               >
