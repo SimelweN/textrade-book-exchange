@@ -672,11 +672,13 @@ const ModernAPSCalculator: React.FC = () => {
                               Eligibility Rate
                             </span>
                             <span className="font-medium">
-                              {stats.eligibilityRate}%
+                              {totalAPS === 0
+                                ? "Calculate APS first"
+                                : `${stats.eligibilityRate}%`}
                             </span>
                           </div>
                           <Progress
-                            value={stats.eligibilityRate}
+                            value={totalAPS === 0 ? 0 : stats.eligibilityRate}
                             className="h-3"
                           />
                         </div>
