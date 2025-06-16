@@ -152,7 +152,7 @@ const UniversityInfo = () => {
           title={`${selectedUniversity.name} - University Details | ReBooked Campus`}
           description={`Explore ${selectedUniversity.fullName || selectedUniversity.name} programs, admissions, and contact information. Your complete guide to ${selectedUniversity.name}.`}
           keywords={`${selectedUniversity.name}, ${selectedUniversity.abbreviation}, university programs, admissions, South African universities`}
-          url={`https://www.rebookedsolutions.co.za/university-info?university=${selectedUniversity.id}`}
+          url={`https://www.rebookedsolutions.co.za/university-profile?id=${selectedUniversity.id}`}
         />
 
         <CampusNavbar />
