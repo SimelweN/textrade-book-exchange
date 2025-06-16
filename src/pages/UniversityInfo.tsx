@@ -27,6 +27,7 @@ import PopularUniversities from "@/components/university-info/PopularUniversitie
 import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { logProgramVerification } from "@/utils/program-verification";
 
 // Lazy load heavy components for better performance
 const APSCalculatorSection = lazy(
