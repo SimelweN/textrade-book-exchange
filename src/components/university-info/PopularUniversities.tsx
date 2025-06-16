@@ -406,19 +406,7 @@ const PopularUniversities = () => {
                 View Details
               </Button>
 
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    navigate(`/university-profile?id=${university.id}`)
-                  }
-                  className="border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors text-xs sm:text-sm w-full sm:w-auto"
-                >
-                  <UniversityIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  View Details
-                </Button>
-
+              <div className="flex gap-2 justify-end">
                 <Button
                   variant="ghost"
                   size="sm"
