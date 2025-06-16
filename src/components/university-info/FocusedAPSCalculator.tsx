@@ -364,10 +364,10 @@ const FocusedAPSCalculator: React.FC = () => {
                           )}
                           {availableSubjects.map((availableSubject) => (
                             <SelectItem
-                              key={availableSubject.name}
-                              value={availableSubject.name}
+                              key={availableSubject}
+                              value={availableSubject}
                             >
-                              {availableSubject.name}
+                              {availableSubject}
                             </SelectItem>
                           ))}
                         </SelectContent>
