@@ -14,7 +14,14 @@ import {
 import { Loader2 } from "lucide-react";
 
 const ShippingComparison = () => {
-  const [quotes, setQuotes] = useState<any[]>([]);
+  const [quotes, setQuotes] = useState<
+    Array<{
+      name: string;
+      cost: number;
+      time: string;
+      reliability: number;
+    }>
+  >([]);
   const [loading, setLoading] = useState(false);
   const [fromAddress, setFromAddress] = useState({
     streetAddress: "",
@@ -107,7 +114,10 @@ const ShippingComparison = () => {
               id="fromStreetAddress"
               value={fromAddress.streetAddress}
               onChange={(e) =>
-                setFromAddress({ ...fromAddress, streetAddress: e.target.value })
+                setFromAddress({
+                  ...fromAddress,
+                  streetAddress: e.target.value,
+                })
               }
             />
           </div>
