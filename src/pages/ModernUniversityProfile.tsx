@@ -587,44 +587,44 @@ const ModernUniversityProfile: React.FC = () => {
 
                       return (
                         <Card className="bg-white border-0 shadow-lg">
-                          <CardHeader className="border-b border-slate-100">
-                            <CardTitle className="text-2xl text-slate-900">
+                          <CardHeader className="border-b border-slate-100 pb-3 sm:pb-4">
+                            <CardTitle className="text-xl sm:text-2xl text-slate-900">
                               {faculty.name}
                             </CardTitle>
-                            <p className="text-slate-600">
+                            <p className="text-slate-600 text-sm sm:text-base">
                               {faculty.description}
                             </p>
                           </CardHeader>
-                          <CardContent className="pt-6">
-                            <div className="grid gap-4">
+                          <CardContent className="pt-4 sm:pt-6">
+                            <div className="grid gap-3 sm:gap-4">
                               {faculty.degrees?.map((degree, index) => (
                                 <div
                                   key={degree.id || index}
-                                  className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
+                                  className="p-3 sm:p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
                                 >
-                                  <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                      <h4 className="font-semibold text-slate-900 mb-2">
+                                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="font-semibold text-slate-900 mb-2 text-sm sm:text-base">
                                         {degree.name}
                                       </h4>
-                                      <p className="text-slate-600 text-sm mb-3">
+                                      <p className="text-slate-600 text-xs sm:text-sm mb-3 leading-relaxed">
                                         {degree.description}
                                       </p>
-                                      <div className="flex flex-wrap gap-2">
+                                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         <Badge
                                           variant="outline"
-                                          className="text-xs"
+                                          className="text-xs px-2 py-1"
                                         >
                                           APS: {degree.apsRequirement}
                                         </Badge>
                                         <Badge
                                           variant="outline"
-                                          className="text-xs"
+                                          className="text-xs px-2 py-1"
                                         >
                                           {degree.duration}
                                         </Badge>
                                         <Badge
-                                          className={`text-xs ${
+                                          className={`text-xs px-2 py-1 ${
                                             degree.apsRequirement > 30
                                               ? "bg-red-100 text-red-700"
                                               : "bg-green-100 text-green-700"
@@ -636,7 +636,7 @@ const ModernUniversityProfile: React.FC = () => {
                                         </Badge>
                                       </div>
                                     </div>
-                                    <ChevronRight className="h-5 w-5 text-slate-400 mt-1" />
+                                    <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-slate-400 flex-shrink-0 self-start sm:mt-1" />
                                   </div>
                                 </div>
                               ))}
