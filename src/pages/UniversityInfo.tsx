@@ -154,30 +154,7 @@ const UniversityInfo = () => {
     </div>
   );
 
-  // If a specific university is selected, show the detail view
-  if (selectedUniversity) {
-    return (
-      <>
-        <SEO
-          title={`${selectedUniversity.name} - University Details | ReBooked Campus`}
-          description={`Explore ${selectedUniversity.fullName || selectedUniversity.name} programs, admissions, and contact information. Your complete guide to ${selectedUniversity.name}.`}
-          keywords={`${selectedUniversity.name}, ${selectedUniversity.abbreviation}, university programs, admissions, South African universities`}
-          url={`https://www.rebookedsolutions.co.za/university-profile?id=${selectedUniversity.id}`}
-        />
-
-        <CampusNavbar />
-
-        <div className="min-h-screen bg-gray-50">
-          <div className="container mx-auto px-4 py-6">
-            <UniversityDetailView
-              university={selectedUniversity}
-              onBack={handleBackToUniversities}
-            />
-          </div>
-        </div>
-      </>
-    );
-  }
+  // University details are now handled by redirection to /university-profile
 
   return (
     <>
