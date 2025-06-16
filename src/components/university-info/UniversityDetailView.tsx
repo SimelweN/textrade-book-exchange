@@ -102,20 +102,32 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
 
               {/* Quick stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="text-center bg-blue-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-blue-600">
+                <div
+                  className="text-center rounded-lg p-3"
+                  style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
+                >
+                  <div
+                    className="text-lg font-bold"
+                    style={{ color: "rgb(68, 171, 131)" }}
+                  >
                     {totalPrograms}
                   </div>
                   <div className="text-xs text-gray-600">Programs</div>
                 </div>
-                <div className="text-center bg-green-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-green-600">
+                <div
+                  className="text-center rounded-lg p-3"
+                  style={{ backgroundColor: "rgba(68, 171, 131, 0.15)" }}
+                >
+                  <div
+                    className="text-lg font-bold"
+                    style={{ color: "rgb(56, 142, 108)" }}
+                  >
                     {university.faculties?.length || 0}
                   </div>
                   <div className="text-xs text-gray-600">Faculties</div>
                 </div>
-                <div className="text-center bg-purple-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-purple-600">
+                <div className="text-center bg-gray-50 rounded-lg p-3">
+                  <div className="text-lg font-bold text-gray-600">
                     {university.studentPopulation
                       ? university.studentPopulation > 1000
                         ? `${Math.round(university.studentPopulation / 1000)}k+`
@@ -124,8 +136,8 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
                   </div>
                   <div className="text-xs text-gray-600">Students</div>
                 </div>
-                <div className="text-center bg-orange-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-orange-600">
+                <div className="text-center bg-gray-50 rounded-lg p-3">
+                  <div className="text-lg font-bold text-gray-600">
                     {university.campuses?.length || 1}
                   </div>
                   <div className="text-xs text-gray-600">
@@ -215,7 +227,8 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
                             {faculty.degrees.map((degree, degreeIndex) => (
                               <div
                                 key={degree.id || degreeIndex}
-                                className="bg-gray-50 rounded-lg p-3 border-l-4 border-blue-500"
+                                className="bg-gray-50 rounded-lg p-3 border-l-4"
+                                style={{ borderLeftColor: "rgb(68, 171, 131)" }}
                               >
                                 <div className="flex justify-between items-start gap-4">
                                   <div className="flex-1 min-w-0">
@@ -235,6 +248,11 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
                                       <Badge
                                         variant="secondary"
                                         className="text-xs"
+                                        style={{
+                                          backgroundColor:
+                                            "rgba(68, 171, 131, 0.2)",
+                                          color: "rgb(68, 171, 131)",
+                                        }}
                                       >
                                         APS: {degree.apsRequirement}
                                       </Badge>
@@ -255,7 +273,14 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
                                             <Badge
                                               key={careerIndex}
                                               variant="outline"
-                                              className="text-xs bg-green-50 text-green-700 border-green-200"
+                                              className="text-xs border"
+                                              style={{
+                                                backgroundColor:
+                                                  "rgba(68, 171, 131, 0.1)",
+                                                color: "rgb(68, 171, 131)",
+                                                borderColor:
+                                                  "rgb(68, 171, 131)",
+                                              }}
                                             >
                                               {career}
                                             </Badge>
