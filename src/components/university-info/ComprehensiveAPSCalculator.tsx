@@ -570,7 +570,27 @@ const ComprehensiveAPSCalculator: React.FC = () => {
                           Top Universities for You
                         </h4>
                         <div className="space-y-1">
-                          {/* University recommendations would go here */}
+                          {uniqueUniversities.slice(0, 3).map((university) => {
+                            const eligibleCount = eligibleDegrees.filter(
+                              (d) => d.university === university && d.eligible,
+                            ).length;
+                            return (
+                              <div
+                                key={university}
+                                className="flex justify-between items-center text-sm"
+                              >
+                                <span className="truncate">
+                                  {university.split(" ").slice(0, 3).join(" ")}
+                                </span>
+                                <Badge
+                                  variant="secondary"
+                                  className="text-xs bg-green-100 text-green-700"
+                                >
+                                  {eligibleCount} programs
+                                </Badge>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
@@ -581,7 +601,25 @@ const ComprehensiveAPSCalculator: React.FC = () => {
                           Top Faculties for You
                         </h4>
                         <div className="space-y-1">
-                          {/* Faculty recommendations would go here */}
+                          {uniqueFaculties.slice(0, 3).map((faculty) => {
+                            const eligibleCount = eligibleDegrees.filter(
+                              (d) => d.faculty === faculty && d.eligible,
+                            ).length;
+                            return (
+                              <div
+                                key={faculty}
+                                className="flex justify-between items-center text-sm"
+                              >
+                                <span className="truncate">{faculty}</span>
+                                <Badge
+                                  variant="secondary"
+                                  className="text-xs bg-green-100 text-green-700"
+                                >
+                                  {eligibleCount} programs
+                                </Badge>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </CardContent>
