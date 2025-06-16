@@ -69,6 +69,15 @@ const UniversityInfo = () => {
     }
   }, [setSearchParams]);
 
+  // Redirect to new university profile route if university parameter is present
+  useEffect(() => {
+    if (selectedUniversityId) {
+      navigate(`/university-profile?id=${selectedUniversityId}`, {
+        replace: true,
+      });
+    }
+  }, [selectedUniversityId, navigate]);
+
   const handleTabChange = (value: string) => {
     const newParams = new URLSearchParams();
     newParams.set("tool", value);
