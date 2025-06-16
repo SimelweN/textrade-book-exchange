@@ -289,9 +289,12 @@ const ModernAPSCalculator: React.FC = () => {
   // Statistics for dashboard
   const stats = useMemo(() => {
     const totalDegrees = degreeAnalysis.length;
-    const eligibleCount = degreeAnalysis.filter((d) => d.eligible).length;
+    const eligibleCount =
+      totalAPS > 0 ? degreeAnalysis.filter((d) => d.eligible).length : 0;
     const eligibilityRate =
-      totalDegrees > 0 ? Math.round((eligibleCount / totalDegrees) * 100) : 0;
+      totalDegrees > 0 && totalAPS > 0
+        ? Math.round((eligibleCount / totalDegrees) * 100)
+        : 0;
 
     const topUniversities = universityMatches.filter(
       (u) => u.eligiblePrograms > 0,
