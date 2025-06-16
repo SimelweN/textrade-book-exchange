@@ -13,8 +13,45 @@ import {
 } from "@/utils/errorUtils";
 import { retryWithConnection } from "@/utils/connectionHealthCheck";
 
-// Enhanced error logging function
+// Circuit breaker to prevent error spam
+let bookQueryErrorCount = 0;
+let lastBookQueryError = 0;
+const ERROR_SPAM_THRESHOLD = 5;
+const ERROR_COOLDOWN_PERIOD = 60000; // 1 minute
+
+const shouldLogBookError = (): boolean => {
+  const now = Date.now();
+
+  // Reset error count after cooldown period
+  if (now - lastBookQueryError > ERROR_COOLDOWN_PERIOD) {
+    bookQueryErrorCount = 0;
+  }
+
+  // Only log if we haven't exceeded the threshold
+  if (bookQueryErrorCount < ERROR_SPAM_THRESHOLD) {
+    bookQueryErrorCount++;
+    lastBookQueryError = now;
+    return true;
+  }
+
+  // Log warning about suppressing errors (only once)
+  if (bookQueryErrorCount === ERROR_SPAM_THRESHOLD) {
+    console.warn(
+      "[BookQueries] Too many errors - suppressing further error logs for 1 minute",
+    );
+    bookQueryErrorCount++;
+  }
+
+  return false;
+};
+
+// Enhanced error logging function with spam protection
 const logDetailedError = (context: string, error: unknown) => {
+  // Check if we should log this error (spam protection)
+  if (!shouldLogBookError()) {
+    return;
+  }
+
   // Handle Supabase errors specifically
   if (error && typeof error === "object" && "message" in error) {
     const supabaseError = error as any;
@@ -35,8 +72,8 @@ const logDetailedError = (context: string, error: unknown) => {
     console.error(`[BookQueries] ${context}:`, errorDetails);
   }
 
-  // Also log to our error utility
-  if (logError) {
+  // Also log to our error utility (but don't spam it)
+  if (logError && bookQueryErrorCount <= 3) {
     logError(context, error);
   }
 };
