@@ -288,7 +288,6 @@ const CampusBooksSection = () => {
               Add to Cart
             </Button>
           </div>
-          </div>
         </CardContent>
       </Card>
     );
