@@ -24,7 +24,6 @@ import {
 import { ALL_SOUTH_AFRICAN_UNIVERSITIES as SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities/index";
 import UniversityHero from "@/components/university-info/UniversityHero";
 import PopularUniversities from "@/components/university-info/PopularUniversities";
-import UniversityDetailView from "@/components/university-info/UniversityDetailView";
 import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
