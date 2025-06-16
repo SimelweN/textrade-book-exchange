@@ -174,14 +174,43 @@ const UniversityProgramsTest: React.FC = () => {
         </div>
 
         {/* Status */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
           <Badge
             variant={totalProgramsAcrossAll > 1000 ? "default" : "destructive"}
             className="text-sm"
+            style={
+              totalProgramsAcrossAll > 1000
+                ? {
+                    backgroundColor: "rgb(68, 171, 131)",
+                    color: "white",
+                  }
+                : {}
+            }
           >
             {totalProgramsAcrossAll > 1000
               ? "✅ Programs Loaded Successfully"
               : "❌ Programs Not Loaded"}
+          </Badge>
+
+          <Badge
+            variant={
+              ALL_SOUTH_AFRICAN_UNIVERSITIES.length >= 29
+                ? "default"
+                : "destructive"
+            }
+            className="text-sm ml-2"
+            style={
+              ALL_SOUTH_AFRICAN_UNIVERSITIES.length >= 29
+                ? {
+                    backgroundColor: "rgb(68, 171, 131)",
+                    color: "white",
+                  }
+                : {}
+            }
+          >
+            {ALL_SOUTH_AFRICAN_UNIVERSITIES.length >= 29
+              ? `✅ All ${ALL_SOUTH_AFRICAN_UNIVERSITIES.length} Universities Loaded`
+              : `❌ Missing Universities (${ALL_SOUTH_AFRICAN_UNIVERSITIES.length}/29)`}
           </Badge>
         </div>
       </CardContent>
