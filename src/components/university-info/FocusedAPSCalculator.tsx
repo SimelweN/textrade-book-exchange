@@ -110,17 +110,21 @@ const FocusedAPSCalculator: React.FC = () => {
 
   // Update subject marks and calculate points
   const updateSubjectMarks = useCallback((index: number, marks: number) => {
-    const newSubjects = [...subjects];
-    newSubjects[index].marks = Math.max(0, Math.min(100, marks));
-    newSubjects[index].points = calculateAPSPoints(newSubjects[index].marks);
-    setSubjects(newSubjects);
+    setSubjects((prevSubjects) => {
+      const newSubjects = [...prevSubjects];
+      newSubjects[index].marks = Math.max(0, Math.min(100, marks));
+      newSubjects[index].points = calculateAPSPoints(newSubjects[index].marks);
+      return newSubjects;
+    });
   }, []);
 
   // Update subject name
   const updateSubjectName = useCallback((index: number, name: string) => {
-    const newSubjects = [...subjects];
-    newSubjects[index].name = name;
-    setSubjects(newSubjects);
+    setSubjects((prevSubjects) => {
+      const newSubjects = [...prevSubjects];
+      newSubjects[index].name = name;
+      return newSubjects;
+    });
   }, []);
 
   // Get available subjects for dropdown
