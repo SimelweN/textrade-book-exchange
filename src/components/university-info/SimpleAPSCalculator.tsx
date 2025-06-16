@@ -967,6 +967,7 @@ const SimpleAPSCalculator: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<
     "all" | "eligible" | "competitive"
   >("all");
+  const [showAllPrograms, setShowAllPrograms] = useState(false);
 
   // Calculate total APS
   const totalAPS = useMemo(() => {
