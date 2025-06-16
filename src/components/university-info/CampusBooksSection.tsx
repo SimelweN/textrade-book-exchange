@@ -389,7 +389,7 @@ const CampusBooksSection = () => {
                   <SelectValue placeholder="Select university" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Universities</SelectItem>
+                  <SelectItem value="all">All Universities</SelectItem>
                   {universities.map((university) => (
                     <SelectItem key={university.id} value={university.id}>
                       {university.abbreviation || university.name}
@@ -412,7 +412,7 @@ const CampusBooksSection = () => {
                   <SelectValue placeholder="Select faculty" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Faculties</SelectItem>
+                  <SelectItem value="all">All Faculties</SelectItem>
                   {availableFaculties.map((faculty) => (
                     <SelectItem key={faculty.id} value={faculty.name}>
                       {faculty.name}
@@ -431,7 +431,7 @@ const CampusBooksSection = () => {
                   <SelectValue placeholder="Select level" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Levels</SelectItem>
+                  <SelectItem value="all">All Levels</SelectItem>
                   <SelectItem value="1st Year">1st Year</SelectItem>
                   <SelectItem value="2nd Year">2nd Year</SelectItem>
                   <SelectItem value="3rd Year">3rd Year</SelectItem>
