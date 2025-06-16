@@ -732,7 +732,7 @@ const FocusedAPSCalculator: React.FC = () => {
                       <div className="space-y-3">
                         {filteredDegrees.slice(0, 20).map((degree, index) => (
                           <Card
-                            key={index}
+                            key={`${degree.university}-${degree.name}-${index}`}
                             className={cn(
                               "p-4 border-l-4",
                               degree.eligible
