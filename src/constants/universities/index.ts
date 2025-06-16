@@ -1,13 +1,10 @@
 import { University } from "@/types/university";
-import {
-  ALL_29_SA_UNIVERSITIES,
-  ALL_SOUTH_AFRICAN_UNIVERSITIES as COMPLETE_SA_UNIVERSITIES,
-  UNIVERSITY_COUNT_SUMMARY,
-} from "./complete-sa-universities";
-// Use the complete database directly
-export const ALL_SOUTH_AFRICAN_UNIVERSITIES: University[] =
-  COMPLETE_SA_UNIVERSITIES;
+import { ALL_SOUTH_AFRICAN_UNIVERSITIES as UPDATED_UNIVERSITIES } from "./updated-complete-universities";
+import { PROGRAM_STATISTICS } from "./comprehensive-program-allocation";
 
+// Use the updated database with comprehensive program allocation
+export const ALL_SOUTH_AFRICAN_UNIVERSITIES: University[] =
+  UPDATED_UNIVERSITIES;
 // Alias for backward compatibility - ensure this uses the complete database
 export const SOUTH_AFRICAN_UNIVERSITIES = ALL_SOUTH_AFRICAN_UNIVERSITIES;
 
