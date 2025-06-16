@@ -545,9 +545,9 @@ const ModernUniversityProfile: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
                 {/* Faculty List */}
                 <div className="lg:col-span-1">
-                  <Card className="bg-white border-0 shadow-lg sticky top-6">
-                    <CardHeader>
-                      <CardTitle className="text-slate-900">
+                  <Card className="bg-white border-0 shadow-lg lg:sticky lg:top-6">
+                    <CardHeader className="pb-3 sm:pb-4">
+                      <CardTitle className="text-slate-900 text-lg sm:text-xl">
                         Faculties
                       </CardTitle>
                     </CardHeader>
@@ -562,9 +562,11 @@ const ModernUniversityProfile: React.FC = () => {
                               : "hover:bg-slate-50 text-slate-700"
                           }`}
                         >
-                          <div className="font-medium">{faculty.name}</div>
+                          <div className="font-medium text-sm sm:text-base">
+                            {faculty.name}
+                          </div>
                           <div
-                            className={`text-sm ${selectedFaculty === faculty.id ? "text-slate-300" : "text-slate-500"}`}
+                            className={`text-xs sm:text-sm ${selectedFaculty === faculty.id ? "text-slate-300" : "text-slate-500"}`}
                           >
                             {faculty.degrees?.length || 0} programs
                           </div>
