@@ -30,7 +30,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
+import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities/index";
 import { University } from "@/types/university";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";

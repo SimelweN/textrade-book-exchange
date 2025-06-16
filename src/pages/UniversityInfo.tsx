@@ -24,6 +24,7 @@ import {
 import { SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
 import UniversityHero from "@/components/university-info/UniversityHero";
 import PopularUniversities from "@/components/university-info/PopularUniversities";
+import UniversityDetailView from "@/components/university-info/UniversityDetailView";
 import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -44,6 +45,23 @@ const CampusBooksSection = lazy(
 const UniversityInfo = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTool = searchParams.get("tool") || "overview";
+  const selectedUniversityId = searchParams.get("university");
+
+  // Find selected university if one is specified
+  const selectedUniversity = useMemo(() => {
+    if (!selectedUniversityId) return null;
+
+    try {
+      return (
+        SOUTH_AFRICAN_UNIVERSITIES.find(
+          (uni) => uni.id === selectedUniversityId,
+        ) || null
+      );
+    } catch (error) {
+      console.error("Error finding university:", error);
+      return null;
+    }
+  }, [selectedUniversityId]);
 
   // Handle automatic redirect to APS calculator if coming from specific links
   useEffect(() => {
@@ -55,6 +73,12 @@ const UniversityInfo = () => {
   const handleTabChange = (value: string) => {
     const newParams = new URLSearchParams();
     newParams.set("tool", value);
+    setSearchParams(newParams);
+  };
+
+  const handleBackToUniversities = () => {
+    const newParams = new URLSearchParams();
+    newParams.set("tool", "overview");
     setSearchParams(newParams);
   };
 
@@ -121,6 +145,39 @@ const UniversityInfo = () => {
       <LoadingSpinner />
     </div>
   );
+
+  // If a specific university is selected, show the detail view
+  if (selectedUniversity) {
+    return (
+      <>
+        <SEO
+          title={`${selectedUniversity.name} - University Details | ReBooked Campus`}
+          description={`Explore ${selectedUniversity.fullName || selectedUniversity.name} programs, admissions, and contact information. Your complete guide to ${selectedUniversity.name}.`}
+          keywords={`${selectedUniversity.name}, ${selectedUniversity.abbreviation}, university programs, admissions, South African universities`}
+          url={`https://www.rebookedsolutions.co.za/university-info?university=${selectedUniversity.id}`}
+        />
+
+        <CampusNavbar />
+
+        <div className="min-h-screen bg-gray-50">
+          <div className="container mx-auto px-4 py-6">
+            <UniversityDetailView
+              university={selectedUniversity}
+              onBack={handleBackToUniversities}
+            />
+          </div>
+        </div>
+
+        {/* Debug components - shows in development */}
+        {import.meta.env.DEV && (
+          <div className="container mx-auto px-4 py-6 space-y-4">
+            <UniversityDebug />
+            <ProgramAssignmentDebug />
+          </div>
+        )}
+      </>
+    );
+  }
 
   return (
     <>
