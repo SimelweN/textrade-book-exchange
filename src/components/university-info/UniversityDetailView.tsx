@@ -8,10 +8,10 @@ import {
   GraduationCap,
   Globe,
   Mail,
-  Phone,
   Calendar,
   Award,
   Building,
+  Phone,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,32 +35,31 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
     }, 0) || 0;
 
   return (
-    <div className="space-y-6">
-      {/* Header with back button */}
+    <div className="max-w-7xl mx-auto space-y-8">
+      {/* Header Navigation */}
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
-          size="sm"
           onClick={onBack}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-gray-50"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Universities
         </Button>
       </div>
 
-      {/* University Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* University logo */}
+      {/* University Hero Section */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-12">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* University Logo & Basic Info */}
             <div className="flex-shrink-0">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center border border-gray-200">
                 {university.logo ? (
                   <img
                     src={university.logo}
                     alt={`${university.name} logo`}
-                    className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                    className="w-16 h-16 object-contain"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.style.display = "none";
@@ -69,251 +68,316 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
                   />
                 ) : null}
                 <GraduationCap
-                  className={`h-8 w-8 sm:h-10 sm:w-10 text-blue-600 ${university.logo ? "hidden" : ""}`}
+                  className={`h-12 w-12 text-gray-400 ${university.logo ? "hidden" : ""}`}
                 />
               </div>
             </div>
 
-            {/* University info */}
+            {/* University Details */}
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-xl sm:text-2xl mb-2">
-                {university.fullName || university.name}
-              </CardTitle>
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="text-sm">
-                  {university.location}, {university.province}
-                </span>
-              </div>
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                <div className="flex-1">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                    {university.fullName || university.name}
+                  </h1>
+                  <p className="text-xl text-gray-600 mb-4">
+                    {university.abbreviation}
+                  </p>
 
-              {/* University type and established */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                {university.type && (
-                  <Badge variant="secondary" className="text-xs">
-                    {university.type}
-                  </Badge>
-                )}
-                {university.establishedYear && (
-                  <Badge variant="outline" className="text-xs">
-                    Est. {university.establishedYear}
-                  </Badge>
-                )}
-              </div>
+                  <div className="flex flex-wrap gap-4 text-gray-600 mb-6">
+                    <div className="flex items-center gap-2">
+                      <MapPin
+                        className="h-5 w-5"
+                        style={{ color: "rgb(68, 171, 131)" }}
+                      />
+                      <span>
+                        {university.location}, {university.province}
+                      </span>
+                    </div>
+                    {university.establishedYear && (
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-gray-400" />
+                        <span>Established {university.establishedYear}</span>
+                      </div>
+                    )}
+                  </div>
 
-              {/* Quick stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div
-                  className="text-center rounded-lg p-3"
-                  style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
-                >
-                  <div
-                    className="text-lg font-bold"
-                    style={{ color: "rgb(68, 171, 131)" }}
-                  >
-                    {totalPrograms}
-                  </div>
-                  <div className="text-xs text-gray-600">Programs</div>
+                  {/* University Type */}
+                  {university.type && (
+                    <div className="mb-6">
+                      <Badge
+                        variant="secondary"
+                        className="text-sm px-4 py-2"
+                        style={{
+                          backgroundColor: "rgba(68, 171, 131, 0.1)",
+                          color: "rgb(68, 171, 131)",
+                          border: "1px solid rgba(68, 171, 131, 0.2)",
+                        }}
+                      >
+                        {university.type}
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* University Overview */}
+                  {university.overview && (
+                    <p className="text-gray-700 leading-relaxed text-lg">
+                      {university.overview}
+                    </p>
+                  )}
                 </div>
-                <div
-                  className="text-center rounded-lg p-3"
-                  style={{ backgroundColor: "rgba(68, 171, 131, 0.15)" }}
-                >
-                  <div
-                    className="text-lg font-bold"
-                    style={{ color: "rgb(56, 142, 108)" }}
-                  >
-                    {university.faculties?.length || 0}
-                  </div>
-                  <div className="text-xs text-gray-600">Faculties</div>
-                </div>
-                <div className="text-center bg-gray-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-gray-600">
-                    {university.studentPopulation
-                      ? university.studentPopulation > 1000
-                        ? `${Math.round(university.studentPopulation / 1000)}k+`
-                        : university.studentPopulation.toString()
-                      : "N/A"}
-                  </div>
-                  <div className="text-xs text-gray-600">Students</div>
-                </div>
-                <div className="text-center bg-gray-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-gray-600">
-                    {university.campuses?.length || 1}
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    Campus{(university.campuses?.length || 1) !== 1 ? "es" : ""}
-                  </div>
+
+                {/* Quick Actions */}
+                <div className="flex flex-col gap-3 lg:w-48">
+                  {university.website && (
+                    <Button
+                      onClick={() => window.open(university.website, "_blank")}
+                      className="text-white transition-colors"
+                      style={{
+                        backgroundColor: "rgb(68, 171, 131)",
+                        borderColor: "rgb(68, 171, 131)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgb(56, 142, 108)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          "rgb(68, 171, 131)";
+                      }}
+                    >
+                      <Globe className="h-4 w-4 mr-2" />
+                      Visit Website
+                    </Button>
+                  )}
+                  {university.studentPortal && (
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        window.open(university.studentPortal, "_blank")
+                      }
+                      className="border-gray-300 hover:border-gray-400"
+                    >
+                      <Users className="h-4 w-4 mr-2" />
+                      Student Portal
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent>
-          {/* University overview */}
-          {university.overview && (
-            <p className="text-gray-700 leading-relaxed mb-4">
-              {university.overview}
-            </p>
-          )}
-
-          {/* Quick actions */}
-          <div className="flex flex-wrap gap-3">
-            {university.website && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => window.open(university.website, "_blank")}
-                className="flex items-center gap-2"
+        {/* Statistics Bar */}
+        <div className="bg-white px-8 py-6 border-t border-gray-100">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div
+                className="text-3xl font-bold mb-1"
+                style={{ color: "rgb(68, 171, 131)" }}
               >
-                <ExternalLink className="h-4 w-4" />
-                Visit Website
-              </Button>
-            )}
-            {university.studentPortal && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => window.open(university.studentPortal, "_blank")}
-                className="flex items-center gap-2"
-              >
-                <Users className="h-4 w-4" />
-                Student Portal
-              </Button>
-            )}
+                {totalPrograms}
+              </div>
+              <div className="text-sm text-gray-600">Academic Programs</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-700 mb-1">
+                {university.faculties?.length || 0}
+              </div>
+              <div className="text-sm text-gray-600">Faculties</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-700 mb-1">
+                {university.studentPopulation
+                  ? university.studentPopulation > 1000
+                    ? `${Math.round(university.studentPopulation / 1000)}k+`
+                    : university.studentPopulation.toString()
+                  : "N/A"}
+              </div>
+              <div className="text-sm text-gray-600">Students</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-700 mb-1">
+                {university.campuses?.length || 1}
+              </div>
+              <div className="text-sm text-gray-600">
+                Campus{(university.campuses?.length || 1) !== 1 ? "es" : ""}
+              </div>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Detailed Information Tabs */}
+      {/* Content Tabs */}
       <Tabs defaultValue="programs" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
-          <TabsTrigger value="programs">Programs</TabsTrigger>
-          <TabsTrigger value="contact">Contact</TabsTrigger>
-          <TabsTrigger value="admissions">Admissions</TabsTrigger>
-          <TabsTrigger value="campus">Campus</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-xl">
+          <TabsTrigger
+            value="programs"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            <BookOpen className="h-4 w-4 mr-2" />
+            Programs
+          </TabsTrigger>
+          <TabsTrigger
+            value="admissions"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            <Calendar className="h-4 w-4 mr-2" />
+            Admissions
+          </TabsTrigger>
+          <TabsTrigger
+            value="contact"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            <Mail className="h-4 w-4 mr-2" />
+            Contact
+          </TabsTrigger>
+          <TabsTrigger
+            value="campus"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"
+          >
+            <Building className="h-4 w-4 mr-2" />
+            Campus
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="programs" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
+        <TabsContent value="programs" className="mt-8">
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl font-bold text-gray-900">
                 Academic Programs
               </CardTitle>
+              <p className="text-gray-600">
+                Explore the {totalPrograms} programs offered across{" "}
+                {university.faculties?.length || 0} faculties
+              </p>
             </CardHeader>
             <CardContent>
               {university.faculties && university.faculties.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {university.faculties.map((faculty, index) => (
                     <div
                       key={faculty.id || index}
-                      className="border rounded-lg p-4"
+                      className="bg-gray-50 rounded-xl p-6"
                     >
-                      <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                        <Building className="h-4 w-4" />
-                        {faculty.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-4">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div
+                          className="w-12 h-12 rounded-lg flex items-center justify-center"
+                          style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
+                        >
+                          <Building
+                            className="h-6 w-6"
+                            style={{ color: "rgb(68, 171, 131)" }}
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900">
+                            {faculty.name}
+                          </h3>
+                          <p className="text-gray-600">
+                            {faculty.degrees?.length || 0} programs available
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="text-gray-700 mb-6">
                         {faculty.description}
                       </p>
 
                       {faculty.degrees && faculty.degrees.length > 0 ? (
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-sm text-gray-800">
-                            Programs ({faculty.degrees.length}):
-                          </h4>
-                          <div className="grid gap-3">
-                            {faculty.degrees.map((degree, degreeIndex) => (
-                              <div
-                                key={degree.id || degreeIndex}
-                                className="bg-gray-50 rounded-lg p-3 border-l-4"
-                                style={{ borderLeftColor: "rgb(68, 171, 131)" }}
-                              >
-                                <div className="flex justify-between items-start gap-4">
-                                  <div className="flex-1 min-w-0">
-                                    <h5 className="font-medium text-sm text-gray-900 mb-1">
-                                      {degree.name}
-                                    </h5>
-                                    <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                                      {degree.description}
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                      <Badge
-                                        variant="outline"
-                                        className="text-xs"
-                                      >
-                                        {degree.duration}
-                                      </Badge>
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                        style={{
-                                          backgroundColor:
-                                            "rgba(68, 171, 131, 0.2)",
-                                          color: "rgb(68, 171, 131)",
-                                        }}
-                                      >
-                                        APS: {degree.apsRequirement}
-                                      </Badge>
-                                    </div>
-                                  </div>
-                                </div>
+                        <div className="grid gap-4">
+                          {faculty.degrees.map((degree, degreeIndex) => (
+                            <div
+                              key={degree.id || degreeIndex}
+                              className="bg-white rounded-lg p-6 border border-gray-200 hover:border-gray-300 transition-colors"
+                            >
+                              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                <div className="flex-1">
+                                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                    {degree.name}
+                                  </h4>
+                                  <p className="text-gray-600 mb-4 leading-relaxed">
+                                    {degree.description}
+                                  </p>
 
-                                {degree.careerProspects &&
-                                  degree.careerProspects.length > 0 && (
-                                    <div className="mt-3 pt-3 border-t border-gray-200">
-                                      <p className="text-xs text-gray-600 mb-1">
-                                        Career Prospects:
-                                      </p>
-                                      <div className="flex flex-wrap gap-1">
-                                        {degree.careerProspects
-                                          .slice(0, 3)
-                                          .map((career, careerIndex) => (
+                                  <div className="flex flex-wrap gap-2 mb-4">
+                                    <Badge
+                                      variant="outline"
+                                      className="bg-gray-50"
+                                    >
+                                      <Calendar className="h-3 w-3 mr-1" />
+                                      {degree.duration}
+                                    </Badge>
+                                    <Badge
+                                      variant="outline"
+                                      style={{
+                                        backgroundColor:
+                                          "rgba(68, 171, 131, 0.1)",
+                                        color: "rgb(68, 171, 131)",
+                                        borderColor: "rgba(68, 171, 131, 0.3)",
+                                      }}
+                                    >
+                                      <Award className="h-3 w-3 mr-1" />
+                                      APS: {degree.apsRequirement}
+                                    </Badge>
+                                  </div>
+
+                                  {degree.careerProspects &&
+                                    degree.careerProspects.length > 0 && (
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-700 mb-2">
+                                          Career Opportunities:
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                          {degree.careerProspects
+                                            .slice(0, 4)
+                                            .map((career, careerIndex) => (
+                                              <Badge
+                                                key={careerIndex}
+                                                variant="secondary"
+                                                className="bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                                              >
+                                                {career}
+                                              </Badge>
+                                            ))}
+                                          {degree.careerProspects.length >
+                                            4 && (
                                             <Badge
-                                              key={careerIndex}
                                               variant="outline"
-                                              className="text-xs border"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(68, 171, 131, 0.1)",
-                                                color: "rgb(68, 171, 131)",
-                                                borderColor:
-                                                  "rgb(68, 171, 131)",
-                                              }}
+                                              className="text-xs"
                                             >
-                                              {career}
+                                              +
+                                              {degree.careerProspects.length -
+                                                4}{" "}
+                                              more
                                             </Badge>
-                                          ))}
-                                        {degree.careerProspects.length > 3 && (
-                                          <Badge
-                                            variant="outline"
-                                            className="text-xs"
-                                          >
-                                            +{degree.careerProspects.length - 3}{" "}
-                                            more
-                                          </Badge>
-                                        )}
+                                          )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  )}
+                                    )}
+                                </div>
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
                         </div>
                       ) : (
-                        <p className="text-gray-500 text-sm italic">
-                          No specific programs listed for this faculty.
-                        </p>
+                        <div className="text-center py-8 text-gray-500">
+                          <BookOpen className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                          <p>No specific programs listed for this faculty.</p>
+                        </div>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <BookOpen className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <div className="text-center py-16">
+                  <BookOpen className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">
+                    No Programs Available
+                  </h3>
                   <p className="text-gray-500">
-                    No program information available.
+                    Program information for this university is not yet
+                    available.
                   </p>
                 </div>
               )}
@@ -321,277 +385,264 @@ const UniversityDetailView: React.FC<UniversityDetailViewProps> = ({
           </Card>
         </TabsContent>
 
-        <TabsContent value="contact" className="space-y-4">
-          <Card>
+        <TabsContent value="admissions" className="mt-8">
+          <Card className="border-0 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                Contact Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Website */}
-              {university.website && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Globe className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Website</p>
-                    <a
-                      href={university.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 hover:underline text-sm truncate block"
-                    >
-                      {university.website}
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Student Portal */}
-              {university.studentPortal && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Users className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Student Portal</p>
-                    <a
-                      href={university.studentPortal}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 hover:underline text-sm truncate block"
-                    >
-                      {university.studentPortal}
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Admissions Contact */}
-              {university.admissionsContact && (
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Mail className="h-5 w-5 text-purple-600 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Admissions</p>
-                    <p className="text-sm text-gray-600">
-                      {university.admissionsContact}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Location */}
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <MapPin className="h-5 w-5 text-red-600 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">Location</p>
-                  <p className="text-sm text-gray-600">
-                    {university.location}, {university.province}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="admissions" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+              <CardTitle className="text-2xl font-bold text-gray-900">
                 Admissions Information
               </CardTitle>
             </CardHeader>
             <CardContent>
               {university.applicationInfo ? (
-                <div className="space-y-4">
-                  {/* Application Status */}
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium">
+                <div className="grid gap-6">
+                  <div className="bg-gray-50 rounded-xl p-6">
+                    <h3 className="text-lg font-semibold mb-4">
                       Application Status
-                    </span>
-                    <Badge
-                      className={
-                        university.applicationInfo.isOpen
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }
-                    >
-                      {university.applicationInfo.isOpen ? "Open" : "Closed"}
-                    </Badge>
+                    </h3>
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        className={`px-4 py-2 ${
+                          university.applicationInfo.isOpen
+                            ? "bg-green-100 text-green-800 border-green-200"
+                            : "bg-red-100 text-red-800 border-red-200"
+                        }`}
+                      >
+                        {university.applicationInfo.isOpen
+                          ? "Open for Applications"
+                          : "Applications Closed"}
+                      </Badge>
+                    </div>
                   </div>
 
-                  {/* Academic Year */}
-                  {university.applicationInfo.academicYear && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium">Academic Year</span>
-                      <span className="text-sm">
-                        {university.applicationInfo.academicYear}
-                      </span>
-                    </div>
-                  )}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {university.applicationInfo.academicYear && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Academic Year
+                        </h4>
+                        <p className="text-gray-600">
+                          {university.applicationInfo.academicYear}
+                        </p>
+                      </div>
+                    )}
 
-                  {/* Application Dates */}
-                  {university.applicationInfo.openingDate && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium">Opening Date</span>
-                      <span className="text-sm">
-                        {university.applicationInfo.openingDate}
-                      </span>
-                    </div>
-                  )}
+                    {university.applicationInfo.openingDate && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Opening Date
+                        </h4>
+                        <p className="text-gray-600">
+                          {university.applicationInfo.openingDate}
+                        </p>
+                      </div>
+                    )}
 
-                  {university.applicationInfo.closingDate && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium">Closing Date</span>
-                      <span className="text-sm">
-                        {university.applicationInfo.closingDate}
-                      </span>
-                    </div>
-                  )}
+                    {university.applicationInfo.closingDate && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Closing Date
+                        </h4>
+                        <p className="text-gray-600">
+                          {university.applicationInfo.closingDate}
+                        </p>
+                      </div>
+                    )}
 
-                  {/* Application Fee */}
-                  {university.applicationInfo.applicationFee && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium">
-                        Application Fee
-                      </span>
-                      <span className="text-sm">
-                        {university.applicationInfo.applicationFee}
-                      </span>
-                    </div>
-                  )}
+                    {university.applicationInfo.applicationFee && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Application Fee
+                        </h4>
+                        <p className="text-gray-600">
+                          {university.applicationInfo.applicationFee}
+                        </p>
+                      </div>
+                    )}
+                  </div>
 
-                  {/* Application Method */}
                   {university.applicationInfo.applicationMethod && (
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <p className="text-sm font-medium mb-1">
+                    <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                      <h3 className="text-lg font-semibold text-blue-900 mb-3">
                         Application Method
-                      </p>
-                      <p className="text-sm text-gray-600">
+                      </h3>
+                      <p className="text-blue-800">
                         {university.applicationInfo.applicationMethod}
                       </p>
                     </div>
                   )}
-
-                  {/* Late Applications */}
-                  {university.applicationInfo.lateApplications && (
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="text-sm font-medium mb-2">
-                        Late Applications
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">Available</span>
-                          <Badge
-                            variant={
-                              university.applicationInfo.lateApplications
-                                .available
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {university.applicationInfo.lateApplications
-                              .available
-                              ? "Yes"
-                              : "No"}
-                          </Badge>
-                        </div>
-                        {university.applicationInfo.lateApplications
-                          .deadline && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Deadline</span>
-                            <span className="text-sm">
-                              {
-                                university.applicationInfo.lateApplications
-                                  .deadline
-                              }
-                            </span>
-                          </div>
-                        )}
-                        {university.applicationInfo.lateApplications
-                          .additionalFee && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Additional Fee</span>
-                            <span className="text-sm">
-                              {
-                                university.applicationInfo.lateApplications
-                                  .additionalFee
-                              }
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-500">
-                    No admissions information available.
-                  </p>
-                  <p className="text-sm text-gray-400 mt-2">
+                <div className="text-center py-16">
+                  <Calendar className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">
+                    No Admissions Information
+                  </h3>
+                  <p className="text-gray-500 mb-6">
                     Please visit the university website for current application
                     details.
                   </p>
+                  {university.website && (
+                    <Button
+                      onClick={() => window.open(university.website, "_blank")}
+                      className="text-white"
+                      style={{ backgroundColor: "rgb(68, 171, 131)" }}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Visit University Website
+                    </Button>
+                  )}
                 </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="campus" className="space-y-4">
-          <Card>
+        <TabsContent value="contact" className="mt-8">
+          <Card className="border-0 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
-                Campus Information
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Contact Information
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {/* Main Campus Location */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm font-medium mb-1">Main Campus</p>
-                  <p className="text-sm text-gray-600">
+              <div className="grid gap-6">
+                {/* Primary Contact Methods */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {university.website && (
+                    <div className="bg-gray-50 rounded-xl p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Globe
+                          className="h-6 w-6"
+                          style={{ color: "rgb(68, 171, 131)" }}
+                        />
+                        <h3 className="text-lg font-semibold">Website</h3>
+                      </div>
+                      <a
+                        href={university.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-700 underline break-all"
+                      >
+                        {university.website}
+                      </a>
+                    </div>
+                  )}
+
+                  {university.admissionsContact && (
+                    <div className="bg-gray-50 rounded-xl p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Mail
+                          className="h-6 w-6"
+                          style={{ color: "rgb(68, 171, 131)" }}
+                        />
+                        <h3 className="text-lg font-semibold">Admissions</h3>
+                      </div>
+                      <p className="text-gray-700">
+                        {university.admissionsContact}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Location */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <MapPin
+                      className="h-6 w-6"
+                      style={{ color: "rgb(68, 171, 131)" }}
+                    />
+                    <h3 className="text-lg font-semibold">Location</h3>
+                  </div>
+                  <p className="text-gray-700 text-lg">
                     {university.location}, {university.province}
                   </p>
                 </div>
 
-                {/* Additional Campuses */}
+                {/* Student Portal */}
+                {university.studentPortal && (
+                  <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Users className="h-6 w-6 text-blue-600" />
+                      <h3 className="text-lg font-semibold text-blue-900">
+                        Student Portal
+                      </h3>
+                    </div>
+                    <a
+                      href={university.studentPortal}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 underline break-all"
+                    >
+                      {university.studentPortal}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="campus" className="mt-8">
+          <Card className="border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Campus Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6">
+                {/* Main Campus */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h3 className="text-lg font-semibold mb-4">Main Campus</h3>
+                  <div className="flex items-center gap-3">
+                    <MapPin
+                      className="h-5 w-5"
+                      style={{ color: "rgb(68, 171, 131)" }}
+                    />
+                    <span className="text-gray-700">
+                      {university.location}, {university.province}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {university.establishedYear && (
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-900 mb-2">
+                        Established
+                      </h4>
+                      <p className="text-gray-600 text-lg">
+                        {university.establishedYear}
+                      </p>
+                    </div>
+                  )}
+
+                  {university.studentPopulation && (
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-900 mb-2">
+                        Student Population
+                      </h4>
+                      <p className="text-gray-600 text-lg">
+                        Approximately{" "}
+                        {university.studentPopulation.toLocaleString()} students
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* All Campuses */}
                 {university.campuses && university.campuses.length > 0 && (
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm font-medium mb-2">All Campuses</p>
-                    <div className="space-y-1">
+                  <div className="bg-gray-50 rounded-xl p-6">
+                    <h3 className="text-lg font-semibold mb-4">All Campuses</h3>
+                    <div className="grid gap-3">
                       {university.campuses.map((campus, index) => (
-                        <p key={index} className="text-sm text-gray-600">
-                          • {campus}
-                        </p>
+                        <div key={index} className="flex items-center gap-3">
+                          <Building className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-700">{campus}</span>
+                        </div>
                       ))}
                     </div>
-                  </div>
-                )}
-
-                {/* Student Population */}
-                {university.studentPopulation && (
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="text-sm font-medium mb-1">
-                      Student Population
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Approximately{" "}
-                      {university.studentPopulation.toLocaleString()} students
-                    </p>
-                  </div>
-                )}
-
-                {/* Established Year */}
-                {university.establishedYear && (
-                  <div className="p-3 bg-green-50 rounded-lg">
-                    <p className="text-sm font-medium mb-1">Established</p>
-                    <p className="text-sm text-gray-600">
-                      {university.establishedYear}
-                    </p>
                   </div>
                 )}
               </div>
