@@ -663,7 +663,7 @@ const ModernAPSCalculator: React.FC = () => {
               {/* Overview Tab */}
               <TabsContent value="overview" className="space-y-6">
                 {/* Statistics Dashboard */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                   <Card className="bg-white border-0 shadow-lg">
                     <CardHeader className="pb-3">
                       <CardTitle className="flex items-center gap-2 text-lg text-slate-900">
