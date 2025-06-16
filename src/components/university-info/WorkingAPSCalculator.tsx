@@ -383,6 +383,13 @@ const WorkingAPSCalculator: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* Data Status (Development Only) */}
+      {import.meta.env.DEV && (
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <APSTestComponent />
+        </div>
+      )}
+
       {/* Hero Header */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-12">
