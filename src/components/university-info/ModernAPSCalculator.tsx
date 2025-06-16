@@ -413,8 +413,9 @@ const ModernAPSCalculator: React.FC = () => {
               Professional APS Calculator
             </h1>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Advanced admission point score analysis with comprehensive
-              university matching and career pathway insights.
+              Calculate your Admission Point Score (APS) and discover which
+              university programs you qualify for. Enter your matric marks to
+              see your eligibility across all South African universities.
             </p>
           </div>
 
