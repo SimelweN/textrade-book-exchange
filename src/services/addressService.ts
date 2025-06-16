@@ -33,7 +33,12 @@ export const saveUserAddresses = async (
       .single();
 
     if (error) {
-      console.error("Error fetching updated addresses:", error);
+      const errorMessage = error.message || "Unknown error";
+      console.error("Error fetching updated addresses:", {
+        message: errorMessage,
+        code: error.code,
+        details: error.details,
+      });
       throw error;
     }
 
@@ -44,7 +49,8 @@ export const saveUserAddresses = async (
       canListBooks: result.canListBooks,
     };
   } catch (error) {
-    console.error("Error saving addresses:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("Error saving addresses:", errorMessage);
     throw error;
   }
 };
@@ -57,7 +63,12 @@ export const getUserAddresses = async (userId: string) => {
     .single();
 
   if (error) {
-    console.error("Error fetching addresses:", error);
+    const errorMessage = error.message || "Unknown error";
+    console.error("Error fetching addresses:", {
+      message: errorMessage,
+      code: error.code,
+      details: error.details,
+    });
     throw error;
   }
 

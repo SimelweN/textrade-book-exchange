@@ -15,15 +15,25 @@ import { retryWithConnection } from "@/utils/connectionHealthCheck";
 
 // Enhanced error logging function
 const logDetailedError = (context: string, error: unknown) => {
-  const errorDetails = {
-    message: error instanceof Error ? error.message : String(error),
-    name: error instanceof Error ? error.name : "Unknown",
-    stack: error instanceof Error ? error.stack : undefined,
-    type: typeof error,
-    constructor: error instanceof Error ? error.constructor.name : undefined,
-  };
-
-  console.error(`[BookQueries] ${context}:`, errorDetails);
+  // Handle Supabase errors specifically
+  if (error && typeof error === "object" && "message" in error) {
+    const supabaseError = error as any;
+    const errorDetails = {
+      message: supabaseError.message || "Unknown error",
+      code: supabaseError.code || "NO_CODE",
+      details: supabaseError.details || "No details",
+      hint: supabaseError.hint || "No hint",
+    };
+    console.error(`[BookQueries] ${context}:`, errorDetails);
+  } else {
+    // Handle other error types
+    const errorDetails = {
+      message: error instanceof Error ? error.message : String(error),
+      name: error instanceof Error ? error.name : "Unknown",
+      type: typeof error,
+    };
+    console.error(`[BookQueries] ${context}:`, errorDetails);
+  }
 
   // Also log to our error utility
   if (logError) {
