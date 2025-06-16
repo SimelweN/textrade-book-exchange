@@ -8,7 +8,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import AuthErrorBoundary from "./components/AuthErrorBoundary";
 import OAuthRedirectHandler from "./components/OAuthRedirectHandler";
-import BroadcastManager from "./components/BroadcastManager";
+// TEMPORARY: Disabled to fix error spam
+// import BroadcastManager from "./components/BroadcastManager";
 
 // Pages
 import Index from "./pages/Index";

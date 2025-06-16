@@ -10,6 +10,9 @@ import { Broadcast } from "@/types/broadcast";
 import BroadcastDialog from "./BroadcastDialog";
 
 const BroadcastManager = () => {
+  // TEMPORARY FIX: Completely disable broadcasts to stop error spam
+  const BROADCASTS_DISABLED = true;
+
   const [currentBroadcast, setCurrentBroadcast] = useState<Broadcast | null>(
     null,
   );
@@ -19,6 +22,11 @@ const BroadcastManager = () => {
 
   // Always call useAuth - if it fails, the component will fail gracefully
   const { user, isAuthenticated } = useAuth();
+
+  // Early return if broadcasts are disabled
+  if (BROADCASTS_DISABLED) {
+    return null;
+  }
 
   useEffect(() => {
     const checkForBroadcasts = async () => {
