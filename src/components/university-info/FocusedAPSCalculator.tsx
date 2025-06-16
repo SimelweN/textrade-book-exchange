@@ -356,7 +356,10 @@ const FocusedAPSCalculator: React.FC = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {subject.name !== "Select Subject" && (
-                            <SelectItem value={subject.name}>
+                            <SelectItem
+                              key={`current-${subject.name}`}
+                              value={subject.name}
+                            >
                               {subject.name}
                             </SelectItem>
                           )}
