@@ -460,15 +460,15 @@ const ModernAPSCalculator: React.FC = () => {
                 {subjects.map((subject, index) => (
                   <div key={index} className="space-y-2">
                     <Label className="text-slate-700 font-medium">{`Subject ${index + 1}`}</Label>
-                    <div className="grid grid-cols-12 gap-3 items-center">
-                      <div className="col-span-7">
+                    <div className="flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-3 items-start sm:items-center">
+                      <div className="w-full sm:col-span-7">
                         <Select
                           value={subject.name}
                           onValueChange={(value) =>
                             updateSubjectName(index, value)
                           }
                         >
-                          <SelectTrigger className="bg-slate-50 border-slate-200">
+                          <SelectTrigger className="bg-slate-50 border-slate-200 w-full">
                             <SelectValue placeholder="Select subject" />
                           </SelectTrigger>
                           <SelectContent>
@@ -491,34 +491,36 @@ const ModernAPSCalculator: React.FC = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="col-span-3">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={subject.marks}
-                          onChange={(e) =>
-                            updateSubjectMarks(
-                              index,
-                              parseInt(e.target.value) || 0,
-                            )
-                          }
-                          className="bg-slate-50 border-slate-200 text-center font-medium"
-                          placeholder="0"
-                        />
-                      </div>
-                      <div className="col-span-2 text-center">
-                        <div
-                          className={cn(
-                            "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
-                            subject.points >= 5
-                              ? "bg-emerald-100 text-emerald-700"
-                              : subject.points >= 3
-                                ? "bg-orange-100 text-orange-700"
-                                : "bg-slate-100 text-slate-600",
-                          )}
-                        >
-                          {subject.points}
+                      <div className="flex w-full sm:col-span-5 gap-2 items-center">
+                        <div className="flex-1 sm:flex-none sm:w-20">
+                          <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={subject.marks}
+                            onChange={(e) =>
+                              updateSubjectMarks(
+                                index,
+                                parseInt(e.target.value) || 0,
+                              )
+                            }
+                            className="bg-slate-50 border-slate-200 text-center font-medium"
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div
+                            className={cn(
+                              "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
+                              subject.points >= 5
+                                ? "bg-emerald-100 text-emerald-700"
+                                : subject.points >= 3
+                                  ? "bg-orange-100 text-orange-700"
+                                  : "bg-slate-100 text-slate-600",
+                            )}
+                          >
+                            {subject.points}
+                          </div>
                         </div>
                       </div>
                     </div>
