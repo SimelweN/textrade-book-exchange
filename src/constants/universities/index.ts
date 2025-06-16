@@ -76,7 +76,7 @@ if (import.meta.env.DEV) {
 
     if (universitiesWithoutPrograms.length > 0) {
       console.warn(
-        `⚠️ Universities with no programs:`,
+        `⚠�� Universities with no programs:`,
         universitiesWithoutPrograms.map((u) => u.name),
       );
     }
@@ -86,26 +86,37 @@ if (import.meta.env.DEV) {
 }
 
 // Export individual categories with error handling
+let TRADITIONAL_UNIVERSITIES: University[] = [];
+let UNIVERSITIES_OF_TECHNOLOGY: University[] = [];
+let COMPREHENSIVE_UNIVERSITIES: University[] = [];
+
 try {
-  export { TRADITIONAL_UNIVERSITIES } from "./traditionalUniversities";
+  const traditionalImport = await import("./traditionalUniversities");
+  TRADITIONAL_UNIVERSITIES = traditionalImport.TRADITIONAL_UNIVERSITIES || [];
 } catch (error) {
   console.warn("Error importing TRADITIONAL_UNIVERSITIES:", error);
-  export const TRADITIONAL_UNIVERSITIES: University[] = [];
 }
 
 try {
-  export { UNIVERSITIES_OF_TECHNOLOGY } from "./technicalUniversities";
+  const techImport = await import("./technicalUniversities");
+  UNIVERSITIES_OF_TECHNOLOGY = techImport.UNIVERSITIES_OF_TECHNOLOGY || [];
 } catch (error) {
   console.warn("Error importing UNIVERSITIES_OF_TECHNOLOGY:", error);
-  export const UNIVERSITIES_OF_TECHNOLOGY: University[] = [];
 }
 
 try {
-  export { COMPREHENSIVE_UNIVERSITIES } from "./comprehensiveUniversities";
+  const comprehensiveImport = await import("./comprehensiveUniversities");
+  COMPREHENSIVE_UNIVERSITIES =
+    comprehensiveImport.COMPREHENSIVE_UNIVERSITIES || [];
 } catch (error) {
   console.warn("Error importing COMPREHENSIVE_UNIVERSITIES:", error);
-  export const COMPREHENSIVE_UNIVERSITIES: University[] = [];
 }
+
+export {
+  TRADITIONAL_UNIVERSITIES,
+  UNIVERSITIES_OF_TECHNOLOGY,
+  COMPREHENSIVE_UNIVERSITIES,
+};
 
 // Create simplified list for basic operations
 export const SOUTH_AFRICAN_UNIVERSITIES_SIMPLE =
