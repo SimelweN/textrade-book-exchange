@@ -122,6 +122,27 @@ const UniversityProgramsTest: React.FC = () => {
           </div>
         </div>
 
+        {/* All Universities List */}
+        <div className="space-y-2">
+          <h3 className="font-medium text-sm">
+            All Universities ({ALL_SOUTH_AFRICAN_UNIVERSITIES.length})
+          </h3>
+          <div className="max-h-32 overflow-y-auto bg-white p-2 rounded border text-xs">
+            <div className="grid grid-cols-2 gap-1">
+              {ALL_SOUTH_AFRICAN_UNIVERSITIES.map((uni, index) => (
+                <div key={uni.id} className="flex justify-between">
+                  <span className="truncate">
+                    {index + 1}. {uni.abbreviation}
+                  </span>
+                  <span className="text-gray-500">
+                    {uni.faculties?.length || 0}f
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Sample Program Details */}
         <div className="space-y-2">
           <h3 className="font-medium text-sm">Sample Program Details (UCT)</h3>
