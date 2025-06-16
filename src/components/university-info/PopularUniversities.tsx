@@ -258,8 +258,14 @@ const PopularUniversities = () => {
 
             {/* Stats - Mobile optimized */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="text-center bg-blue-50 rounded-lg p-3">
-                <div className="text-lg font-bold text-blue-600">
+              <div
+                className="text-center rounded-lg p-3"
+                style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
+              >
+                <div
+                  className="text-lg font-bold"
+                  style={{ color: "rgb(68, 171, 131)" }}
+                >
                   {programCount}
                 </div>
                 <div className="text-xs text-gray-600">Programs</div>
@@ -378,7 +384,17 @@ const PopularUniversities = () => {
                 onClick={() =>
                   navigate(`/university-info?university=${university.id}`)
                 }
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
+                className="flex-1 text-white text-xs sm:text-sm transition-all duration-200"
+                style={{
+                  backgroundColor: "rgb(68, 171, 131)",
+                  borderColor: "rgb(68, 171, 131)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgb(56, 142, 108)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgb(68, 171, 131)";
+                }}
               >
                 <UniversityIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 View Details
@@ -459,7 +475,10 @@ const PopularUniversities = () => {
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-lg sm:text-xl">
-          <UniversityIcon className="w-5 h-5 text-blue-600" />
+          <UniversityIcon
+            className="w-5 h-5"
+            style={{ color: "rgb(68, 171, 131)" }}
+          />
           <span>South African Universities</span>
         </CardTitle>
         <CardDescription className="text-sm">
