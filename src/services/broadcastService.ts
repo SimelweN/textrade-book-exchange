@@ -1,6 +1,59 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Broadcast } from "@/types/broadcast"; // Ensure this type is updated as well
 
+// Circuit breaker to prevent spam errors
+let circuitBreakerState = {
+  isOpen: false,
+  failureCount: 0,
+  lastFailure: 0,
+  cooldownPeriod: 300000, // 5 minutes
+  failureThreshold: 3,
+};
+
+const checkCircuitBreaker = (): boolean => {
+  if (!circuitBreakerState.isOpen) return true;
+
+  const now = Date.now();
+  if (
+    now - circuitBreakerState.lastFailure >
+    circuitBreakerState.cooldownPeriod
+  ) {
+    // Reset circuit breaker after cooldown
+    circuitBreakerState.isOpen = false;
+    circuitBreakerState.failureCount = 0;
+    console.log(
+      "📢 [BroadcastService] Circuit breaker reset - retrying broadcasts",
+    );
+    return true;
+  }
+
+  return false;
+};
+
+const recordFailure = (): void => {
+  circuitBreakerState.failureCount++;
+  circuitBreakerState.lastFailure = Date.now();
+
+  if (
+    circuitBreakerState.failureCount >= circuitBreakerState.failureThreshold
+  ) {
+    circuitBreakerState.isOpen = true;
+    console.warn(
+      "📢 [BroadcastService] Circuit breaker opened - disabling broadcasts for 5 minutes due to repeated failures",
+    );
+  }
+};
+
+const recordSuccess = (): void => {
+  circuitBreakerState.failureCount = 0;
+  if (circuitBreakerState.isOpen) {
+    circuitBreakerState.isOpen = false;
+    console.log(
+      "📢 [BroadcastService] Circuit breaker closed - broadcasts restored",
+    );
+  }
+};
+
 // Helper to map Supabase broadcast to our Broadcast type
 const mapSupabaseBroadcast = (sbBroadcast: any): Broadcast => ({
   id: sbBroadcast.id,
@@ -172,17 +225,16 @@ export const broadcastService = {
 
   // --- New functions for BroadcastManager ---
   getLatestBroadcast: async (): Promise<Broadcast | null> => {
-    // This should fetch the highest priority, active, non-expired broadcast
-    // that applies to the current user (or 'all').
-    // For simplicity, let's get the most recent active one for now.
-    // A more robust implementation would consider priority and target audience.
+    // Check circuit breaker - if open, don't attempt the request
+    if (!checkCircuitBreaker()) {
+      return null;
+    }
 
-    // Check if broadcasts are enabled/available
+    // Check if broadcasts are disabled/available
     if (
       typeof window !== "undefined" &&
       localStorage.getItem("broadcasts_disabled") === "true"
     ) {
-      console.log("📢 Broadcasts are disabled for this session");
       return null;
     }
 
@@ -192,74 +244,50 @@ export const broadcastService = {
         .select("*")
         .eq("active", true)
         .or("expires_at.is.null,expires_at.gt.now()")
-        // .order('priority', { ascending: false }) // Needs careful mapping of enum to sort order
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
 
       if (error) {
+        recordFailure();
+
         // Check for table not found error and disable broadcasts for this session
         if (
           error.code === "42P01" ||
           error.message?.includes('relation "public.broadcasts" does not exist')
         ) {
-          console.warn(
-            "📢 Broadcasts table does not exist. Disabling broadcasts for this session.",
-          );
           if (typeof window !== "undefined") {
             localStorage.setItem("broadcasts_disabled", "true");
           }
           return null;
         }
 
-        // For other errors, log them properly but don't spam the console
-        const errorDetails = {
-          message: error.message || "Unknown error",
-          code: error.code || "NO_CODE",
-          details: error.details || "No details",
-          hint: error.hint || "No hint",
-        };
-
-        // Only log the first few errors to prevent spam
-        const errorCount =
-          parseInt(sessionStorage.getItem("broadcast_error_count") || "0") + 1;
-        if (errorCount <= 3) {
+        // Log error only if circuit breaker allows it
+        if (circuitBreakerState.failureCount <= 2) {
+          const errorDetails = {
+            message: error.message || "Unknown error",
+            code: error.code || "NO_CODE",
+            details: error.details || "No details",
+            hint: error.hint || "No hint",
+          };
           console.error("Error fetching latest broadcast:", errorDetails);
-          sessionStorage.setItem(
-            "broadcast_error_count",
-            errorCount.toString(),
-          );
-        } else if (errorCount === 4) {
-          console.warn(
-            "📢 Too many broadcast errors. Suppressing further error logs.",
-          );
-          sessionStorage.setItem(
-            "broadcast_error_count",
-            errorCount.toString(),
-          );
         }
 
         return null;
       }
 
-      // Reset error count on success
-      sessionStorage.removeItem("broadcast_error_count");
+      // Record success
+      recordSuccess();
 
       return data ? mapSupabaseBroadcast(data) : null;
     } catch (error) {
-      // Properly handle and log caught exceptions
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      recordFailure();
 
-      // Only log the first few errors to prevent spam
-      const errorCount =
-        parseInt(sessionStorage.getItem("broadcast_error_count") || "0") + 1;
-      if (errorCount <= 3) {
+      // Log error only if circuit breaker allows it
+      if (circuitBreakerState.failureCount <= 2) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         console.error("Failed to fetch latest broadcast:", errorMessage);
-        if (error instanceof Error && error.stack) {
-          console.error("Stack trace:", error.stack);
-        }
-        sessionStorage.setItem("broadcast_error_count", errorCount.toString());
       }
 
       return null;
