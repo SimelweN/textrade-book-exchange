@@ -118,6 +118,14 @@ export const SOUTH_AFRICAN_UNIVERSITIES_SIMPLE =
 export const UNIVERSITY_METADATA = {
   totalUniversities: ALL_SOUTH_AFRICAN_UNIVERSITIES.length,
   lastUpdated: new Date().toISOString(),
-  version: "4.0.0",
-  source: "complete-sa-universities",
+  version: "5.0.0-comprehensive",
+  source: "comprehensive-program-allocation",
+  programStatistics: PROGRAM_STATISTICS,
+  features: [
+    "University-specific APS scores",
+    "Comprehensive program allocation rules",
+    "Faculty-based organization",
+    "Career prospects for all programs",
+    "Realistic program distribution",
+  ],
 };
