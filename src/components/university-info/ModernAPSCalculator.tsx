@@ -157,7 +157,11 @@ const ModernAPSCalculator: React.FC = () => {
 
   // Calculate total APS
   const totalAPS = useMemo(() => {
-    return subjects.reduce((total, subject) => total + subject.points, 0);
+    const total = subjects.reduce(
+      (total, subject) => total + (subject.points || 0),
+      0,
+    );
+    return isNaN(total) ? 0 : total;
   }, [subjects]);
 
   // Performance analysis
