@@ -557,14 +557,30 @@ const ModernAPSCalculator: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    onClick={handleReset}
-                    variant="outline"
-                    className="w-full border-slate-200 hover:bg-slate-50"
-                  >
-                    Reset Calculator
-                  </Button>
+                <div className="flex flex-col gap-3 pt-4">
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleReset}
+                      variant="outline"
+                      className="flex-1 border-slate-200 hover:bg-slate-50"
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      onClick={handleLoadSample}
+                      variant="outline"
+                      className="flex-1 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                    >
+                      Try Sample
+                    </Button>
+                  </div>
+                  {totalAPS === 0 && (
+                    <div className="text-center">
+                      <p className="text-sm text-slate-600 mb-2">
+                        👆 Click "Try Sample" to see the calculator in action
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
