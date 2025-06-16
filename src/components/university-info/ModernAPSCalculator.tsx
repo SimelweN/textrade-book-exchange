@@ -656,10 +656,14 @@ const ModernAPSCalculator: React.FC = () => {
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-slate-600">
-                            Eligible Programs
+                            {totalAPS === 0
+                              ? "Enter APS to see eligible"
+                              : "Eligible Programs"}
                           </span>
-                          <span className="text-xl font-bold text-emerald-600">
-                            {stats.eligibleCount}
+                          <span
+                            className={`text-xl font-bold ${totalAPS === 0 ? "text-slate-400" : "text-emerald-600"}`}
+                          >
+                            {totalAPS === 0 ? "?" : stats.eligibleCount}
                           </span>
                         </div>
                         <div className="pt-2">
