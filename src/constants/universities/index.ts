@@ -1,6 +1,7 @@
 import { University } from "@/types/university";
 import {
-  ALL_26_SA_UNIVERSITIES,
+  ALL_29_SA_UNIVERSITIES,
+  ALL_SOUTH_AFRICAN_UNIVERSITIES as COMPLETE_SA_UNIVERSITIES,
   UNIVERSITY_COUNT_SUMMARY,
 } from "./complete-sa-universities";
 import {
@@ -305,14 +306,14 @@ const validateUniversityData = (universities: University[]): University[] => {
 let allUniversities: University[] = [];
 
 try {
-  // Start with the complete, audited database of all 26 South African public universities
-  if (!ALL_26_SA_UNIVERSITIES || !Array.isArray(ALL_26_SA_UNIVERSITIES)) {
+  // Start with the complete, audited database of all 29 South African universities
+  if (!COMPLETE_SA_UNIVERSITIES || !Array.isArray(COMPLETE_SA_UNIVERSITIES)) {
     console.error(
-      "ALL_26_SA_UNIVERSITIES is not properly defined or is not an array",
+      "COMPLETE_SA_UNIVERSITIES is not properly defined or is not an array",
     );
     allUniversities = [];
   } else {
-    allUniversities = [...ALL_26_SA_UNIVERSITIES];
+    allUniversities = [...COMPLETE_SA_UNIVERSITIES];
 
     // Validate and clean data first
     allUniversities = validateUniversityData(allUniversities);
@@ -361,7 +362,7 @@ try {
 // Export the processed university data
 export const ALL_SOUTH_AFRICAN_UNIVERSITIES: University[] = allUniversities;
 
-// Alias for backward compatibility
+// Alias for backward compatibility - ensure this uses the complete database
 export const SOUTH_AFRICAN_UNIVERSITIES = ALL_SOUTH_AFRICAN_UNIVERSITIES;
 
 // Production-ready university data loaded

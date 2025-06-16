@@ -174,42 +174,6 @@ const UniversityInfo = () => {
               {/* Hero Section */}
               <UniversityHero onNavigateToTool={handleTabChange} />
 
-              {/* Stats Overview */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                <Card className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="text-2xl md:text-3xl font-bold text-blue-600">
-                      {stats.universities}
-                    </div>
-                    <div className="text-sm text-gray-600">Universities</div>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="text-2xl md:text-3xl font-bold text-green-600">
-                      {stats.students}
-                    </div>
-                    <div className="text-sm text-gray-600">Students</div>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="text-2xl md:text-3xl font-bold text-purple-600">
-                      {stats.programs}
-                    </div>
-                    <div className="text-sm text-gray-600">Programs</div>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent className="pt-6">
-                    <div className="text-2xl md:text-3xl font-bold text-orange-600">
-                      {stats.resources}
-                    </div>
-                    <div className="text-sm text-gray-600">Resources</div>
-                  </CardContent>
-                </Card>
-              </div>
-
               {/* Popular Universities */}
               <PopularUniversities />
 
