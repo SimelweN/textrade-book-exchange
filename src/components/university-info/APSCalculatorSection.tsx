@@ -1,8 +1,8 @@
 import React from "react";
-import ComprehensiveAPSCalculator from "./ComprehensiveAPSCalculator";
+import FocusedAPSCalculator from "./FocusedAPSCalculator";
 
 const APSCalculatorSection = () => {
-  return <ComprehensiveAPSCalculator />;
+  return <FocusedAPSCalculator />;
 };
 
 export default APSCalculatorSection;
