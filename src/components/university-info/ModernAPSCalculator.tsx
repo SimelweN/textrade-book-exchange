@@ -715,64 +715,62 @@ const ModernAPSCalculator: React.FC = () => {
                   </Card>
                 </div>
 
-                {/* Top Recommendations */}
+                {/* Universities */}
                 <Card className="bg-white border-0 shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-slate-900">
-                      <Star className="h-5 w-5 text-amber-500" />
-                      Top Recommendations
+                      <Building className="h-5 w-5 text-blue-500" />
+                      Universities
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {universityMatches
-                        .slice(0, 4)
-                        .map((university, index) => (
-                          <div
-                            key={index}
-                            className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h4 className="font-semibold text-slate-900">
-                                  {university.abbreviation}
-                                </h4>
-                                <p className="text-sm text-slate-600">
-                                  {university.location}
-                                </p>
-                              </div>
-                              <Badge
-                                variant="outline"
-                                className={cn(
-                                  university.competitiveness === "High"
-                                    ? "border-red-200 text-red-700 bg-red-50"
-                                    : university.competitiveness === "Moderate"
-                                      ? "border-orange-200 text-orange-700 bg-orange-50"
-                                      : "border-green-200 text-green-700 bg-green-50",
-                                )}
-                              >
-                                {university.competitiveness}
-                              </Badge>
+                      {universityMatches.map((university, index) => (
+                        <div
+                          key={index}
+                          className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h4 className="font-semibold text-slate-900">
+                                {university.abbreviation}
+                              </h4>
+                              <p className="text-sm text-slate-600">
+                                {university.location}
+                              </p>
                             </div>
-                            <div className="text-sm text-slate-600">
-                              {university.eligiblePrograms} of{" "}
-                              {university.totalPrograms} programs available
-                            </div>
-                            <Progress
-                              value={
-                                university.totalPrograms === 0
-                                  ? 0
-                                  : Math.min(
-                                      100,
-                                      (university.eligiblePrograms /
-                                        university.totalPrograms) *
-                                        100,
-                                    )
-                              }
-                              className="h-2 mt-2"
-                            />
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                university.competitiveness === "High"
+                                  ? "border-red-200 text-red-700 bg-red-50"
+                                  : university.competitiveness === "Moderate"
+                                    ? "border-orange-200 text-orange-700 bg-orange-50"
+                                    : "border-green-200 text-green-700 bg-green-50",
+                              )}
+                            >
+                              {university.competitiveness}
+                            </Badge>
                           </div>
-                        ))}
+                          <div className="text-sm text-slate-600">
+                            {university.eligiblePrograms} of{" "}
+                            {university.totalPrograms} programs available
+                          </div>
+                          <Progress
+                            value={
+                              university.totalPrograms === 0
+                                ? 0
+                                : Math.min(
+                                    100,
+                                    (university.eligiblePrograms /
+                                      university.totalPrograms) *
+                                      100,
+                                  )
+                            }
+                            className="h-2 mt-2"
+                          />
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
