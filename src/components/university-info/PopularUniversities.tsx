@@ -388,7 +388,7 @@ const PopularUniversities = () => {
               <Button
                 size="sm"
                 onClick={() =>
-                  navigate(`/university-info?university=${university.id}`)
+                  navigate(`/university-profile?id=${university.id}`)
                 }
                 className="flex-1 text-white text-xs sm:text-sm transition-all duration-200"
                 style={{
