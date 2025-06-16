@@ -1,8 +1,8 @@
 import React from "react";
-import ModernAPSCalculatorFixed from "./ModernAPSCalculatorFixed";
+import ModernAPSCalculator from "./ModernAPSCalculator";
 
 const APSCalculatorSection = () => {
-  return <ModernAPSCalculatorFixed />;
+  return <ModernAPSCalculator />;
 };
 
 export default APSCalculatorSection;
