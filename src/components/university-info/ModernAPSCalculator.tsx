@@ -1014,8 +1014,8 @@ const ModernAPSCalculator: React.FC = () => {
                             </div>
                             <Button
                               size="sm"
-                              variant="ghost"
-                              className="text-blue-600 hover:text-blue-700 w-full sm:w-auto justify-center sm:justify-start"
+                              variant="outline"
+                              className="border-green-500 text-green-600 hover:bg-green-50 w-full sm:w-auto justify-center sm:justify-start"
                             >
                               View Details
                               <ChevronRight className="h-3 w-3 ml-1" />
