@@ -893,17 +893,14 @@ const ModernAPSCalculator: React.FC = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <Button
                         variant={
                           selectedFilter === "all" ? "default" : "outline"
                         }
                         onClick={() => setSelectedFilter("all")}
-                        className={
-                          selectedFilter === "all"
-                            ? "bg-slate-900 hover:bg-slate-800"
-                            : ""
-                        }
+                        className={`w-full sm:w-auto ${selectedFilter === "all" ? "bg-slate-900 hover:bg-slate-800" : ""}`}
+                        size="sm"
                       >
                         All Programs
                       </Button>
@@ -912,11 +909,8 @@ const ModernAPSCalculator: React.FC = () => {
                           selectedFilter === "eligible" ? "default" : "outline"
                         }
                         onClick={() => setSelectedFilter("eligible")}
-                        className={
-                          selectedFilter === "eligible"
-                            ? "bg-emerald-600 hover:bg-emerald-700"
-                            : ""
-                        }
+                        className={`w-full sm:w-auto ${selectedFilter === "eligible" ? "bg-emerald-600 hover:bg-emerald-700" : ""}`}
+                        size="sm"
                       >
                         Eligible Only
                       </Button>
@@ -927,11 +921,8 @@ const ModernAPSCalculator: React.FC = () => {
                             : "outline"
                         }
                         onClick={() => setSelectedFilter("competitive")}
-                        className={
-                          selectedFilter === "competitive"
-                            ? "bg-red-600 hover:bg-red-700"
-                            : ""
-                        }
+                        className={`w-full sm:w-auto ${selectedFilter === "competitive" ? "bg-red-600 hover:bg-red-700" : ""}`}
+                        size="sm"
                       >
                         Highly Competitive
                       </Button>
