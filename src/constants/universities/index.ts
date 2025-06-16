@@ -120,11 +120,13 @@ export const SOUTH_AFRICAN_UNIVERSITIES_SIMPLE =
 // Export metadata for debugging
 export const UNIVERSITY_METADATA = {
   totalUniversities: ALL_SOUTH_AFRICAN_UNIVERSITIES.length,
+  universityBreakdown: UNIVERSITY_STATISTICS,
   lastUpdated: new Date().toISOString(),
-  version: "5.0.0-comprehensive",
-  source: "comprehensive-program-allocation",
+  version: "6.0.0-complete-26-universities",
+  source: "complete-26-universities",
   programStatistics: PROGRAM_STATISTICS,
   features: [
+    "All 26 South African public universities",
     "University-specific APS scores",
     "Comprehensive program allocation rules",
     "Faculty-based organization",
