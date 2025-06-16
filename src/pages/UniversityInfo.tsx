@@ -74,6 +74,7 @@ const UniversityInfo = () => {
   useEffect(() => {
     if (import.meta.env.DEV) {
       logProgramVerification();
+      logCriticalIssuesVerification();
     }
   }, []);
 
