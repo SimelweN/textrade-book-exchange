@@ -270,24 +270,24 @@ const CampusBooksSection = () => {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <Button
               size="sm"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
               onClick={() => navigate(`/book/${book.id}`)}
             >
-              <BookOpen className="w-4 h-4 mr-2" />
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
               View Details
             </Button>
-
             <Button
-              variant="outline"
               size="sm"
-              className="border-green-200 text-green-600 hover:bg-green-50"
-              onClick={() => navigate(`/cart?add=${book.id}`)}
+              variant="outline"
+              className="w-full sm:w-auto border-green-500 text-green-600 hover:bg-green-50 text-xs sm:text-sm"
             >
-              <ShoppingCart className="w-4 h-4" />
+              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+              Add to Cart
             </Button>
+          </div>
           </div>
         </CardContent>
       </Card>
