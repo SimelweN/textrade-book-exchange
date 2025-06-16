@@ -2166,7 +2166,10 @@ const SimpleAPSCalculator: React.FC = () => {
                           : "Program Matches"}
                       </div>
                       <Badge variant="outline">
-                        {filteredDegrees.length}{" "}
+                        {showAllPrograms
+                          ? filteredDegrees.length
+                          : Math.min(6, filteredDegrees.length)}{" "}
+                        of {filteredDegrees.length}{" "}
                         {totalAPS === 0 ? "samples" : "results"}
                       </Badge>
                     </CardTitle>
