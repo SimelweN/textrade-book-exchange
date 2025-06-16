@@ -2197,7 +2197,7 @@ const SimpleAPSCalculator: React.FC = () => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {filteredDegrees.map((degree, index) => (
+                        {displayedPrograms.map((degree, index) => (
                           <div
                             key={index}
                             className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
