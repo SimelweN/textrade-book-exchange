@@ -829,23 +829,25 @@ const ModernAPSCalculator: React.FC = () => {
                             key={index}
                             className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">
-                                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                     <Building className="h-5 w-5 text-slate-600" />
                                   </div>
-                                  <div>
-                                    <h4 className="font-semibold text-slate-900">
+                                  <div className="min-w-0 flex-1">
+                                    <h4 className="font-semibold text-slate-900 truncate">
                                       {university.university}
                                     </h4>
                                     <p className="text-sm text-slate-600 flex items-center gap-1">
-                                      <MapPin className="h-3 w-3" />
-                                      {university.location}
+                                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">
+                                        {university.location}
+                                      </span>
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-4 text-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
                                   <span className="text-slate-600">
                                     <span className="font-medium text-emerald-600">
                                       {university.eligiblePrograms}
@@ -861,6 +863,7 @@ const ModernAPSCalculator: React.FC = () => {
                                   <Badge
                                     variant="outline"
                                     className={cn(
+                                      "w-fit",
                                       university.competitiveness === "High"
                                         ? "border-red-200 text-red-700 bg-red-50"
                                         : university.competitiveness ===
@@ -873,7 +876,7 @@ const ModernAPSCalculator: React.FC = () => {
                                   </Badge>
                                 </div>
                               </div>
-                              <ChevronRight className="h-5 w-5 text-slate-400" />
+                              <ChevronRight className="h-5 w-5 text-slate-400 flex-shrink-0 self-start sm:self-center" />
                             </div>
                           </div>
                         ))}
