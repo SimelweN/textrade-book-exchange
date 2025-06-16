@@ -636,7 +636,7 @@ const ModernAPSCalculator: React.FC = () => {
               onValueChange={(value) => setActiveInsight(value as any)}
               className="w-full"
             >
-              <TabsList className="grid grid-cols-3 w-full mb-6 bg-white border border-slate-200">
+              <TabsList className="grid grid-cols-1 sm:grid-cols-3 w-full mb-6 bg-white border border-slate-200 h-auto sm:h-10">
                 <TabsTrigger
                   value="overview"
                   className="data-[state=active]:bg-slate-900 data-[state=active]:text-white"
