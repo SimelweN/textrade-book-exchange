@@ -236,13 +236,19 @@ const PopularUniversities = () => {
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1 ml-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge
+                  variant="outline"
+                  className="text-xs border-gray-300 text-gray-700"
+                >
                   {university.abbreviation ||
                     university.name?.substring(0, 3).toUpperCase() ||
                     "UNI"}
                 </Badge>
                 {university.type && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge
+                    variant="secondary"
+                    className="text-xs bg-gray-100 text-gray-700"
+                  >
                     {university.type.replace(" University", "")}
                   </Badge>
                 )}
@@ -294,7 +300,7 @@ const PopularUniversities = () => {
                     <Badge
                       key={faculty.id || index}
                       variant="secondary"
-                      className="text-xs bg-gray-100 truncate max-w-[120px]"
+                      className="text-xs bg-gray-100 text-gray-700 truncate max-w-[120px]"
                     >
                       {faculty.name || "Unknown Faculty"}
                     </Badge>
@@ -319,12 +325,12 @@ const PopularUniversities = () => {
                   <div className="space-y-1 text-xs text-gray-600">
                     {university.website && (
                       <div className="flex items-center gap-2">
-                        <Globe className="w-3 h-3 flex-shrink-0" />
+                        <Globe className="w-3 h-3 flex-shrink-0 text-gray-400" />
                         <a
                           href={university.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-700 hover:underline truncate"
+                          className="text-gray-600 hover:text-gray-800 hover:underline truncate"
                         >
                           {university.website.replace("https://", "")}
                         </a>
@@ -352,10 +358,10 @@ const PopularUniversities = () => {
                         <span className="text-xs text-gray-600">Status:</span>
                         <Badge
                           className={cn(
-                            "text-xs",
+                            "text-xs border",
                             university.applicationInfo.isOpen
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800",
+                              ? "bg-green-50 text-green-700 border-green-200"
+                              : "bg-red-50 text-red-700 border-red-200",
                           )}
                         >
                           {university.applicationInfo.isOpen
