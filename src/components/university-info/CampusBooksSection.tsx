@@ -444,9 +444,9 @@ const CampusBooksSection = () => {
 
           {/* Clear Filters */}
           {(searchTerm ||
-            selectedUniversity ||
-            selectedFaculty ||
-            selectedLevel) && (
+            (selectedUniversity && selectedUniversity !== "all") ||
+            (selectedFaculty && selectedFaculty !== "all") ||
+            (selectedLevel && selectedLevel !== "all")) && (
             <div className="flex justify-end">
               <Button
                 variant="outline"
