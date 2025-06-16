@@ -5,17 +5,16 @@ import {
   UNIVERSITY_COUNT_SUMMARY,
 } from "./complete-sa-universities";
 import {
-  generateStandardFaculties,
-  UNIVERSITIES_NEEDING_PROGRAMS,
-  COMMON_DEGREE_TEMPLATES,
-  FORCE_COMPREHENSIVE_PROGRAMS,
-} from "./complete-programs-database";
-import { fixProgramFacultyAssignments } from "@/utils/programFacultyUtils";
-import { assignComprehensivePrograms } from "@/utils/comprehensiveProgramRules";
+  COMPREHENSIVE_SA_UNIVERSITIES,
+  ALL_SOUTH_AFRICAN_UNIVERSITIES_WITH_PROGRAMS,
+  COMPREHENSIVE_DATABASE_STATS,
+  FACULTY_DISTRIBUTION,
+  PROGRAM_DISTRIBUTION,
+} from "./comprehensive-programs-database";
 
-// Direct export of the complete university database
+// Use the comprehensive database with program assignment rules applied
 export const ALL_SOUTH_AFRICAN_UNIVERSITIES: University[] =
-  COMPLETE_SA_UNIVERSITIES || [];
+  COMPREHENSIVE_SA_UNIVERSITIES || [];
 
 // Alias for backward compatibility - ensure this uses the complete database
 export const SOUTH_AFRICAN_UNIVERSITIES = ALL_SOUTH_AFRICAN_UNIVERSITIES;
@@ -60,7 +59,7 @@ if (import.meta.env.DEV) {
 
     console.log(`📊 University Breakdown:
     - Traditional: ${traditionalCount}
-    - Technology: ${technologyCount} 
+    - Technology: ${technologyCount}
     - Comprehensive: ${comprehensiveCount}
     - Total: ${ALL_SOUTH_AFRICAN_UNIVERSITIES.length}`);
 
@@ -135,29 +134,13 @@ export const SOUTH_AFRICAN_UNIVERSITIES_SIMPLE =
     }
   });
 
-// Export metadata for debugging
+// Export metadata for debugging - use comprehensive database stats
 export const UNIVERSITY_METADATA = {
-  totalUniversities: ALL_SOUTH_AFRICAN_UNIVERSITIES.length,
-  totalPrograms: ALL_SOUTH_AFRICAN_UNIVERSITIES.reduce(
-    (total, uni) =>
-      total +
-      uni.faculties.reduce(
-        (facTotal, fac) => facTotal + (fac.degrees?.length || 0),
-        0,
-      ),
-    0,
-  ),
+  ...COMPREHENSIVE_DATABASE_STATS,
   lastUpdated: new Date().toISOString(),
-  version: "3.0.0",
-  breakdown: {
-    traditional: ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(
-      (u) => u.type === "Traditional University",
-    ).length,
-    technology: ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(
-      (u) => u.type === "University of Technology",
-    ).length,
-    comprehensive: ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(
-      (u) => u.type === "Comprehensive University",
-    ).length,
-  },
+  version: "4.0.0-comprehensive",
+  facultyDistribution: FACULTY_DISTRIBUTION,
+  programDistribution: PROGRAM_DISTRIBUTION,
+  assignmentRulesApplied: true,
+  source: "comprehensive-programs-database",
 };

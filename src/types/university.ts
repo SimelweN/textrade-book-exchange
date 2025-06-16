@@ -14,6 +14,8 @@ export interface Degree {
   description: string;
   subjects: Subject[];
   careerProspects: string[];
+  universitySpecificAPS?: { [universityId: string]: number }; // University-specific APS requirements
+  assignmentRule?: "all" | { exclude: string[] }; // Program assignment rule for debugging
 }
 
 export interface Faculty {
