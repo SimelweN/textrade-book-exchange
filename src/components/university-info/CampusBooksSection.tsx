@@ -453,9 +453,9 @@ const CampusBooksSection = () => {
                 size="sm"
                 onClick={() => {
                   setSearchTerm("");
-                  setSelectedUniversity("");
-                  setSelectedFaculty("");
-                  setSelectedLevel("");
+                  setSelectedUniversity("all");
+                  setSelectedFaculty("all");
+                  setSelectedLevel("all");
                 }}
               >
                 Clear Filters
