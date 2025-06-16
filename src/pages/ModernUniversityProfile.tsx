@@ -306,35 +306,41 @@ const ModernUniversityProfile: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {/* Academic Excellence */}
                 <Card className="bg-white border-0 shadow-lg">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-slate-900">
-                      <Award className="h-5 w-5 text-amber-500" />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-slate-900 text-lg sm:text-xl">
+                      <Award className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
                       Academic Excellence
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
+                  <CardContent className="space-y-3 sm:space-y-4">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-600">Graduation Rate</span>
-                        <span className="font-semibold text-slate-900">
+                        <span className="text-slate-600 text-sm sm:text-base">
+                          Graduation Rate
+                        </span>
+                        <span className="font-semibold text-slate-900 text-sm sm:text-base">
                           {stats?.graduationRate}%
                         </span>
                       </div>
                       <Progress value={stats?.graduationRate} className="h-2" />
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-600">Employment Rate</span>
-                        <span className="font-semibold text-slate-900">
+                        <span className="text-slate-600 text-sm sm:text-base">
+                          Employment Rate
+                        </span>
+                        <span className="font-semibold text-slate-900 text-sm sm:text-base">
                           {stats?.employmentRate}%
                         </span>
                       </div>
                       <Progress value={stats?.employmentRate} className="h-2" />
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-600">Acceptance Rate</span>
-                        <span className="font-semibold text-slate-900">
+                        <span className="text-slate-600 text-sm sm:text-base">
+                          Acceptance Rate
+                        </span>
+                        <span className="font-semibold text-slate-900 text-sm sm:text-base">
                           {stats?.acceptanceRate}%
                         </span>
                       </div>
