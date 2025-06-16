@@ -92,6 +92,21 @@ const CORE_SUBJECTS: APSSubject[] = [
   { name: "Select Subject", marks: 0, level: 4, points: 0 },
 ];
 
+// Sample subjects with marks for demonstration
+const SAMPLE_SUBJECTS: APSSubject[] = [
+  { name: "English Home Language", marks: 75, level: 4, points: 6 },
+  { name: "Mathematics", marks: 80, level: 4, points: 7 },
+  { name: "Physical Sciences", marks: 70, level: 4, points: 6 },
+  { name: "Life Sciences", marks: 65, level: 4, points: 5 },
+  { name: "Geography", marks: 72, level: 4, points: 6 },
+  {
+    name: "Afrikaans First Additional Language",
+    marks: 68,
+    level: 4,
+    points: 5,
+  },
+];
+
 // APS calculation function
 const calculateAPSPoints = (marks: number): number => {
   // Handle NaN or invalid marks
