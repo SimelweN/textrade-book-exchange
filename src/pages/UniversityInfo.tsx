@@ -42,6 +42,7 @@ const CampusBooksSection = lazy(
 
 const UniversityInfo = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const currentTool = searchParams.get("tool") || "overview";
   const selectedUniversityId = searchParams.get("university");
 
