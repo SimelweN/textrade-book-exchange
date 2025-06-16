@@ -33,6 +33,10 @@ import {
   CreditCard,
   BookOpen,
   Lightbulb,
+  Filter,
+  Calendar,
+  Trophy,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SOUTH_AFRICAN_SUBJECTS } from "@/constants/subjects";
