@@ -560,9 +560,10 @@ const ModernAPSCalculator: React.FC = () => {
                 <div className="flex gap-3 pt-4">
                   <Button
                     onClick={handleSaveProfile}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    disabled={isSaving || totalAPS === 0}
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
                   >
-                    Save Profile
+                    {isSaving ? "Saving..." : "Save My APS"}
                   </Button>
                   <Button
                     onClick={handleReset}
