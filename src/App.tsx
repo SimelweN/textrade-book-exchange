@@ -87,11 +87,11 @@ function App() {
                     />
                     <Route
                       path="/university-profile"
-                      element={<UniversityProfile />}
+                      element={<ModernUniversityProfile />}
                     />
                     <Route
                       path="/university/:universityId"
-                      element={<UniversityProfile />}
+                      element={<ModernUniversityProfile />}
                     />
                     <Route
                       path="/university/:universityId/faculty/:facultyId"
