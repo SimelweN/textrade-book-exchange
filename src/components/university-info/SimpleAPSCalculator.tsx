@@ -2268,6 +2268,30 @@ const SimpleAPSCalculator: React.FC = () => {
                             </div>
                           </div>
                         ))}
+
+                        {/* View More Button */}
+                        {filteredDegrees.length > 6 && (
+                          <div className="text-center mt-6 pt-4 border-t border-slate-100">
+                            {!showAllPrograms ? (
+                              <Button
+                                onClick={() => setShowAllPrograms(true)}
+                                variant="outline"
+                                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                              >
+                                View More Programs ({filteredDegrees.length - 6}{" "}
+                                more)
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => setShowAllPrograms(false)}
+                                variant="outline"
+                                className="border-slate-200 text-slate-600 hover:bg-slate-50"
+                              >
+                                Show Less
+                              </Button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
