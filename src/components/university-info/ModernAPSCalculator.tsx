@@ -779,7 +779,8 @@ const ModernAPSCalculator: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                    </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
