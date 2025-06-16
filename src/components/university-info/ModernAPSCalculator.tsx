@@ -146,6 +146,7 @@ const getPerformanceLevel = (
 
 const ModernAPSCalculator: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // State management
   const [subjects, setSubjects] = useState<APSSubject[]>(CORE_SUBJECTS);
@@ -155,6 +156,7 @@ const ModernAPSCalculator: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<
     "all" | "eligible" | "competitive"
   >("all");
+  const [isSaving, setIsSaving] = useState(false);
 
   // Calculate total APS
   const totalAPS = useMemo(() => {
