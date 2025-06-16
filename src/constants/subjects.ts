@@ -7,7 +7,6 @@ export const SOUTH_AFRICAN_SUBJECTS = [
   "Afrikaans First Additional Language",
   "Mathematics",
   "Mathematical Literacy",
-  "Life Orientation", // Non-contributing but required
 
   // Science Subjects
   "Physical Sciences",
