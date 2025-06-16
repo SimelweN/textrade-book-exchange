@@ -89,34 +89,40 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
   ];
 
   return (
-    <div className="relative bg-gradient-to-br from-blue-50 via-white to-gray-50 rounded-xl sm:rounded-2xl overflow-hidden">
-      {/* Background Pattern - Subtle */}
-      <div className="absolute inset-0 opacity-3">
-        <div className="absolute top-0 left-0 w-32 sm:w-40 h-32 sm:h-40 bg-blue-600 rounded-full -translate-x-16 sm:-translate-x-20 -translate-y-16 sm:-translate-y-20"></div>
-        <div className="absolute top-10 sm:top-20 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gray-600 rounded-full translate-x-12 sm:translate-x-16 -translate-y-12 sm:-translate-y-16"></div>
-        <div className="absolute bottom-0 left-1/3 w-20 sm:w-24 h-20 sm:h-24 bg-blue-600 rounded-full translate-y-10 sm:translate-y-12"></div>
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
+            backgroundSize: "40px 40px",
+          }}
+        ></div>
       </div>
 
-      <div className="relative z-10 p-4 sm:p-8 lg:p-12">
-        {/* Header Section - Mobile Optimized */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 gap-2">
-            <div className="bg-blue-600 p-2 sm:p-3 rounded-xl sm:rounded-2xl">
-              <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-            </div>
-            <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-2 sm:px-3 py-1 text-xs sm:text-sm">
-              <Sparkles className="w-3 h-3 mr-1" />
-              Your Campus Journey Starts Here
-            </Badge>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        {/* Main Hero Content */}
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-flex items-center bg-blue-600/20 backdrop-blur-sm rounded-full px-3 sm:px-4 py-2 mb-4 sm:mb-6 border border-blue-400/30">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2 text-blue-300" />
+            <span className="text-xs sm:text-sm font-medium text-blue-200">
+              Your Gateway to Higher Education
+            </span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
-            Welcome to{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              ReBooked Campus
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
+            Discover Your
+            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent block">
+              Perfect University
             </span>
           </h1>
 
+          <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 px-4">
+            Explore 29 South African universities, calculate your APS, find
+            bursaries, and discover the perfect academic path for your future
+            success.
+          </p>
           <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
             Your comprehensive guide to South African higher education.
             Calculate your APS, explore universities, find bursaries, and
