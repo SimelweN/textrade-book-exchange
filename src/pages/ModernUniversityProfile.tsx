@@ -301,9 +301,9 @@ const ModernUniversityProfile: React.FC = () => {
             </TabsList>
 
             {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-8">
+            <TabsContent value="overview" className="space-y-6 sm:space-y-8">
               {/* Performance Dashboard */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {/* Academic Excellence */}
                 <Card className="bg-white border-0 shadow-lg">
                   <CardHeader className="pb-4">
