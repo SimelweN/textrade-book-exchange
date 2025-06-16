@@ -4,17 +4,9 @@ import {
   ALL_SOUTH_AFRICAN_UNIVERSITIES as COMPLETE_SA_UNIVERSITIES,
   UNIVERSITY_COUNT_SUMMARY,
 } from "./complete-sa-universities";
-import {
-  COMPREHENSIVE_SA_UNIVERSITIES,
-  ALL_SOUTH_AFRICAN_UNIVERSITIES_WITH_PROGRAMS,
-  COMPREHENSIVE_DATABASE_STATS,
-  FACULTY_DISTRIBUTION,
-  PROGRAM_DISTRIBUTION,
-} from "./comprehensive-programs-database";
-
-// Use the comprehensive database with program assignment rules applied
+// Use the complete database directly
 export const ALL_SOUTH_AFRICAN_UNIVERSITIES: University[] =
-  COMPREHENSIVE_SA_UNIVERSITIES || [];
+  COMPLETE_SA_UNIVERSITIES;
 
 // Alias for backward compatibility - ensure this uses the complete database
 export const SOUTH_AFRICAN_UNIVERSITIES = ALL_SOUTH_AFRICAN_UNIVERSITIES;
