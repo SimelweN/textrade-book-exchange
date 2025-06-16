@@ -1,76 +1,130 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
+  ExternalLink,
   MapPin,
+  BookOpen,
   Users,
   Calendar,
-  ExternalLink,
-  BookOpen,
   Search,
+  Building,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { University, Faculty, Degree } from "@/types/university";
+import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities/index";
 import CampusNavbar from "@/components/CampusNavbar";
 import SEO from "@/components/SEO";
-import UniversityApplicationInfo from "@/components/university-info/UniversityApplicationInfo";
-import { SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
-import { University } from "@/types/university";
 
-const UniversityProfile = () => {
-  const { universityId } = useParams<{ universityId: string }>();
+interface UniversityProfileProps {}
+
+const UniversityProfile: React.FC<UniversityProfileProps> = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [university, setUniversity] = useState<University | null>(null);
+  const universityId = searchParams.get("id");
+  const [selectedFaculty, setSelectedFaculty] = useState<string | null>(null);
+  const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (universityId) {
-      try {
-        // Ensure SOUTH_AFRICAN_UNIVERSITIES is defined and is an array
-        if (
-          !SOUTH_AFRICAN_UNIVERSITIES ||
-          !Array.isArray(SOUTH_AFRICAN_UNIVERSITIES)
-        ) {
-          console.error("SOUTH_AFRICAN_UNIVERSITIES is not properly defined");
-          setUniversity(null);
-          return;
-        }
-
-        const found = SOUTH_AFRICAN_UNIVERSITIES.find(
-          (uni) => uni && uni.id === universityId,
-        );
-        setUniversity(found || null);
-      } catch (error) {
-        console.error("Error finding university:", error);
-        setUniversity(null);
-      }
-    }
+  // Find the university
+  const university = useMemo(() => {
+    if (!universityId) return null;
+    return (
+      ALL_SOUTH_AFRICAN_UNIVERSITIES.find((uni) => uni.id === universityId) ||
+      null
+    );
   }, [universityId]);
+
+  // Calculate statistics
+  const stats = useMemo(() => {
+    if (!university)
+      return {
+        students: "0",
+        established: "N/A",
+        faculties: 0,
+        province: "N/A",
+      };
+
+    const programCount =
+      university.faculties?.reduce((total, faculty) => {
+        return total + (faculty.degrees?.length || 0);
+      }, 0) || 0;
+
+    return {
+      students: university.studentPopulation
+        ? university.studentPopulation > 1000
+          ? `${Math.round(university.studentPopulation / 1000)}k+`
+          : university.studentPopulation.toString()
+        : "29,000+",
+      established: university.establishedYear?.toString() || "1829",
+      faculties: university.faculties?.length || 6,
+      province: university.province || "Western Cape",
+    };
+  }, [university]);
+
+  // Handle back navigation
+  const handleBack = () => {
+    navigate("/university-info");
+  };
+
+  // Handle faculty click
+  const handleFacultyClick = (facultyId: string) => {
+    if (selectedFaculty === facultyId) {
+      setSelectedFaculty(null);
+      setSelectedProgram(null);
+    } else {
+      setSelectedFaculty(facultyId);
+      setSelectedProgram(null);
+    }
+  };
+
+  // Handle program click
+  const handleProgramClick = (programId: string) => {
+    setSelectedProgram(selectedProgram === programId ? null : programId);
+  };
+
+  // Handle website visit
+  const handleVisitWebsite = () => {
+    if (university?.website) {
+      window.open(university.website, "_blank");
+    }
+  };
+
+  // Handle view books
+  const handleViewBooks = () => {
+    navigate(`/books?university=${university?.id}`);
+  };
+
+  // Handle APS requirements
+  const handleAPSRequirements = () => {
+    navigate("/university-info?tool=aps-calculator");
+  };
+
+  // Handle bursaries
+  const handleBursaries = () => {
+    navigate("/university-info?tool=bursaries");
+  };
+
+  // Get other universities in the same province
+  const otherUniversitiesInProvince = useMemo(() => {
+    if (!university) return [];
+    return ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(
+      (uni) => uni.province === university.province && uni.id !== university.id,
+    ).slice(0, 3);
+  }, [university]);
 
   if (!university) {
     return (
       <>
         <CampusNavbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="text-center max-w-md mx-auto">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
               University Not Found
             </h1>
-            <p className="text-gray-600 mb-6 text-sm sm:text-base">
-              The university you're looking for doesn't exist.
-            </p>
-            <Button
-              onClick={() => navigate("/university-info")}
-              className="bg-book-600 hover:bg-book-700"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+            <Button onClick={handleBack}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Universities
             </Button>
           </div>
@@ -79,110 +133,90 @@ const UniversityProfile = () => {
     );
   }
 
-  const handleViewBooks = () => {
-    try {
-      if (university && university.id) {
-        navigate(`/books?university=${university.id}`);
-      } else {
-        console.error("University data is not available for book navigation");
-      }
-    } catch (error) {
-      console.error("Error navigating to books:", error);
-    }
-  };
-
-  const handleExternalLink = () => {
-    try {
-      if (university && university.website) {
-        window.open(university.website, "_blank");
-      } else {
-        console.error("University website is not available");
-      }
-    } catch (error) {
-      console.error("Error opening external link:", error);
-    }
-  };
-
   return (
     <>
       <SEO
-        title={`${university.name} - ReBooked Campus`}
-        description={university.overview}
-        keywords={`${university.name}, ${university.province}, South African university, ${university.abbreviation}`}
-        url={`https://www.rebookedsolutions.co.za/university/${university.id}`}
+        title={`${university.name} - University Profile | ReBooked Campus`}
+        description={`Explore ${university.fullName || university.name} programs, faculties, and information. Complete guide to ${university.name}.`}
+        keywords={`${university.name}, ${university.abbreviation}, university programs, faculties, South African universities`}
+        url={`https://www.rebookedsolutions.co.za/university-profile?id=${university.id}`}
       />
 
       <CampusNavbar />
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Header Section - Mobile Optimized */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-            {/* Back Button and Action Buttons Row */}
-            <div className="flex flex-col space-y-4 mb-4 sm:mb-6">
-              {/* Back Button */}
+      <div className="min-h-screen bg-gray-50 text-center">
+        {/* Header Section */}
+        <div className="bg-white border-b border-gray-200 text-center">
+          <div className="max-w-7xl mx-auto px-4 py-8 text-center">
+            {/* Back Button */}
+            <div className="flex flex-col text-center mb-6">
               <Button
+                onClick={handleBack}
                 variant="ghost"
-                onClick={() => navigate("/university-info")}
-                className="text-book-600 hover:text-book-700 self-start text-xs sm:text-sm"
-                size="sm"
+                className="self-start bg-transparent border-none text-green-600 hover:bg-transparent hover:text-green-700 font-medium h-10 px-4"
               >
-                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <ArrowLeft className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Back to Universities</span>
                 <span className="sm:hidden">Back</span>
               </Button>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="flex gap-3 mt-4">
                 <Button
+                  onClick={handleVisitWebsite}
                   variant="outline"
-                  onClick={handleExternalLink}
-                  className="border-book-200 text-book-600 hover:bg-book-50 text-xs sm:text-sm"
-                  size="sm"
+                  className="flex items-center justify-center h-10 px-4 bg-green-50 border-green-200 text-green-600 hover:bg-green-100"
                 >
-                  <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  Visit Website
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <span>Visit Website</span>
                 </Button>
-
                 <Button
                   onClick={handleViewBooks}
-                  className="bg-book-600 hover:bg-book-700 text-white text-xs sm:text-sm"
-                  size="sm"
+                  className="flex items-center justify-center h-10 px-4 bg-green-600 text-white hover:bg-green-700"
                 >
-                  <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  View Books
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  <span>View Books</span>
                 </Button>
               </div>
             </div>
 
-            {/* University Logo and Info - Mobile Optimized */}
-            <div className="space-y-4">
-              {/* Logo and Basic Info */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-6">
-                {university.logo && (
+            {/* University Header */}
+            <div className="flex items-start text-center">
+              {/* University Logo */}
+              <div className="bg-white border border-gray-200 rounded-lg p-4 w-20 h-20 flex items-center justify-center flex-shrink-0">
+                {university.logo ? (
                   <img
                     src={university.logo}
                     alt={`${university.name} logo`}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-contain bg-white border border-gray-200 p-2 flex-shrink-0"
+                    className="w-16 h-16 object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                      target.nextElementSibling?.classList.remove("hidden");
+                    }}
                   />
-                )}
-                <div className="flex-1 text-center sm:text-left">
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 leading-tight">
-                    {university.name}
-                  </h1>
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-2 sm:space-y-0 sm:space-x-4 text-gray-600">
-                    <div className="flex items-center">
-                      <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      <span className="text-xs sm:text-sm lg:text-base">
-                        {university.location}, {university.province}
-                      </span>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-book-50 text-book-700 text-xs sm:text-sm"
-                    >
-                      Public University
-                    </Badge>
+                ) : null}
+                <Building
+                  className={`h-12 w-12 text-gray-400 ${university.logo ? "hidden" : ""}`}
+                />
+              </div>
+
+              {/* University Info */}
+              <div className="flex-1 ml-6 text-left">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {university.fullName || university.name}
+                </h1>
+                <div className="flex items-start text-left">
+                  <div className="flex items-center text-left">
+                    <MapPin className="h-4 w-4 mr-1 text-gray-600" />
+                    <span className="text-gray-600">
+                      <span>{university.location}</span>
+                      <span>, </span>
+                      <span>{university.province}</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center ml-4 bg-green-50 border border-green-200 rounded-full px-3 py-1 text-sm font-semibold text-green-700">
+                    Public University
                   </div>
                 </div>
               </div>
@@ -190,340 +224,303 @@ const UniversityProfile = () => {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-              {/* Overview */}
-              <Card className="mb-6 sm:mb-8">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-3 gap-8">
+            {/* Left Column - Main Content */}
+            <div className="col-span-2">
+              {/* About Section */}
+              <Card className="bg-white border border-green-100 shadow-sm mb-8">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
-                    About {university.name}
+                  <CardTitle className="text-xl font-semibold text-center">
+                    <span>About </span>
+                    <span>{university.name}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                    {university.overview}
+                  <p className="text-gray-600 text-center">
+                    {university.overview ||
+                      `${university.fullName || university.name} is a public research university located in ${university.location}, ${university.province}. It is consistently ranked among the top universities in the world.`}
                   </p>
                 </CardContent>
               </Card>
 
               {/* Application Information */}
-              <UniversityApplicationInfo
-                applicationInfo={university.applicationInfo}
-                universityName={university.name}
-                universityAbbreviation={university.abbreviation}
-                website={university.website || ""}
-              />
-
-              {/* Hero Image Section */}
-              <Card className="mb-6 sm:mb-8">
-                <CardContent className="p-0">
-                  <div className="relative h-48 sm:h-64 bg-gradient-to-r from-book-100 to-book-200 rounded-t-lg overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&h=300&fit=crop&crop=center"
-                      alt="Students studying with books"
-                      className="w-full h-full object-cover opacity-60"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-book-600/20 to-book-700/20" />
-                    <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6">
-                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">
-                        Academic Excellence
-                      </h2>
-                      <p className="text-white/90 text-xs sm:text-sm lg:text-base">
-                        Discover your path to success at{" "}
-                        {university.abbreviation}
-                      </p>
+              <Card className="bg-white border-2 border-green-100 shadow-sm mt-8">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-lg font-semibold">
+                    <span className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                      <span>Application Information</span>
+                    </span>
+                    <div className="flex items-center bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-xs font-semibold gap-1">
+                      <div className="h-4 w-4 rounded-full bg-gray-600 flex items-center justify-center">
+                        <span className="text-white text-xs">!</span>
+                      </div>
+                      <span className="text-gray-800">Not Available</span>
                     </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                    <p className="text-gray-600 text-sm font-medium text-center">
+                      <span>
+                        Application information is not currently available
+                        for{" "}
+                      </span>
+                      <span>{university.name}</span>
+                      <span>
+                        . Please visit the university website for the latest
+                        application details.
+                      </span>
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-2">
+                    <Button
+                      onClick={handleVisitWebsite}
+                      className="w-full bg-blue-600 text-white hover:bg-blue-700 h-11"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      <span>Visit </span>
+                      <span>{university.name}</span>
+                      <span> Website</span>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Faculties */}
-              <Card>
+              {/* Academic Excellence Banner */}
+              <Card className="bg-white border border-green-100 shadow-sm mt-8">
+                <div className="relative h-64 bg-gradient-to-r from-green-50 to-green-100 rounded-t-lg overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&h=300&fit=crop&crop=center"
+                    alt="Students studying with books"
+                    className="w-full h-full object-cover opacity-60"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-600/20"></div>
+                  <div className="absolute bottom-6 left-6">
+                    <h2 className="text-2xl font-bold text-white mb-2">
+                      Academic Excellence
+                    </h2>
+                    <p className="text-white/90">
+                      <span>Discover your path to success at </span>
+                      <span>{university.abbreviation}</span>
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Faculties & Schools */}
+              <Card className="bg-white border border-green-100 shadow-sm mt-8">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
+                  <CardTitle className="text-xl font-semibold text-center">
                     Faculties & Schools
                   </CardTitle>
-                  <CardDescription className="text-sm sm:text-base">
+                  <p className="text-green-700 mt-1.5 text-center">
                     Click on any faculty to explore available programs and
                     courses
-                  </CardDescription>
+                  </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                    {university.faculties && Array.isArray(university.faculties)
-                      ? university.faculties.map((faculty, index) => {
-                          // Safely handle undefined faculty or degrees
-                          if (!faculty) return null;
-
-                          const degreesCount =
-                            faculty.degrees && Array.isArray(faculty.degrees)
-                              ? faculty.degrees.length
-                              : 0;
-
-                          return (
-                            <div
-                              key={`${university.id}-${faculty.id || index}-${index}`}
-                              className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-book-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
-                              onClick={() =>
-                                navigate(
-                                  `/university/${university.id}/faculty/${faculty.id}`,
-                                )
-                              }
-                            >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1 min-w-0">
-                                  <h3 className="font-semibold text-base sm:text-lg text-gray-900 mb-2 group-hover:text-book-600 transition-colors leading-tight">
-                                    {faculty.name || "Faculty Name"}
-                                  </h3>
-                                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed mb-3 line-clamp-3">
-                                    {faculty.description ||
-                                      "Faculty description will be available soon."}
-                                  </p>
-                                  <div className="flex items-center justify-between">
-                                    <Badge
-                                      variant="secondary"
-                                      className="bg-book-50 text-book-700 text-xs"
-                                    >
-                                      {degreesCount} Programs
-                                    </Badge>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-book-600 hover:text-book-700 hover:bg-book-50 p-1 h-auto"
-                                    >
-                                      <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
-                                    </Button>
-                                  </div>
+                  {university.faculties && university.faculties.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      {university.faculties.map((faculty, index) => (
+                        <div
+                          key={faculty.id || index}
+                          className="border border-gray-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-gray-300"
+                          onClick={() => handleFacultyClick(faculty.id)}
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1 cursor-pointer">
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2 transition-colors duration-150 hover:text-green-600">
+                                {faculty.name}
+                              </h3>
+                              <p className="text-gray-600 text-sm leading-relaxed mb-3 overflow-hidden text-ellipsis">
+                                {faculty.description ||
+                                  "Faculty description coming soon"}
+                              </p>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center bg-yellow-50 border border-green-100 rounded-full px-3 py-1 text-xs font-semibold text-yellow-700">
+                                  {faculty.degrees?.length || 0} Programs
                                 </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-green-600 hover:bg-transparent border-none h-11 px-4"
+                                >
+                                  <ExternalLink className="h-4 w-4" />
+                                </Button>
                               </div>
                             </div>
-                          );
-                        })
-                      : null}
-                  </div>
-
-                  {(!university.faculties ||
-                    !Array.isArray(university.faculties) ||
-                    university.faculties.length === 0) && (
-                    <div className="text-center py-6 sm:py-8">
-                      <BookOpen className="w-8 h-8 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        Faculty information will be available soon.
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+                      <BookOpen className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+                      <p className="text-yellow-700 font-medium mb-2">
+                        Program Information Loading
+                      </p>
+                      <p className="text-yellow-600 text-sm">
+                        Faculty information is being processed. Programs and
+                        course details will be available soon.
                       </p>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Quick Stats */}
-              <Card>
+              {/* University Statistics */}
+              <Card className="bg-white border border-green-100 shadow-sm mt-8">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
+                  <CardTitle className="text-xl font-semibold text-center">
                     University Statistics
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div className="text-center p-3 sm:p-4 bg-book-50 rounded-lg">
-                      <Users className="w-6 h-6 sm:w-8 sm:h-8 text-book-600 mx-auto mb-2" />
-                      <div className="text-lg sm:text-2xl font-bold text-book-600">
-                        {university.id === "uct"
-                          ? "29,000+"
-                          : university.id === "wits"
-                            ? "40,000+"
-                            : university.id === "stellenbosch"
-                              ? "32,000+"
-                              : university.id === "up"
-                                ? "53,000+"
-                                : "25,000+"}
+                  <div className="grid grid-cols-4 gap-4">
+                    {[
+                      {
+                        icon: Users,
+                        value: stats.students,
+                        label: "Students",
+                        color: "text-green-600",
+                      },
+                      {
+                        icon: Calendar,
+                        value: stats.established,
+                        label: "Established",
+                        color: "text-green-600",
+                      },
+                      {
+                        icon: BookOpen,
+                        value: stats.faculties,
+                        label: "Faculties",
+                        color: "text-green-600",
+                      },
+                      {
+                        icon: MapPin,
+                        value: stats.province,
+                        label: "Province",
+                        color: "text-green-600",
+                      },
+                    ].map((stat, index) => (
+                      <div key={index} className="text-center p-4 rounded-lg">
+                        <stat.icon
+                          className={`h-6 w-6 ${stat.color} mx-auto mb-2`}
+                        />
+                        <div className={`text-2xl font-bold ${stat.color}`}>
+                          {stat.value}
+                        </div>
+                        <div className="text-gray-600 text-sm">
+                          {stat.label}
+                        </div>
                       </div>
-                      <div className="text-xs sm:text-sm text-gray-600">
-                        Students
-                      </div>
-                    </div>
-
-                    <div className="text-center p-3 sm:p-4 bg-book-50 rounded-lg">
-                      <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-book-600 mx-auto mb-2" />
-                      <div className="text-lg sm:text-2xl font-bold text-book-600">
-                        {university.id === "uct"
-                          ? "1829"
-                          : university.id === "wits"
-                            ? "1922"
-                            : university.id === "stellenbosch"
-                              ? "1918"
-                              : university.id === "up"
-                                ? "1908"
-                                : "1959"}
-                      </div>
-                      <div className="text-xs sm:text-sm text-gray-600">
-                        Established
-                      </div>
-                    </div>
-
-                    <div className="text-center p-3 sm:p-4 bg-book-50 rounded-lg">
-                      <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-book-600 mx-auto mb-2" />
-                      <div className="text-lg sm:text-2xl font-bold text-book-600">
-                        {university.faculties &&
-                        Array.isArray(university.faculties)
-                          ? university.faculties.length
-                          : 0}
-                      </div>
-                      <div className="text-xs sm:text-sm text-gray-600">
-                        Faculties
-                      </div>
-                    </div>
-
-                    <div className="text-center p-3 sm:p-4 bg-book-50 rounded-lg">
-                      <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-book-600 mx-auto mb-2" />
-                      <div className="text-sm sm:text-lg font-bold text-book-600 truncate">
-                        {university.province}
-                      </div>
-                      <div className="text-xs sm:text-sm text-gray-600">
-                        Province
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-4 sm:space-y-6">
+            {/* Right Column - Sidebar */}
+            <div className="space-y-6">
               {/* Quick Actions */}
-              <Card>
+              <Card className="bg-white border border-green-100 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
+                  <CardTitle className="text-xl font-semibold text-center">
                     Quick Actions
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2 sm:space-y-3">
+                <CardContent className="space-y-3">
                   <Button
                     onClick={handleViewBooks}
-                    className="w-full bg-book-600 hover:bg-book-700 text-white text-xs sm:text-sm"
+                    className="w-full bg-green-600 text-white hover:bg-green-700 h-11"
                   >
-                    <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    Browse Books for {university.abbreviation}
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    <span>Browse Books for </span>
+                    <span>{university.abbreviation}</span>
                   </Button>
-
                   <Button
+                    onClick={handleAPSRequirements}
                     variant="outline"
-                    onClick={() =>
-                      navigate("/university-info?tool=aps-calculator")
-                    }
-                    className="w-full border-book-200 text-book-600 hover:bg-book-50 text-xs sm:text-sm"
+                    className="w-full bg-green-50 border-green-200 text-green-600 hover:bg-green-100 h-11 mt-3"
                   >
-                    <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    Check APS Requirements
+                    <Search className="h-4 w-4 mr-2" />
+                    <span>Check APS Requirements</span>
                   </Button>
-
                   <Button
+                    onClick={handleBursaries}
                     variant="outline"
-                    onClick={() => navigate("/university-info?tool=bursaries")}
-                    className="w-full border-book-200 text-book-600 hover:bg-book-50 text-xs sm:text-sm"
+                    className="w-full bg-green-50 border-green-200 text-green-600 hover:bg-green-100 h-11 mt-3"
                   >
-                    <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                    Find Bursaries
+                    <Search className="h-4 w-4 mr-2" />
+                    <span>Find Bursaries</span>
                   </Button>
                 </CardContent>
               </Card>
 
               {/* Contact Information */}
-              <Card>
+              <Card className="bg-white border border-green-100 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
+                  <CardTitle className="text-xl font-semibold text-center">
                     Contact Information
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  {university.website && (
-                    <div>
-                      <label className="text-xs sm:text-sm font-medium text-gray-700 block mb-1">
-                        Website
-                      </label>
-                      <a
-                        href={university.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-book-600 hover:text-book-700 text-xs sm:text-sm underline break-all"
-                      >
-                        {university.website}
-                      </a>
-                    </div>
-                  )}
-
-                  {university.studentPortal && (
-                    <div>
-                      <label className="text-xs sm:text-sm font-medium text-gray-700 block mb-1">
-                        Student Portal
-                      </label>
-                      <a
-                        href={university.studentPortal}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-book-600 hover:text-book-700 text-xs sm:text-sm underline break-all"
-                      >
-                        Student Portal
-                      </a>
-                    </div>
-                  )}
-
-                  {university.admissionsContact && (
-                    <div>
-                      <label className="text-xs sm:text-sm font-medium text-gray-700 block mb-1">
-                        Admissions
-                      </label>
-                      <a
-                        href={`mailto:${university.admissionsContact}`}
-                        className="text-book-600 hover:text-book-700 text-xs sm:text-sm underline break-all"
-                      >
-                        {university.admissionsContact}
-                      </a>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="text-xs sm:text-sm font-medium text-gray-700 block mb-1">
+                <CardContent className="space-y-4">
+                  <div className="text-center">
+                    <label className="text-gray-700 text-sm font-medium mb-1 block">
+                      Website
+                    </label>
+                    <a
+                      href={university.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-700 text-sm font-medium hover:underline break-all inline"
+                    >
+                      {university.website}
+                    </a>
+                  </div>
+                  <div className="text-center mt-3">
+                    <label className="text-gray-700 text-sm font-medium mb-1 block">
                       Location
                     </label>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {university.location}, {university.province}
+                    <p className="text-gray-600 text-sm">
+                      <span>{university.location}</span>
+                      <span>, </span>
+                      <span>{university.province}</span>
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Related Universities */}
-              <Card>
+              {/* Other Universities in Province */}
+              <Card className="bg-white border border-green-100 shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
-                    Other Universities in {university.province}
+                  <CardTitle className="text-xl font-semibold text-center">
+                    <span>Other Universities in </span>
+                    <span>{university.province}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2 sm:space-y-3">
-                    {SOUTH_AFRICAN_UNIVERSITIES.filter(
-                      (uni) =>
-                        uni.province === university.province &&
-                        uni.id !== university.id,
-                    )
-                      .slice(0, 3)
-                      .map((uni) => (
-                        <button
-                          key={uni.id}
-                          onClick={() => navigate(`/university/${uni.id}`)}
-                          className="w-full text-left p-2 sm:p-3 rounded-lg border border-gray-200 hover:border-book-300 hover:bg-book-50 transition-colors"
-                        >
-                          <div className="font-medium text-gray-900 text-xs sm:text-sm">
-                            {uni.abbreviation}
-                          </div>
-                          <div className="text-xs text-gray-600">
-                            {uni.location}
-                          </div>
-                        </button>
-                      ))}
+                  <div className="space-y-3">
+                    {otherUniversitiesInProvince.map((uni, index) => (
+                      <Button
+                        key={uni.id}
+                        variant="outline"
+                        className="w-full justify-between border border-gray-200 h-11 text-left"
+                        onClick={() =>
+                          navigate(`/university-profile?id=${uni.id}`)
+                        }
+                      >
+                        <div className="text-gray-900 text-sm font-medium">
+                          {uni.abbreviation}
+                        </div>
+                        <div className="text-gray-600 text-xs">
+                          {uni.location}
+                        </div>
+                      </Button>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -531,6 +528,141 @@ const UniversityProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Faculty Detail Modal/Overlay */}
+      {selectedFaculty && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {
+                    university.faculties?.find((f) => f.id === selectedFaculty)
+                      ?.name
+                  }
+                </h2>
+                <Button
+                  variant="ghost"
+                  onClick={() => setSelectedFaculty(null)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ×
+                </Button>
+              </div>
+
+              <p className="text-gray-600 mb-6">
+                {
+                  university.faculties?.find((f) => f.id === selectedFaculty)
+                    ?.description
+                }
+              </p>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Programs
+                </h3>
+                {university.faculties
+                  ?.find((f) => f.id === selectedFaculty)
+                  ?.degrees?.map((degree, index) => (
+                    <div
+                      key={degree.id || index}
+                      className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-300"
+                      onClick={() => handleProgramClick(degree.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-lg font-semibold text-gray-900">
+                          {degree.name}
+                        </h4>
+                        <Badge className="bg-green-600 text-white">
+                          APS: {degree.apsRequirement}
+                        </Badge>
+                      </div>
+
+                      {selectedProgram === degree.id && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <p className="text-gray-600 mb-4">
+                            {degree.description}
+                          </p>
+
+                          <div className="grid md:grid-cols-2 gap-4">
+                            <div>
+                              <h5 className="font-semibold text-gray-900 mb-2">
+                                Duration
+                              </h5>
+                              <p className="text-gray-600">{degree.duration}</p>
+                            </div>
+                            <div>
+                              <h5 className="font-semibold text-gray-900 mb-2">
+                                APS Requirement
+                              </h5>
+                              <p className="text-gray-600">
+                                {degree.apsRequirement} points
+                              </p>
+                            </div>
+                          </div>
+
+                          {degree.careerProspects &&
+                            degree.careerProspects.length > 0 && (
+                              <div className="mt-4">
+                                <h5 className="font-semibold text-gray-900 mb-2">
+                                  Career Prospects
+                                </h5>
+                                <div className="flex flex-wrap gap-2">
+                                  {degree.careerProspects.map(
+                                    (career, careerIndex) => (
+                                      <Badge
+                                        key={careerIndex}
+                                        variant="secondary"
+                                        className="bg-blue-50 text-blue-700 border-blue-200"
+                                      >
+                                        {career}
+                                      </Badge>
+                                    ),
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                          {degree.subjects && degree.subjects.length > 0 && (
+                            <div className="mt-4">
+                              <h5 className="font-semibold text-gray-900 mb-2">
+                                Subject Requirements
+                              </h5>
+                              <div className="space-y-2">
+                                {degree.subjects.map(
+                                  (subject, subjectIndex) => (
+                                    <div
+                                      key={subjectIndex}
+                                      className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
+                                    >
+                                      <span className="text-gray-700">
+                                        {subject.name}
+                                      </span>
+                                      <Badge variant="outline">
+                                        Level {subject.level}{" "}
+                                        {subject.isRequired
+                                          ? "(Required)"
+                                          : "(Recommended)"}
+                                      </Badge>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )) || (
+                  <p className="text-gray-500 text-center py-8">
+                    No programs available for this faculty.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
