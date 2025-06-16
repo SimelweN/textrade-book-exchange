@@ -696,7 +696,11 @@ const ModernAPSCalculator: React.FC = () => {
                             </span>
                           </div>
                           <Progress
-                            value={(totalAPS / 42) * 100}
+                            value={
+                              isNaN(totalAPS) || totalAPS === 0
+                                ? 0
+                                : Math.min(100, (totalAPS / 42) * 100)
+                            }
                             className="h-3"
                           />
                         </div>
