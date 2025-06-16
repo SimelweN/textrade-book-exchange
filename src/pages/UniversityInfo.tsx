@@ -30,6 +30,7 @@ import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import UniversityDebug from "@/components/university-info/UniversityDebug";
 import ProgramAssignmentDebug from "@/components/university-info/ProgramAssignmentDebug";
+import UniversityProgramsTest from "@/components/university-info/UniversityProgramsTest";
 
 // Lazy load heavy components for better performance
 const APSCalculatorSection = lazy(
@@ -171,6 +172,7 @@ const UniversityInfo = () => {
         {/* Debug components - shows in development */}
         {import.meta.env.DEV && (
           <div className="container mx-auto px-4 py-6 space-y-4">
+            <UniversityProgramsTest />
             <UniversityDebug />
             <ProgramAssignmentDebug />
           </div>
@@ -340,6 +342,7 @@ const UniversityInfo = () => {
       {/* Debug components - shows in development */}
       {import.meta.env.DEV && (
         <div className="space-y-4">
+          <UniversityProgramsTest />
           <UniversityDebug />
           <ProgramAssignmentDebug />
         </div>
