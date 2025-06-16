@@ -276,8 +276,8 @@ const ModernUniversityProfile: React.FC = () => {
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-6 py-12">
           <Tabs defaultValue="overview" className="w-full">
-            {/* Tab Navigation */}
-            <TabsList className="bg-white border border-slate-200 shadow-sm mb-8 h-auto p-1">
+            {/* Tab Navigation - Mobile Optimized */}
+            <TabsList className="bg-white border border-slate-200 shadow-sm mb-6 sm:mb-8 h-auto p-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1">
               {[
                 { value: "overview", label: "Overview", icon: BarChart3 },
                 { value: "programs", label: "Programs", icon: GraduationCap },
@@ -289,10 +289,13 @@ const ModernUniversityProfile: React.FC = () => {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className="flex items-center gap-2 px-6 py-3 text-slate-600 data-[state=active]:bg-slate-900 data-[state=active]:text-white rounded-lg font-medium transition-all"
+                  className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 px-2 sm:px-4 lg:px-6 py-2 sm:py-3 text-slate-600 data-[state=active]:bg-slate-900 data-[state=active]:text-white rounded-lg font-medium transition-all text-xs sm:text-sm"
                 >
-                  <tab.icon className="h-4 w-4" />
-                  {tab.label}
+                  <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden text-xs">
+                    {tab.label.split(" ")[0]}
+                  </span>
                 </TabsTrigger>
               ))}
             </TabsList>
