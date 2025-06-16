@@ -39,7 +39,7 @@ import Cart from "./pages/Cart";
 import Report from "./pages/Report";
 import Shipping from "./pages/Shipping";
 import UniversityInfo from "./pages/UniversityInfo";
-import UniversityProfile from "./pages/UniversityProfile";
+import ModernUniversityProfile from "./pages/ModernUniversityProfile";
 import FacultyDetail from "./pages/FacultyDetail";
 import CourseDetail from "./pages/CourseDetail";
 import StudyResources from "./pages/StudyResources";
