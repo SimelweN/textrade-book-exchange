@@ -332,6 +332,27 @@ const UniversityInfo = () => {
                 <CampusBooksSection />
               </Suspense>
             </TabsContent>
+
+            <TabsContent value="accommodation" className="space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold mb-4">
+                  Student Accommodation
+                </h2>
+                <p className="text-gray-600 mb-8">
+                  Find housing options near your university
+                </p>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 max-w-2xl mx-auto">
+                  <Building className="h-12 w-12 mx-auto text-yellow-600 mb-4" />
+                  <h3 className="text-xl font-semibold text-yellow-800 mb-2">
+                    Coming Soon
+                  </h3>
+                  <p className="text-yellow-700">
+                    We're working on bringing you comprehensive accommodation
+                    listings and booking services.
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
       </div>
