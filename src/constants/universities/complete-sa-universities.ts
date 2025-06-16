@@ -23,6 +23,33 @@ const createBaseFaculty = (id: string, name: string, description: string) => ({
   degrees: [],
 });
 
+// Function to generate comprehensive faculties for a university
+const generateUniversityFaculties = (
+  universityId: string,
+  universityType: string,
+): Faculty[] => {
+  const programs = generateUniversityPrograms(universityId, universityType);
+  const facultyMap = new Map<string, Faculty>();
+
+  // Group programs by faculty
+  programs.forEach((program) => {
+    const facultyKey = program.faculty;
+
+    if (!facultyMap.has(facultyKey)) {
+      facultyMap.set(facultyKey, {
+        id: `${facultyKey.toLowerCase().replace(/\s+/g, "-")}`,
+        name: `Faculty of ${facultyKey}`,
+        description: `The Faculty of ${facultyKey} offers comprehensive academic programs and research opportunities in ${facultyKey.toLowerCase()}.`,
+        degrees: [],
+      });
+    }
+
+    facultyMap.get(facultyKey)!.degrees.push(program);
+  });
+
+  return Array.from(facultyMap.values());
+};
+
 // Helper function to create comprehensive degree programs
 const createDegree = (
   id: string,
