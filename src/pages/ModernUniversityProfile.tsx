@@ -390,18 +390,18 @@ const ModernUniversityProfile: React.FC = () => {
 
                 {/* Quick Actions */}
                 <Card className="bg-white border-0 shadow-lg">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-slate-900">
-                      <Target className="h-5 w-5 text-emerald-500" />
+                  <CardHeader className="pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center gap-2 text-slate-900 text-lg sm:text-xl">
+                      <Target className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
                       Quick Actions
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-2 sm:space-y-3">
                     <Button
                       onClick={handleViewBooks}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-12"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-10 sm:h-12 text-sm sm:text-base"
                     >
-                      <BookOpen className="h-4 w-4 mr-2" />
+                      <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Browse Textbooks
                     </Button>
                     <Button
@@ -409,9 +409,9 @@ const ModernUniversityProfile: React.FC = () => {
                         navigate("/university-info?tool=aps-calculator")
                       }
                       variant="outline"
-                      className="w-full h-12 border-slate-200 hover:bg-slate-50"
+                      className="w-full h-10 sm:h-12 border-slate-200 hover:bg-slate-50 text-sm sm:text-base"
                     >
-                      <BarChart3 className="h-4 w-4 mr-2" />
+                      <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Check APS Requirements
                     </Button>
                     <Button
@@ -419,9 +419,9 @@ const ModernUniversityProfile: React.FC = () => {
                         navigate("/university-info?tool=bursaries")
                       }
                       variant="outline"
-                      className="w-full h-12 border-slate-200 hover:bg-slate-50"
+                      className="w-full h-10 sm:h-12 border-slate-200 hover:bg-slate-50 text-sm sm:text-base"
                     >
-                      <CreditCard className="h-4 w-4 mr-2" />
+                      <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                       Find Bursaries
                     </Button>
                   </CardContent>
