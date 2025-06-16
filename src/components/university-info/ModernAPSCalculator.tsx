@@ -10,6 +10,9 @@ import {
   CheckCircle,
   AlertCircle,
   BookOpen,
+  Sparkles,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities/index";
 
@@ -41,6 +44,7 @@ const ModernAPSCalculator: React.FC = () => {
   ]);
 
   const [isCalculated, setIsCalculated] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
 
   // APS Calculation function
   const calculateAPS = (marks: number): number => {
@@ -114,7 +118,11 @@ const ModernAPSCalculator: React.FC = () => {
   }, [qualifyingPrograms]);
 
   const handleCalculate = () => {
-    setIsCalculated(true);
+    setShowAnimation(true);
+    setTimeout(() => {
+      setIsCalculated(true);
+      setShowAnimation(false);
+    }, 1500);
   };
 
   const handleReset = () => {
@@ -126,304 +134,417 @@ const ModernAPSCalculator: React.FC = () => {
       })),
     );
     setIsCalculated(false);
+    setShowAnimation(false);
   };
 
   // Check if calculation is valid
   const hasValidMarks = subjects.some((subject) => subject.marks > 0);
-  const hasEnglishAndMath = subjects[0].marks > 0 && subjects[1].marks > 0; // English and Math
+  const hasEnglishAndMath = subjects[0].marks > 0 && subjects[1].marks > 0;
+
+  const getAPSGrade = (aps: number) => {
+    if (aps >= 40)
+      return {
+        label: "Excellent",
+        color: "from-green-500 to-emerald-600",
+        textColor: "text-green-700",
+      };
+    if (aps >= 35)
+      return {
+        label: "Very Good",
+        color: "from-blue-500 to-blue-600",
+        textColor: "text-blue-700",
+      };
+    if (aps >= 30)
+      return {
+        label: "Good",
+        color: "from-yellow-500 to-yellow-600",
+        textColor: "text-yellow-700",
+      };
+    if (aps >= 25)
+      return {
+        label: "Average",
+        color: "from-orange-500 to-orange-600",
+        textColor: "text-orange-700",
+      };
+    return {
+      label: "Below Average",
+      color: "from-red-500 to-red-600",
+      textColor: "text-red-700",
+    };
+  };
+
+  const apsGrade = getAPSGrade(totalAPS);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
-          >
-            <Calculator
-              className="h-6 w-6"
-              style={{ color: "rgb(68, 171, 131)" }}
-            />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-green-50">
+      <div className="max-w-7xl mx-auto px-4 py-12 space-y-12">
+        {/* Header */}
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+            <div className="relative flex items-center justify-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Calculator className="h-8 w-8 text-white" />
+              </div>
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                APS Calculator
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">APS Calculator</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Calculate your Admission Point Score and discover your university
+            opportunities with our intelligent matching system
+          </p>
         </div>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Calculate your Admission Point Score (APS) and discover all the
-          university programs you qualify for
-        </p>
-      </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Calculator Section */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="pb-6">
-            <CardTitle className="text-xl font-semibold text-gray-900">
-              Enter Your Matric Marks
-            </CardTitle>
-            <p className="text-gray-600">
-              Enter your final matric percentage for each subject
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {subjects.map((subject, index) => (
-              <div key={index} className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  {subject.name}
-                  {index < 2 && <span className="text-red-500 ml-1">*</span>}
-                </label>
-                <div className="flex gap-3 items-center">
-                  <div className="flex-1">
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={subject.marks || ""}
-                      onChange={(e) =>
-                        updateSubjectMarks(index, parseInt(e.target.value) || 0)
-                      }
-                      placeholder="Enter percentage"
-                      className="text-lg"
-                    />
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Calculator Section */}
+          <div className="space-y-8">
+            <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-8 bg-gradient-to-r from-gray-50 to-white rounded-t-2xl">
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                  <Target className="h-6 w-6 text-green-600" />
+                  Enter Your Matric Results
+                </CardTitle>
+                <p className="text-gray-600 text-lg">
+                  Input your final matric percentage for each subject
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6 p-8">
+                {subjects.map((subject, index) => (
+                  <div key={index} className="group">
+                    <label className="text-sm font-semibold text-gray-700 mb-3 block">
+                      {subject.name}
+                      {index < 2 && (
+                        <span className="text-red-500 ml-2">*Required</span>
+                      )}
+                    </label>
+                    <div className="flex gap-4 items-center">
+                      <div className="flex-1 relative">
+                        <Input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={subject.marks || ""}
+                          onChange={(e) =>
+                            updateSubjectMarks(
+                              index,
+                              parseInt(e.target.value) || 0,
+                            )
+                          }
+                          placeholder="Enter %"
+                          className="text-lg h-14 border-2 border-gray-200 focus:border-green-400 rounded-xl transition-all duration-300 group-hover:border-gray-300"
+                        />
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                          %
+                        </div>
+                      </div>
+                      <div className="text-center min-w-[100px]">
+                        <div className="text-xs text-gray-500 mb-2 font-medium">
+                          APS Points
+                        </div>
+                        <div
+                          className={`w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white shadow-lg transition-all duration-300 ${
+                            subject.points > 0
+                              ? "bg-gradient-to-r from-green-400 to-green-600 shadow-green-200"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {subject.points}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-center min-w-[80px]">
-                    <div className="text-sm text-gray-500 mb-1">APS Points</div>
-                    <Badge
-                      variant="outline"
-                      className={`text-lg font-bold px-3 py-1 ${
-                        subject.points > 0
-                          ? "border-green-300 bg-green-50 text-green-700"
-                          : "border-gray-300 bg-gray-50 text-gray-500"
-                      }`}
+                ))}
+
+                {/* Total APS Display */}
+                <div className="mt-10 p-8 bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-gray-100">
+                  <div className="text-center space-y-4">
+                    <div className="text-lg font-semibold text-gray-700">
+                      Your Total APS Score
+                    </div>
+                    <div className="relative">
+                      <div
+                        className={`w-32 h-32 mx-auto rounded-3xl flex items-center justify-center text-4xl font-bold text-white shadow-2xl bg-gradient-to-r ${apsGrade.color} transition-all duration-500`}
+                      >
+                        {showAnimation ? (
+                          <div className="animate-spin">
+                            <Sparkles className="h-12 w-12" />
+                          </div>
+                        ) : (
+                          totalAPS
+                        )}
+                      </div>
+                      {totalAPS > 0 && !showAnimation && (
+                        <div
+                          className={`mt-3 text-sm font-medium ${apsGrade.textColor}`}
+                        >
+                          {apsGrade.label}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-4 mt-8">
+                    <Button
+                      onClick={handleCalculate}
+                      disabled={
+                        !hasValidMarks || !hasEnglishAndMath || showAnimation
+                      }
+                      className="flex-1 h-14 text-lg font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400"
                     >
-                      {subject.points}
+                      {showAnimation ? (
+                        <>
+                          <div className="animate-spin mr-3">
+                            <Calculator className="h-5 w-5" />
+                          </div>
+                          Calculating...
+                        </>
+                      ) : (
+                        <>
+                          <Calculator className="h-5 w-5 mr-3" />
+                          Find My Programs
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleReset}
+                      className="px-8 h-14 border-2 border-gray-300 hover:border-gray-400 font-semibold"
+                    >
+                      Reset
+                    </Button>
+                  </div>
+
+                  {/* Validation Messages */}
+                  {!hasEnglishAndMath && hasValidMarks && (
+                    <div className="mt-6 p-4 bg-amber-50 border-2 border-amber-200 rounded-xl flex items-center gap-3">
+                      <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+                      <span className="text-sm text-amber-700 font-medium">
+                        English and Mathematics marks are required for accurate
+                        results
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Results Section */}
+          <div className="space-y-8">
+            <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm min-h-[600px]">
+              <CardHeader className="pb-8 bg-gradient-to-r from-blue-50 to-green-50 rounded-t-2xl">
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                  <GraduationCap className="h-6 w-6 text-blue-600" />
+                  Your Qualifying Programs
+                </CardTitle>
+                {isCalculated && (
+                  <div className="flex items-center gap-4">
+                    <p className="text-gray-600 text-lg">
+                      Based on APS {totalAPS}:{" "}
+                      <span className="font-semibold text-green-600">
+                        {qualifyingPrograms.length} programs available
+                      </span>
+                    </p>
+                    <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1">
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Qualified
                     </Badge>
                   </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Total APS Display */}
-            <div className="pt-6 border-t border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-semibold text-gray-900">
-                  Total APS Score
-                </span>
-                <div
-                  className="text-3xl font-bold px-4 py-2 rounded-lg"
-                  style={{
-                    backgroundColor:
-                      totalAPS > 0
-                        ? "rgba(68, 171, 131, 0.1)"
-                        : "rgba(156, 163, 175, 0.1)",
-                    color:
-                      totalAPS > 0 ? "rgb(68, 171, 131)" : "rgb(107, 114, 128)",
-                  }}
-                >
-                  {totalAPS}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleCalculate}
-                  disabled={!hasValidMarks || !hasEnglishAndMath}
-                  className="flex-1 text-white transition-colors"
-                  style={{
-                    backgroundColor:
-                      hasValidMarks && hasEnglishAndMath
-                        ? "rgb(68, 171, 131)"
-                        : undefined,
-                    borderColor:
-                      hasValidMarks && hasEnglishAndMath
-                        ? "rgb(68, 171, 131)"
-                        : undefined,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (hasValidMarks && hasEnglishAndMath) {
-                      e.currentTarget.style.backgroundColor =
-                        "rgb(56, 142, 108)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (hasValidMarks && hasEnglishAndMath) {
-                      e.currentTarget.style.backgroundColor =
-                        "rgb(68, 171, 131)";
-                    }
-                  }}
-                >
-                  <Calculator className="h-4 w-4 mr-2" />
-                  Calculate Programs
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleReset}
-                  className="px-6"
-                >
-                  Reset
-                </Button>
-              </div>
-
-              {/* Validation Messages */}
-              {!hasEnglishAndMath && hasValidMarks && (
-                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm text-amber-700">
-                    English and Mathematics marks are required
-                  </span>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Results Section */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="pb-6">
-            <CardTitle className="flex items-center gap-2 text-xl font-semibold text-gray-900">
-              <GraduationCap className="h-5 w-5" />
-              Qualifying Programs
-            </CardTitle>
-            {isCalculated && (
-              <p className="text-gray-600">
-                Based on your APS score of {totalAPS}, you qualify for{" "}
-                {qualifyingPrograms.length} programs
-              </p>
-            )}
-          </CardHeader>
-          <CardContent>
-            {!isCalculated ? (
-              <div className="text-center py-12">
-                <Calculator className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">
-                  Ready to Calculate
-                </h3>
-                <p className="text-gray-500">
-                  Enter your marks and click "Calculate Programs" to see which
-                  programs you qualify for
-                </p>
-              </div>
-            ) : qualifyingPrograms.length === 0 ? (
-              <div className="text-center py-12">
-                <AlertCircle className="h-16 w-16 mx-auto text-amber-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-700 mb-2">
-                  No Programs Found
-                </h3>
-                <p className="text-gray-500">
-                  No programs match your current APS score. Try improving your
-                  marks or check other universities.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-6 max-h-96 overflow-y-auto">
-                {Object.entries(programsByFaculty).map(
-                  ([faculty, programs]) => (
-                    <div key={faculty} className="space-y-3">
-                      <div className="flex items-center gap-2 sticky top-0 bg-white py-2">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center"
-                          style={{ backgroundColor: "rgba(68, 171, 131, 0.1)" }}
-                        >
-                          <BookOpen
-                            className="h-4 w-4"
-                            style={{ color: "rgb(68, 171, 131)" }}
-                          />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {faculty}
-                        </h3>
-                        <Badge variant="secondary" className="ml-auto">
-                          {programs.length} programs
-                        </Badge>
-                      </div>
-
-                      <div className="space-y-2 pl-10">
-                        {programs.slice(0, 10).map((program, index) => (
-                          <div
-                            key={index}
-                            className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-gray-900 truncate">
-                                  {program.programName}
-                                </h4>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span
-                                    className="text-sm font-medium"
-                                    style={{ color: "rgb(68, 171, 131)" }}
-                                  >
-                                    {program.universityAbbr}
-                                  </span>
-                                  <span className="text-sm text-gray-500">
-                                    •
-                                  </span>
-                                  <span className="text-sm text-gray-600">
-                                    {program.duration}
-                                  </span>
-                                </div>
+                )}
+              </CardHeader>
+              <CardContent className="p-8">
+                {!isCalculated ? (
+                  <div className="text-center py-16 space-y-6">
+                    <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-green-100 rounded-3xl flex items-center justify-center mx-auto">
+                      <TrendingUp className="h-12 w-12 text-gray-400" />
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-semibold text-gray-700">
+                        Ready to Discover Your Future?
+                      </h3>
+                      <p className="text-gray-500 leading-relaxed">
+                        Enter your matric marks above and click "Find My
+                        Programs" to see all the university programs you qualify
+                        for, organized by faculty.
+                      </p>
+                    </div>
+                  </div>
+                ) : qualifyingPrograms.length === 0 ? (
+                  <div className="text-center py-16 space-y-6">
+                    <div className="w-24 h-24 bg-amber-100 rounded-3xl flex items-center justify-center mx-auto">
+                      <AlertCircle className="h-12 w-12 text-amber-500" />
+                    </div>
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-semibold text-gray-700">
+                        No Programs Match Your Current Score
+                      </h3>
+                      <p className="text-gray-500 leading-relaxed">
+                        Consider improving your marks through supplementary
+                        exams or explore alternative pathways to higher
+                        education.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-8 max-h-[500px] overflow-y-auto custom-scrollbar">
+                    {Object.entries(programsByFaculty).map(
+                      ([faculty, programs]) => (
+                        <div key={faculty} className="space-y-4">
+                          <div className="sticky top-0 bg-white/95 backdrop-blur-sm py-3 rounded-xl">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <BookOpen className="h-5 w-5 text-white" />
                               </div>
+                              <h3 className="text-xl font-bold text-gray-900">
+                                {faculty}
+                              </h3>
                               <Badge
-                                variant="outline"
-                                className="flex items-center gap-1 bg-green-50 text-green-700 border-green-200"
+                                variant="secondary"
+                                className="ml-auto bg-green-100 text-green-700 border-green-200 font-semibold"
                               >
-                                <Award className="h-3 w-3" />
-                                APS {program.apsRequirement}
+                                {programs.length} programs
                               </Badge>
                             </div>
                           </div>
-                        ))}
 
-                        {programs.length > 10 && (
-                          <div className="text-center py-2">
-                            <span className="text-sm text-gray-500">
-                              And {programs.length - 10} more programs in{" "}
-                              {faculty}
-                            </span>
+                          <div className="space-y-3 pl-13">
+                            {programs.slice(0, 8).map((program, index) => (
+                              <div
+                                key={index}
+                                className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-5 border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-300"
+                              >
+                                <div className="flex items-start justify-between gap-4">
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-gray-900 mb-2 leading-snug">
+                                      {program.programName}
+                                    </h4>
+                                    <div className="flex items-center gap-3 mb-3">
+                                      <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold px-3 py-1">
+                                        {program.universityAbbr}
+                                      </Badge>
+                                      <span className="text-sm text-gray-600">
+                                        •
+                                      </span>
+                                      <span className="text-sm text-gray-600 font-medium">
+                                        {program.duration}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <Badge
+                                    variant="outline"
+                                    className="bg-blue-50 text-blue-700 border-blue-200 font-semibold px-3 py-1 flex items-center gap-1"
+                                  >
+                                    <Award className="h-3 w-3" />
+                                    APS {program.apsRequirement}
+                                  </Badge>
+                                </div>
+                              </div>
+                            ))}
+
+                            {programs.length > 8 && (
+                              <div className="text-center py-4">
+                                <Badge
+                                  variant="outline"
+                                  className="text-gray-500 bg-gray-50 border-gray-200"
+                                >
+                                  +{programs.length - 8} more programs in{" "}
+                                  {faculty}
+                                </Badge>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  ),
+                        </div>
+                      ),
+                    )}
+                  </div>
                 )}
-              </div>
-            )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* APS Scale Reference */}
+        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-gray-900 text-center">
+              APS Scoring Reference
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+              {[
+                {
+                  range: "80-100%",
+                  points: 7,
+                  gradient: "from-green-500 to-emerald-600",
+                },
+                {
+                  range: "70-79%",
+                  points: 6,
+                  gradient: "from-green-400 to-green-500",
+                },
+                {
+                  range: "60-69%",
+                  points: 5,
+                  gradient: "from-blue-400 to-blue-500",
+                },
+                {
+                  range: "50-59%",
+                  points: 4,
+                  gradient: "from-yellow-400 to-yellow-500",
+                },
+                {
+                  range: "40-49%",
+                  points: 3,
+                  gradient: "from-orange-400 to-orange-500",
+                },
+                {
+                  range: "30-39%",
+                  points: 2,
+                  gradient: "from-red-400 to-red-500",
+                },
+                {
+                  range: "0-29%",
+                  points: 1,
+                  gradient: "from-red-500 to-red-600",
+                },
+              ].map((scale) => (
+                <div key={scale.points} className="text-center">
+                  <div
+                    className={`bg-gradient-to-r ${scale.gradient} text-white rounded-xl p-4 mb-3 shadow-lg`}
+                  >
+                    <div className="text-2xl font-bold">{scale.points}</div>
+                    <div className="text-xs opacity-90">points</div>
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    {scale.range}
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* APS Scale Reference */}
-      <Card className="border-0 shadow-sm bg-gray-50">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">
-            APS Scoring Scale
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            {[
-              { range: "80-100%", points: 7, color: "bg-green-500" },
-              { range: "70-79%", points: 6, color: "bg-green-400" },
-              { range: "60-69%", points: 5, color: "bg-yellow-400" },
-              { range: "50-59%", points: 4, color: "bg-orange-400" },
-              { range: "40-49%", points: 3, color: "bg-orange-500" },
-              { range: "30-39%", points: 2, color: "bg-red-400" },
-              { range: "0-29%", points: 1, color: "bg-red-500" },
-            ].map((scale) => (
-              <div key={scale.points} className="text-center">
-                <div
-                  className={`${scale.color} text-white rounded-lg p-3 mb-2`}
-                >
-                  <div className="text-lg font-bold">{scale.points}</div>
-                  <div className="text-xs">points</div>
-                </div>
-                <div className="text-xs text-gray-600">{scale.range}</div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      `}</style>
     </div>
   );
 };
