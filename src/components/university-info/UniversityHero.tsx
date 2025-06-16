@@ -1,46 +1,265 @@
-
-import React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, GraduationCap } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  University,
+  GraduationCap,
+  BookOpen,
+  Calculator,
+  Search,
+  TrendingUp,
+  Award,
+  Users,
+  Building,
+  DollarSign,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface UniversityHeroProps {
-  onSearch?: (query: string) => void;
+  onNavigateToTool: (tool: string) => void;
 }
 
-const UniversityHero = ({ onSearch }: UniversityHeroProps) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
+const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = () => {
-    if (onSearch) {
-      onSearch(searchQuery);
+    if (searchQuery.trim()) {
+      // Navigate to search results or filter
+      onNavigateToTool("search");
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  // Hero statistics (can be made dynamic later)
+  const stats = [
+    {
+      icon: Building,
+      value: "26",
+      label: "Universities",
+      color: "text-blue-600",
+    },
+    {
+      icon: BookOpen,
+      value: "1000+",
+      label: "Programs",
+      color: "text-green-600",
+    },
+    { icon: Users, value: "1M+", label: "Students", color: "text-purple-600" },
+    {
+      icon: Award,
+      value: "Growing",
+      label: "Opportunities",
+      color: "text-orange-600",
+    },
+  ];
+
+  const quickActions = [
+    {
+      title: "Calculate APS",
+      description: "Find out which programs you qualify for",
+      icon: Calculator,
+      action: () => onNavigateToTool("aps-calculator"),
+      color: "bg-blue-600 hover:bg-blue-700",
+      popular: true,
+    },
+    {
+      title: "Find Bursaries",
+      description: "Discover funding opportunities",
+      icon: DollarSign,
+      action: () => onNavigateToTool("bursaries"),
+      color: "bg-green-600 hover:bg-green-700",
+      popular: false,
+    },
+    {
+      title: "Browse Books",
+      description: "Find textbooks for your courses",
+      icon: BookOpen,
+      action: () => onNavigateToTool("books"),
+      color: "bg-purple-600 hover:bg-purple-700",
+      popular: false,
+    },
+  ];
+
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16 px-4">
-      <div className="container mx-auto text-center">
-        <GraduationCap className="h-16 w-16 mx-auto mb-6" />
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Find Your Perfect University
-        </h1>
-        <p className="text-xl mb-8 max-w-2xl mx-auto">
-          Explore South African universities, compare programs, and make informed decisions about your future.
-        </p>
-        
-        {onSearch && (
-          <div className="max-w-md mx-auto flex gap-2">
+    <div className="relative bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-0 left-0 w-40 h-40 bg-blue-600 rounded-full -translate-x-20 -translate-y-20"></div>
+        <div className="absolute top-20 right-0 w-32 h-32 bg-purple-600 rounded-full translate-x-16 -translate-y-16"></div>
+        <div className="absolute bottom-0 left-1/3 w-24 h-24 bg-green-600 rounded-full translate-y-12"></div>
+      </div>
+
+      <div className="relative z-10 p-8 lg:p-12">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <div className="bg-blue-600 p-3 rounded-2xl mr-4">
+              <GraduationCap className="w-8 h-8 text-white" />
+            </div>
+            <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-3 py-1">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Your Campus Journey Starts Here
+            </Badge>
+          </div>
+
+          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Welcome to{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ReBooked Campus
+            </span>
+          </h1>
+
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Your comprehensive guide to South African higher education.
+            Calculate your APS, explore universities, find bursaries, and
+            discover textbooks — all in one place.
+          </p>
+        </div>
+
+        {/* Search Section */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
-              placeholder="Search universities..."
+              placeholder="Search universities, programs, or courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-black"
+              onKeyPress={handleKeyPress}
+              className="pl-12 pr-24 py-4 text-lg border-2 border-gray-200 focus:border-blue-500 rounded-xl"
             />
-            <Button onClick={handleSearch} variant="secondary">
-              <Search className="h-4 w-4" />
+            <Button
+              onClick={handleSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-6"
+            >
+              Search
             </Button>
           </div>
-        )}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {quickActions.map((action, index) => (
+            <Card
+              key={index}
+              className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-blue-200"
+              onClick={action.action}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="relative mb-4">
+                  <div
+                    className={`${action.color} p-4 rounded-2xl inline-block text-white group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    <action.icon className="w-6 h-6" />
+                  </div>
+                  {action.popular && (
+                    <Badge className="absolute -top-2 -right-2 bg-red-500 text-white border-0 px-2 py-1 text-xs">
+                      Popular
+                    </Badge>
+                  )}
+                </div>
+
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                  {action.title}
+                </h3>
+
+                <p className="text-gray-600 mb-4">{action.description}</p>
+
+                <div className="flex items-center justify-center text-blue-600 group-hover:text-blue-700 font-medium">
+                  Get Started
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Statistics */}
+        <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-white/40">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {stats.map((stat, index) => (
+              <div key={index} className="group">
+                <div className="flex items-center justify-center mb-2">
+                  <stat.icon
+                    className={`w-8 h-8 ${stat.color} group-hover:scale-110 transition-transform duration-300`}
+                  />
+                </div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Additional Features */}
+        <div className="mt-8 text-center">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            Everything You Need for Your University Journey
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {[
+              {
+                icon: Calculator,
+                text: "APS Calculator",
+                desc: "Calculate admission points",
+              },
+              {
+                icon: University,
+                text: "University Profiles",
+                desc: "Detailed information",
+              },
+              {
+                icon: DollarSign,
+                text: "Bursary Database",
+                desc: "Find funding options",
+              },
+              {
+                icon: BookOpen,
+                text: "Textbook Marketplace",
+                desc: "Buy & sell books",
+              },
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white/40 backdrop-blur-sm rounded-lg p-4 border border-white/40 hover:bg-white/60 transition-colors"
+              >
+                <feature.icon className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                <h3 className="font-medium text-gray-900 mb-1">
+                  {feature.text}
+                </h3>
+                <p className="text-xs text-gray-600">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="mt-8 text-center">
+          <Button
+            onClick={() => onNavigateToTool("aps-calculator")}
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <TrendingUp className="w-5 h-5 mr-2" />
+            Start Your Journey - Calculate APS Now
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+
+          <p className="text-sm text-gray-500 mt-3">
+            Join thousands of students who've found their perfect university
+            match
+          </p>
+        </div>
       </div>
     </div>
   );
