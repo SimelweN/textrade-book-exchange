@@ -1,5 +1,33 @@
 import { supabase } from "@/integrations/supabase/client";
-import { devLog, devWarn, perfMark, perfMeasure } from "./debugHelpers";
+
+// Simple logging functions to replace debugHelpers
+const devLog = (message: string, data?: any) => {
+  if (import.meta.env.DEV) {
+    console.log(message, data);
+  }
+};
+
+const devWarn = (message: string, error?: any) => {
+  if (import.meta.env.DEV) {
+    console.warn(message, error);
+  }
+};
+
+const perfMark = (name: string) => {
+  if (import.meta.env.DEV && performance.mark) {
+    performance.mark(name);
+  }
+};
+
+const perfMeasure = (name: string, startMark: string) => {
+  if (import.meta.env.DEV && performance.measure) {
+    try {
+      performance.measure(name, startMark);
+    } catch (e) {
+      // Ignore if marks don't exist
+    }
+  }
+};
 
 export interface ConnectionHealthResult {
   isOnline: boolean;
