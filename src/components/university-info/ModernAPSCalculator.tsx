@@ -95,6 +95,9 @@ const CORE_SUBJECTS: APSSubject[] = [
 
 // APS calculation function
 const calculateAPSPoints = (marks: number): number => {
+  // Handle NaN or invalid marks
+  if (isNaN(marks) || marks < 0) return 0;
+
   if (marks >= 80) return 7;
   if (marks >= 70) return 6;
   if (marks >= 60) return 5;
