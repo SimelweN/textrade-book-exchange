@@ -719,7 +719,10 @@ const ModernAPSCalculator: React.FC = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 gap-4">
-                      {universityMatches.map((university, index) => (
+                      {(showAllUniversities
+                        ? universityMatches
+                        : universityMatches.slice(0, 6)
+                      ).map((university, index) => (
                         <div
                           key={index}
                           className="p-4 border border-slate-200 rounded-lg hover:shadow-md transition-shadow"
@@ -766,6 +769,33 @@ const ModernAPSCalculator: React.FC = () => {
                         </div>
                       ))}
                     </div>
+
+                    {/* View More Button */}
+                    {universityMatches.length > 6 && !showAllUniversities && (
+                      <div className="text-center mt-6">
+                        <Button
+                          onClick={() => setShowAllUniversities(true)}
+                          variant="outline"
+                          className="border-slate-200 hover:bg-slate-50"
+                        >
+                          View More Universities ({universityMatches.length - 6}{" "}
+                          more)
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Show Less Button */}
+                    {showAllUniversities && (
+                      <div className="text-center mt-6">
+                        <Button
+                          onClick={() => setShowAllUniversities(false)}
+                          variant="outline"
+                          className="border-slate-200 hover:bg-slate-50"
+                        >
+                          Show Less
+                        </Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
