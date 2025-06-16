@@ -210,17 +210,24 @@ const ModernAPSCalculator: React.FC = () => {
       console.log(
         `🔍 APS Calculator: Analyzing ${ALL_SOUTH_AFRICAN_UNIVERSITIES.length} universities for APS ${totalAPS}`,
       );
+      console.log(`🏫 First university:`, ALL_SOUTH_AFRICAN_UNIVERSITIES[0]);
     }
 
-    ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
+    ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university, uniIndex) => {
       const universityProgramCount =
         university.faculties?.reduce(
           (total, fac) => total + (fac.degrees?.length || 0),
           0,
         ) || 0;
 
-      if (import.meta.env.DEV && universityProgramCount === 0) {
-        console.warn(`⚠️ ${university.name} has no programs!`);
+      if (import.meta.env.DEV) {
+        if (universityProgramCount === 0) {
+          console.warn(`⚠️ ${university.name} has no programs!`);
+        } else if (uniIndex < 3) {
+          console.log(
+            `✅ ${university.name}: ${universityProgramCount} programs across ${university.faculties?.length || 0} faculties`,
+          );
+        }
       }
 
       university.faculties?.forEach((faculty) => {
