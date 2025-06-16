@@ -45,6 +45,7 @@ import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities";
 import { SOUTH_AFRICAN_SUBJECTS } from "@/constants/subjects";
 import { toast } from "sonner";
 import APSDebugInfo from "./APSDebugInfo";
+import "@/utils/test-program-generation";
 
 // Types
 interface APSSubject {
