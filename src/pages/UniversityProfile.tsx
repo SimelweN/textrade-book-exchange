@@ -18,9 +18,7 @@ import { ALL_SOUTH_AFRICAN_UNIVERSITIES } from "@/constants/universities/index";
 import CampusNavbar from "@/components/CampusNavbar";
 import SEO from "@/components/SEO";
 
-interface UniversityProfileProps {}
-
-const UniversityProfile: React.FC<UniversityProfileProps> = () => {
+const UniversityProfile: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const universityId = searchParams.get("id");
