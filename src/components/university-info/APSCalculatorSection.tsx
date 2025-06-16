@@ -1,12 +1,8 @@
 import React from "react";
-import ModernAPSCalculator from "./ModernAPSCalculator";
+import ComprehensiveAPSCalculator from "./ComprehensiveAPSCalculator";
 
 const APSCalculatorSection = () => {
-  return (
-    <div className="max-w-7xl mx-auto p-6">
-      <ModernAPSCalculator />
-    </div>
-  );
+  return <ComprehensiveAPSCalculator />;
 };
 
 export default APSCalculatorSection;
