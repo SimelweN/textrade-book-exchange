@@ -28,6 +28,7 @@ import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import UniversityDebug from "@/components/university-info/UniversityDebug";
+import ProgramAssignmentDebug from "@/components/university-info/ProgramAssignmentDebug";
 
 // Lazy load heavy components for better performance
 const APSCalculatorSection = lazy(
