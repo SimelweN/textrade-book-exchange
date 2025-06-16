@@ -19,6 +19,13 @@ const generateUniversityFaculties = (
   const programs = generateUniversityPrograms(universityId, universityType);
   const facultyMap = new Map();
 
+  // Debug logging for development
+  if (import.meta.env.DEV) {
+    console.log(
+      `🏫 Generating faculties for ${universityId} (${universityType}): ${programs.length} programs`,
+    );
+  }
+
   // Group programs by faculty
   programs.forEach((program) => {
     const facultyKey = program.faculty;
@@ -35,7 +42,16 @@ const generateUniversityFaculties = (
     facultyMap.get(facultyKey)!.degrees.push(program);
   });
 
-  return Array.from(facultyMap.values());
+  const faculties = Array.from(facultyMap.values());
+
+  // Debug logging for development
+  if (import.meta.env.DEV) {
+    console.log(
+      `📚 ${universityId}: Generated ${faculties.length} faculties with total ${programs.length} programs`,
+    );
+  }
+
+  return faculties;
 };
 
 // All 26 South African Public Universities
