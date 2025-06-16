@@ -589,6 +589,7 @@ const ModernAPSCalculator: React.FC = () => {
 
           {/* Right Column - Analysis */}
           <div className="lg:col-span-2">
+            setActiveInsight(value as 'overview' | 'universities' | 'programs')
             <Tabs
               value={activeInsight}
               onValueChange={(value) => setActiveInsight(value as any)}
