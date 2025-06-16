@@ -19,8 +19,13 @@ import {
 import { addNotification } from "@/services/notificationService";
 import { logError, getErrorMessage } from "@/utils/errorUtils";
 
-// Import debug utilities for development
-import { devLog, devWarn } from "@/utils/debugHelpers";
+// Simple logging for development
+const devLog = (message: string, data?: any) => {
+  if (import.meta.env.DEV) console.log(message, data);
+};
+const devWarn = (message: string, data?: any) => {
+  if (import.meta.env.DEV) console.warn(message, data);
+};
 
 export interface UserProfile {
   id: string;
