@@ -144,7 +144,6 @@ const getPerformanceLevel = (
 
 const ModernAPSCalculator: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   // State management
   const [subjects, setSubjects] = useState<APSSubject[]>(CORE_SUBJECTS);
