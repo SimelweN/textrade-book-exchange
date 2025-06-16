@@ -389,7 +389,13 @@ const ModernAPSCalculator: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-8 max-h-[500px] overflow-y-auto custom-scrollbar">
+                  <div
+                    className="space-y-8 max-h-[500px] overflow-y-auto"
+                    style={{
+                      scrollbarWidth: "thin",
+                      scrollbarColor: "#cbd5e1 #f1f5f9",
+                    }}
+                  >
                     {Object.entries(programsByFaculty).map(
                       ([faculty, programs]) => (
                         <div key={faculty} className="space-y-4">
@@ -528,23 +534,6 @@ const ModernAPSCalculator: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
-      `}</style>
     </div>
   );
 };
