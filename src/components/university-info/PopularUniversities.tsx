@@ -164,7 +164,7 @@ const PopularUniversities = () => {
             ].includes(uni.id)
           ); // Top universities
         })
-        .slice(0, 6);
+        .slice(0, 8);
     } catch (error) {
       console.error("Error getting featured universities:", error);
       return [];
@@ -192,7 +192,7 @@ const PopularUniversities = () => {
     }));
   };
 
-  // University card component with expand functionality
+  // University card component with mobile-optimized design
   const UniversityCard = ({
     university,
     isExpanded = false,
@@ -205,45 +205,44 @@ const PopularUniversities = () => {
 
     try {
       return (
-        <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-emerald-500 group">
+        <Card className="hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <CardTitle className="text-lg font-bold text-gray-900 mb-1 group-hover:text-emerald-600 transition-colors">
+              <div className="flex-1 min-w-0">
+                {" "}
+                {/* min-w-0 prevents overflow on mobile */}
+                <CardTitle className="text-base sm:text-lg font-bold text-gray-900 mb-1 truncate">
                   {university.name || "Unknown University"}
                 </CardTitle>
-                <CardDescription className="text-sm text-gray-600">
+                <CardDescription className="text-xs sm:text-sm text-gray-600 line-clamp-1">
                   {university.fullName ||
                     university.name ||
                     "Unknown University"}
                 </CardDescription>
-                <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2 text-xs text-gray-500">
                   <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    <span>
+                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">
                       {university.location || "Unknown"},{" "}
                       {university.province || "Unknown"}
                     </span>
                   </div>
                   {university.establishedYear && (
                     <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
+                      <Calendar className="w-3 h-3 flex-shrink-0" />
                       <span>Est. {university.establishedYear}</span>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <Badge
-                  variant="outline"
-                  className="text-xs border-emerald-200 text-emerald-700"
-                >
+              <div className="flex flex-col items-end gap-1 ml-2">
+                <Badge variant="outline" className="text-xs">
                   {university.abbreviation ||
                     university.name?.substring(0, 3).toUpperCase() ||
                     "UNI"}
                 </Badge>
                 {university.type && (
-                  <Badge className="text-xs bg-emerald-100 text-emerald-800 border-emerald-200">
+                  <Badge variant="secondary" className="text-xs">
                     {university.type.replace(" University", "")}
                   </Badge>
                 )}
@@ -251,22 +250,23 @@ const PopularUniversities = () => {
             </div>
           </CardHeader>
 
-          <CardContent className="pt-0">
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <CardContent className="pt-0 space-y-4">
+            <p className="text-sm text-gray-600 line-clamp-2">
               {university.overview ||
                 `${university.name} is a South African university offering various academic programs.`}
             </p>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center bg-emerald-50 rounded-lg p-3">
-                <div className="text-lg font-bold text-emerald-600">
+            {/* Stats - Mobile optimized */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center bg-blue-50 rounded-lg p-3">
+                <div className="text-lg font-bold text-blue-600">
                   {programCount}
                 </div>
                 <div className="text-xs text-gray-600">Programs</div>
               </div>
 
-              <div className="text-center bg-blue-50 rounded-lg p-3">
-                <div className="text-lg font-bold text-blue-600">
+              <div className="text-center bg-gray-50 rounded-lg p-3">
+                <div className="text-lg font-bold text-gray-600">
                   {university.studentPopulation
                     ? university.studentPopulation > 1000
                       ? `${Math.round(university.studentPopulation / 1000)}k+`
@@ -277,48 +277,48 @@ const PopularUniversities = () => {
               </div>
             </div>
 
-            {/* Faculty preview */}
+            {/* Faculty preview - Mobile friendly */}
             {university.faculties && university.faculties.length > 0 && (
-              <div className="mb-4">
+              <div>
                 <h4 className="text-xs font-medium text-gray-700 mb-2">
-                  Top Faculties:
+                  Faculties:
                 </h4>
                 <div className="flex flex-wrap gap-1">
-                  {university.faculties.slice(0, 3).map((faculty, index) => (
+                  {university.faculties.slice(0, 2).map((faculty, index) => (
                     <Badge
                       key={faculty.id || index}
                       variant="secondary"
-                      className="text-xs bg-gray-100"
+                      className="text-xs bg-gray-100 truncate max-w-[120px]"
                     >
                       {faculty.name || "Unknown Faculty"}
                     </Badge>
                   ))}
-                  {university.faculties.length > 3 && (
+                  {university.faculties.length > 2 && (
                     <Badge variant="secondary" className="text-xs bg-gray-100">
-                      +{university.faculties.length - 3} more
+                      +{university.faculties.length - 2}
                     </Badge>
                   )}
                 </div>
               </div>
             )}
 
-            {/* Expanded content */}
+            {/* Expanded content - Mobile optimized */}
             {isExpandedState && (
-              <div className="border-t border-gray-100 pt-4 mt-4 space-y-4 animate-in slide-in-from-top-2 duration-300">
+              <div className="border-t border-gray-100 pt-4 space-y-3 animate-in slide-in-from-top-2 duration-300">
                 {/* Contact Information */}
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-2">
-                    Contact Information
+                    Contact
                   </h4>
                   <div className="space-y-1 text-xs text-gray-600">
                     {university.website && (
                       <div className="flex items-center gap-2">
-                        <Globe className="w-3 h-3" />
+                        <Globe className="w-3 h-3 flex-shrink-0" />
                         <a
                           href={university.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-emerald-600 hover:text-emerald-700 hover:underline"
+                          className="text-blue-600 hover:text-blue-700 hover:underline truncate"
                         >
                           {university.website.replace("https://", "")}
                         </a>
@@ -326,21 +326,10 @@ const PopularUniversities = () => {
                     )}
                     {university.admissionsContact && (
                       <div className="flex items-center gap-2">
-                        <Mail className="w-3 h-3" />
-                        <span>{university.admissionsContact}</span>
-                      </div>
-                    )}
-                    {university.studentPortal && (
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="w-3 h-3" />
-                        <a
-                          href={university.studentPortal}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-emerald-600 hover:text-emerald-700 hover:underline"
-                        >
-                          Student Portal
-                        </a>
+                        <Mail className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">
+                          {university.admissionsContact}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -350,17 +339,17 @@ const PopularUniversities = () => {
                 {university.applicationInfo && (
                   <div>
                     <h4 className="text-sm font-medium text-gray-900 mb-2">
-                      Application Information
+                      Applications
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-gray-600">Status:</span>
                         <Badge
                           className={cn(
                             "text-xs",
                             university.applicationInfo.isOpen
-                              ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                              : "bg-red-100 text-red-800 border-red-200",
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800",
                           )}
                         >
                           {university.applicationInfo.isOpen
@@ -368,14 +357,6 @@ const PopularUniversities = () => {
                             : "Closed"}
                         </Badge>
                       </div>
-                      {university.applicationInfo.openingDate && (
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-gray-600">Opens:</span>
-                          <span className="text-gray-900">
-                            {university.applicationInfo.openingDate}
-                          </span>
-                        </div>
-                      )}
                       {university.applicationInfo.closingDate && (
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-gray-600">Closes:</span>
@@ -384,81 +365,49 @@ const PopularUniversities = () => {
                           </span>
                         </div>
                       )}
-                      {university.applicationInfo.applicationFee && (
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-gray-600">Fee:</span>
-                          <span className="text-gray-900">
-                            {university.applicationInfo.applicationFee}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* All Faculties */}
-                {university.faculties && university.faculties.length > 3 && (
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">
-                      All Faculties
-                    </h4>
-                    <div className="grid grid-cols-1 gap-2">
-                      {university.faculties.map((faculty, index) => (
-                        <div
-                          key={faculty.id || index}
-                          className="bg-gray-50 rounded p-2"
-                        >
-                          <div className="text-xs font-medium text-gray-900">
-                            {faculty.name}
-                          </div>
-                          <div className="text-xs text-gray-600">
-                            {faculty.description}
-                          </div>
-                          <div className="text-xs text-emerald-600 mt-1">
-                            {faculty.degrees?.length || 0} programs available
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            <div className="flex gap-2 mt-4">
+            {/* Action buttons - Mobile optimized */}
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 size="sm"
                 onClick={() =>
                   navigate(`/university-info?university=${university.id}`)
                 }
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
               >
-                <UniversityIcon className="w-4 h-4 mr-2" />
+                <UniversityIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 View Details
               </Button>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate(`/books?university=${university.id}`)}
-                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-              >
-                <BookOpen className="w-4 h-4 mr-2" />
-                Books
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/books?university=${university.id}`)}
+                  className="flex-1 text-xs sm:text-sm"
+                >
+                  <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  Books
+                </Button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => toggleUniversityExpansion(university.id)}
-                className="text-gray-500 hover:text-emerald-600"
-              >
-                {isExpandedState ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
-              </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleUniversityExpansion(university.id)}
+                  className="text-gray-500 hover:text-blue-600 px-2"
+                >
+                  {isExpandedState ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -490,7 +439,7 @@ const PopularUniversities = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <UniversityIcon className="w-5 h-5" />
-            <span>Popular Universities</span>
+            <span>Universities</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -507,49 +456,59 @@ const PopularUniversities = () => {
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <UniversityIcon className="w-5 h-5 text-emerald-600" />
-          <span>Explore South African Universities</span>
+        <CardTitle className="flex items-center space-x-2 text-lg sm:text-xl">
+          <UniversityIcon className="w-5 h-5 text-blue-600" />
+          <span>South African Universities</span>
         </CardTitle>
-        <CardDescription>
-          Discover the perfect university for your academic journey. Click "View
-          More" to expand university details.
+        <CardDescription className="text-sm">
+          Explore universities across South Africa. Tap to expand for more
+          details.
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-4">
+        {/* Mobile-optimized tabs */}
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-6">
-            <TabsTrigger
-              value="all"
-              className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700"
-            >
-              Featured ({featuredUniversities.length})
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
+            <TabsTrigger value="all" className="text-xs sm:text-sm py-2 px-2">
+              Featured
+              <span className="ml-1 text-xs">
+                ({featuredUniversities.length})
+              </span>
             </TabsTrigger>
             <TabsTrigger
               value="traditional"
-              className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700"
+              className="text-xs sm:text-sm py-2 px-2"
             >
-              Traditional ({categorizedUniversities.traditional.length})
+              Traditional
+              <span className="ml-1 text-xs hidden sm:inline">
+                ({categorizedUniversities.traditional.length})
+              </span>
             </TabsTrigger>
             <TabsTrigger
               value="technology"
-              className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700"
+              className="text-xs sm:text-sm py-2 px-2"
             >
-              Technology ({categorizedUniversities.technology.length})
+              Technology
+              <span className="ml-1 text-xs hidden sm:inline">
+                ({categorizedUniversities.technology.length})
+              </span>
             </TabsTrigger>
             <TabsTrigger
               value="comprehensive"
-              className="data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700"
+              className="text-xs sm:text-sm py-2 px-2"
             >
-              Comprehensive ({categorizedUniversities.comprehensive.length})
+              Comprehensive
+              <span className="ml-1 text-xs hidden sm:inline">
+                ({categorizedUniversities.comprehensive.length})
+              </span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <TabsContent value="all" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {featuredUniversities.length > 0 ? (
                 featuredUniversities
                   .slice(0, showAll.all ? undefined : 6)
@@ -563,7 +522,7 @@ const PopularUniversities = () => {
                 <div className="col-span-full text-center py-8">
                   <UniversityIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                   <p className="text-gray-600">
-                    No featured universities available at the moment.
+                    No featured universities available.
                   </p>
                 </div>
               )}
@@ -574,7 +533,8 @@ const PopularUniversities = () => {
                 <Button
                   onClick={() => toggleShowAll("all")}
                   variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                  className="w-full sm:w-auto"
+                  size="sm"
                 >
                   {showAll.all ? (
                     <>
@@ -584,9 +544,7 @@ const PopularUniversities = () => {
                   ) : (
                     <>
                       <ChevronDown className="w-4 h-4 mr-2" />
-                      View More Universities ({featuredUniversities.length -
-                        6}{" "}
-                      more)
+                      View More ({featuredUniversities.length - 6} more)
                     </>
                   )}
                 </Button>
@@ -594,20 +552,19 @@ const PopularUniversities = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="traditional" className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">
+          <TabsContent value="traditional" className="space-y-4">
+            <div className="mb-4">
+              <h3 className="text-base sm:text-lg font-semibold mb-2">
                 Traditional Universities
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Research-focused universities offering undergraduate and
-                postgraduate degrees across various disciplines.
+              <p className="text-sm text-gray-600">
+                Research-focused universities offering academic degrees.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categorizedUniversities.traditional.length > 0 ? (
                 categorizedUniversities.traditional
-                  .slice(0, showAll.traditional ? undefined : 9)
+                  .slice(0, showAll.traditional ? undefined : 8)
                   .map((university) => (
                     <UniversityCard
                       key={university.id}
@@ -617,18 +574,19 @@ const PopularUniversities = () => {
               ) : (
                 <div className="col-span-full text-center py-8">
                   <p className="text-gray-600">
-                    No traditional universities data available.
+                    No traditional universities available.
                   </p>
                 </div>
               )}
             </div>
 
-            {categorizedUniversities.traditional.length > 9 && (
+            {categorizedUniversities.traditional.length > 8 && (
               <div className="text-center">
                 <Button
                   onClick={() => toggleShowAll("traditional")}
                   variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                  className="w-full sm:w-auto"
+                  size="sm"
                 >
                   {showAll.traditional ? (
                     <>
@@ -638,8 +596,8 @@ const PopularUniversities = () => {
                   ) : (
                     <>
                       <ChevronDown className="w-4 h-4 mr-2" />
-                      View More Universities (
-                      {categorizedUniversities.traditional.length - 9} more)
+                      View More (
+                      {categorizedUniversities.traditional.length - 8} more)
                     </>
                   )}
                 </Button>
@@ -647,157 +605,102 @@ const PopularUniversities = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="technology" className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">
+          <TabsContent value="technology" className="space-y-4">
+            <div className="mb-4">
+              <h3 className="text-base sm:text-lg font-semibold mb-2">
                 Universities of Technology
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Technology-focused institutions emphasizing practical skills and
-                applied sciences.
+              <p className="text-sm text-gray-600">
+                Practical and vocational training institutions.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categorizedUniversities.technology.length > 0 ? (
-                categorizedUniversities.technology
-                  .slice(0, showAll.technology ? undefined : 6)
-                  .map((university) => (
-                    <UniversityCard
-                      key={university.id}
-                      university={university}
-                    />
-                  ))
+                categorizedUniversities.technology.map((university) => (
+                  <UniversityCard key={university.id} university={university} />
+                ))
               ) : (
                 <div className="col-span-full text-center py-8">
                   <p className="text-gray-600">
-                    No universities of technology data available.
+                    No technology universities available.
                   </p>
                 </div>
               )}
             </div>
-
-            {categorizedUniversities.technology.length > 6 && (
-              <div className="text-center">
-                <Button
-                  onClick={() => toggleShowAll("technology")}
-                  variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                >
-                  {showAll.technology ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-2" />
-                      Show Less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-2" />
-                      View All Technology Universities
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
           </TabsContent>
 
-          <TabsContent value="comprehensive" className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">
+          <TabsContent value="comprehensive" className="space-y-4">
+            <div className="mb-4">
+              <h3 className="text-base sm:text-lg font-semibold mb-2">
                 Comprehensive Universities
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Universities offering both traditional academic and
-                technology-focused programs.
+              <p className="text-sm text-gray-600">
+                Universities offering both traditional and technology programs.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {categorizedUniversities.comprehensive.length > 0 ? (
-                categorizedUniversities.comprehensive
-                  .slice(0, showAll.comprehensive ? undefined : 6)
-                  .map((university) => (
-                    <UniversityCard
-                      key={university.id}
-                      university={university}
-                    />
-                  ))
+                categorizedUniversities.comprehensive.map((university) => (
+                  <UniversityCard key={university.id} university={university} />
+                ))
               ) : (
                 <div className="col-span-full text-center py-8">
                   <p className="text-gray-600">
-                    No comprehensive universities data available.
+                    No comprehensive universities available.
                   </p>
                 </div>
               )}
             </div>
-
-            {categorizedUniversities.comprehensive.length > 6 && (
-              <div className="text-center">
-                <Button
-                  onClick={() => toggleShowAll("comprehensive")}
-                  variant="outline"
-                  className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                >
-                  {showAll.comprehensive ? (
-                    <>
-                      <ChevronUp className="w-4 h-4 mr-2" />
-                      Show Less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="w-4 h-4 mr-2" />
-                      View All Comprehensive Universities
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
           </TabsContent>
         </Tabs>
 
-        {/* Quick stats */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="bg-emerald-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-emerald-600">
+        {/* Summary stats - Mobile friendly */}
+        <div className="mt-6 pt-4 border-t border-gray-200">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <div className="bg-blue-50 rounded-lg p-3">
+              <div className="text-xl font-bold text-blue-600">
                 {universities.length}
               </div>
-              <div className="text-sm text-gray-600">Universities</div>
+              <div className="text-xs text-gray-600">Universities</div>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="text-xl font-bold text-gray-600">
                 {universities.reduce(
                   (total, uni) => total + getProgramCount(uni),
                   0,
                 )}
                 +
               </div>
-              <div className="text-sm text-gray-600">Programs</div>
+              <div className="text-xs text-gray-600">Programs</div>
             </div>
 
-            <div className="bg-purple-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-purple-600">
+            <div className="bg-green-50 rounded-lg p-3">
+              <div className="text-xl font-bold text-green-600">
                 {
                   universities.filter((uni) => uni.applicationInfo?.isOpen)
                     .length
                 }
               </div>
-              <div className="text-sm text-gray-600">Applications Open</div>
+              <div className="text-xs text-gray-600">Apps Open</div>
             </div>
 
-            <div className="bg-orange-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-orange-600">9</div>
-              <div className="text-sm text-gray-600">Provinces</div>
+            <div className="bg-purple-50 rounded-lg p-3">
+              <div className="text-xl font-bold text-purple-600">9</div>
+              <div className="text-xs text-gray-600">Provinces</div>
             </div>
           </div>
         </div>
 
-        {/* Call to action */}
-        <div className="mt-6 text-center">
+        {/* Call to action - Mobile optimized */}
+        <div className="text-center pt-4">
           <Button
             onClick={() => navigate("/university-info?tool=aps-calculator")}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
+            size="sm"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
-            Calculate Your APS & Find Programs
+            Calculate Your APS Score
             <ChevronRight className="w-4 h-4 ml-2" />
           </Button>
         </div>

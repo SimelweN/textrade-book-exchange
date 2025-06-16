@@ -38,21 +38,21 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
     }
   };
 
-  // Hero statistics (can be made dynamic later)
+  // Hero statistics
   const stats = [
     {
       icon: Building,
       value: "29",
       label: "Universities",
-      color: "text-emerald-600",
+      color: "text-blue-600",
     },
     {
       icon: BookOpen,
       value: "1000+",
       label: "Programs",
-      color: "text-blue-600",
+      color: "text-purple-600",
     },
-    { icon: Users, value: "1M+", label: "Students", color: "text-purple-600" },
+    { icon: Users, value: "1M+", label: "Students", color: "text-gray-600" },
     {
       icon: Award,
       value: "Growing",
@@ -64,10 +64,10 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
   const quickActions = [
     {
       title: "Calculate APS",
-      description: "Find out which programs you qualify for",
+      description: "Find programs you qualify for",
       icon: Calculator,
       action: () => onNavigateToTool("aps-calculator"),
-      color: "bg-emerald-600 hover:bg-emerald-700",
+      color: "bg-blue-600 hover:bg-blue-700",
       popular: true,
     },
     {
@@ -75,12 +75,12 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
       description: "Discover funding opportunities",
       icon: DollarSign,
       action: () => onNavigateToTool("bursaries"),
-      color: "bg-blue-600 hover:bg-blue-700",
+      color: "bg-green-600 hover:bg-green-700",
       popular: false,
     },
     {
       title: "Browse Books",
-      description: "Find textbooks for your courses",
+      description: "Find textbooks for courses",
       icon: BookOpen,
       action: () => onNavigateToTool("books"),
       color: "bg-purple-600 hover:bg-purple-700",
@@ -89,124 +89,129 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
   ];
 
   return (
-    <div className="relative bg-gradient-to-br from-emerald-50 via-white to-blue-50 rounded-2xl overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-40 h-40 bg-emerald-600 rounded-full -translate-x-20 -translate-y-20"></div>
-        <div className="absolute top-20 right-0 w-32 h-32 bg-blue-600 rounded-full translate-x-16 -translate-y-16"></div>
-        <div className="absolute bottom-0 left-1/3 w-24 h-24 bg-emerald-600 rounded-full translate-y-12"></div>
+    <div className="relative bg-gradient-to-br from-blue-50 via-white to-gray-50 rounded-xl sm:rounded-2xl overflow-hidden">
+      {/* Background Pattern - Subtle */}
+      <div className="absolute inset-0 opacity-3">
+        <div className="absolute top-0 left-0 w-32 sm:w-40 h-32 sm:h-40 bg-blue-600 rounded-full -translate-x-16 sm:-translate-x-20 -translate-y-16 sm:-translate-y-20"></div>
+        <div className="absolute top-10 sm:top-20 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gray-600 rounded-full translate-x-12 sm:translate-x-16 -translate-y-12 sm:-translate-y-16"></div>
+        <div className="absolute bottom-0 left-1/3 w-20 sm:w-24 h-20 sm:h-24 bg-blue-600 rounded-full translate-y-10 sm:translate-y-12"></div>
       </div>
 
-      <div className="relative z-10 p-8 lg:p-12">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="bg-emerald-600 p-3 rounded-2xl mr-4">
-              <GraduationCap className="w-8 h-8 text-white" />
+      <div className="relative z-10 p-4 sm:p-8 lg:p-12">
+        {/* Header Section - Mobile Optimized */}
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-4 gap-2">
+            <div className="bg-blue-600 p-2 sm:p-3 rounded-xl sm:rounded-2xl">
+              <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 px-3 py-1">
+            <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-2 sm:px-3 py-1 text-xs sm:text-sm">
               <Sparkles className="w-3 h-3 mr-1" />
               Your Campus Journey Starts Here
             </Badge>
           </div>
 
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
             Welcome to{" "}
-            <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               ReBooked Campus
             </span>
           </h1>
 
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
             Your comprehensive guide to South African higher education.
             Calculate your APS, explore universities, find bursaries, and
-            discover textbooks — all in one place.
+            discover textbooks.
           </p>
         </div>
 
-        {/* Search Section */}
-        <div className="max-w-2xl mx-auto mb-8">
+        {/* Search Section - Mobile Optimized */}
+        <div className="max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <Input
-              placeholder="Search universities, programs, or courses..."
+              placeholder="Search universities, programs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="pl-12 pr-24 py-4 text-lg border-2 border-gray-200 focus:border-emerald-500 rounded-xl"
+              className="pl-10 sm:pl-12 pr-16 sm:pr-24 py-3 sm:py-4 text-sm sm:text-lg border-2 border-gray-200 focus:border-blue-500 rounded-lg sm:rounded-xl"
             />
             <Button
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 text-white px-6"
+              className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-6 text-xs sm:text-sm"
+              size="sm"
             >
               Search
             </Button>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Quick Actions - Mobile Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 px-4">
           {quickActions.map((action, index) => (
             <Card
               key={index}
-              className="group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-emerald-200"
+              className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-blue-200"
               onClick={action.action}
             >
-              <CardContent className="p-6 text-center">
-                <div className="relative mb-4">
+              <CardContent className="p-4 sm:p-6 text-center">
+                <div className="relative mb-3 sm:mb-4">
                   <div
-                    className={`${action.color} p-4 rounded-2xl inline-block text-white group-hover:scale-110 transition-transform duration-300`}
+                    className={`${action.color} p-3 sm:p-4 rounded-xl sm:rounded-2xl inline-block text-white group-hover:scale-105 transition-transform duration-300`}
                   >
-                    <action.icon className="w-6 h-6" />
+                    <action.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   {action.popular && (
-                    <Badge className="absolute -top-2 -right-2 bg-red-500 text-white border-0 px-2 py-1 text-xs">
+                    <Badge className="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 bg-red-500 text-white border-0 px-1 sm:px-2 py-0.5 sm:py-1 text-xs">
                       Popular
                     </Badge>
                   )}
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                   {action.title}
                 </h3>
 
-                <p className="text-gray-600 mb-4">{action.description}</p>
+                <p className="text-sm text-gray-600 mb-3 sm:mb-4">
+                  {action.description}
+                </p>
 
-                <div className="flex items-center justify-center text-emerald-600 group-hover:text-emerald-700 font-medium">
+                <div className="flex items-center justify-center text-blue-600 group-hover:text-blue-700 font-medium text-sm">
                   Get Started
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Statistics */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-white/40">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {/* Statistics - Mobile Grid */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/40 mx-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-center">
             {stats.map((stat, index) => (
               <div key={index} className="group">
                 <div className="flex items-center justify-center mb-2">
                   <stat.icon
-                    className={`w-8 h-8 ${stat.color} group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-6 h-6 sm:w-8 sm:h-8 ${stat.color} group-hover:scale-105 transition-transform duration-300`}
                   />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
+                <div className="text-lg sm:text-2xl font-bold text-gray-900 mb-1">
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-600">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Additional Features */}
-        <div className="mt-8 text-center">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+        {/* Additional Features - Mobile Grid */}
+        <div className="mt-6 sm:mt-8 text-center px-4">
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
             Everything You Need for Your University Journey
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {[
               {
                 icon: Calculator,
@@ -231,10 +236,10 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-white/40 backdrop-blur-sm rounded-lg p-4 border border-white/40 hover:bg-white/60 transition-colors"
+                className="bg-white/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/40 hover:bg-white/70 transition-colors"
               >
-                <feature.icon className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                <h3 className="font-medium text-gray-900 mb-1">
+                <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mx-auto mb-1 sm:mb-2" />
+                <h3 className="font-medium text-gray-900 mb-1 text-xs sm:text-sm">
                   {feature.text}
                 </h3>
                 <p className="text-xs text-gray-600">{feature.desc}</p>
@@ -243,19 +248,19 @@ const UniversityHero = ({ onNavigateToTool }: UniversityHeroProps) => {
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="mt-8 text-center">
+        {/* Call to Action - Mobile Optimized */}
+        <div className="mt-6 sm:mt-8 text-center px-4">
           <Button
             onClick={() => onNavigateToTool("aps-calculator")}
             size="lg"
-            className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <TrendingUp className="w-5 h-5 mr-2" />
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             Start Your Journey - Calculate APS Now
-            <ArrowRight className="w-5 h-5 ml-2" />
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
           </Button>
 
-          <p className="text-sm text-gray-500 mt-3">
+          <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3">
             Join thousands of students who've found their perfect university
             match
           </p>
