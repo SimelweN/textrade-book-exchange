@@ -53,15 +53,17 @@ import {
 } from "lucide-react";
 
 interface AdminResourcesTabProps {
-  // Define any props if needed
+  className?: string;
 }
 
-const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
+const AdminResourcesTab = ({ className }: AdminResourcesTabProps) => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"resources" | "tips">("resources");
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<StudyResource | StudyTip | null>(null);
+  const [selectedItem, setSelectedItem] = useState<
+    StudyResource | StudyTip | null
+  >(null);
   const [formData, setFormData] = useState<Partial<StudyResource & StudyTip>>({
     title: "",
     description: "",
@@ -116,7 +118,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
   };
 
   // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -144,8 +148,16 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
         const normalizedResource = normalizeStudyResource({
           ...formData,
           tags: normalizeTagsToArray(formData.tags as string),
-          type: formData.type as "pdf" | "video" | "website" | "tool" | "course",
-          difficulty: formData.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          type: formData.type as
+            | "pdf"
+            | "video"
+            | "website"
+            | "tool"
+            | "course",
+          difficulty: formData.difficulty as
+            | "Beginner"
+            | "Intermediate"
+            | "Advanced",
         });
 
         await createStudyResource(normalizedResource);
@@ -157,7 +169,10 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
         const normalizedTip = normalizeStudyTip({
           ...formData,
           tags: normalizeTagsToArray(formData.tags as string),
-          difficulty: formData.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          difficulty: formData.difficulty as
+            | "Beginner"
+            | "Intermediate"
+            | "Advanced",
         });
 
         await createStudyTip(normalizedTip);
@@ -231,9 +246,22 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
         const normalizedResource = normalizeStudyResource({
           ...formData,
           id: selectedItem.id,
-          tags: Array.isArray(formData.tags) ? formData.tags : formData.tags.split(',').map(t => t.trim()).filter(t => t),
-          type: formData.type as "pdf" | "video" | "website" | "tool" | "course",
-          difficulty: formData.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          tags: Array.isArray(formData.tags)
+            ? formData.tags
+            : formData.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter((t) => t),
+          type: formData.type as
+            | "pdf"
+            | "video"
+            | "website"
+            | "tool"
+            | "course",
+          difficulty: formData.difficulty as
+            | "Beginner"
+            | "Intermediate"
+            | "Advanced",
         });
 
         await updateStudyResource(selectedItem.id, normalizedResource);
@@ -245,8 +273,16 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
         const normalizedTip = normalizeStudyTip({
           ...formData,
           id: selectedItem.id,
-          tags: Array.isArray(formData.tags) ? formData.tags : formData.tags.split(',').map(t => t.trim()).filter(t => t),
-          difficulty: formData.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          tags: Array.isArray(formData.tags)
+            ? formData.tags
+            : formData.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter((t) => t),
+          difficulty: formData.difficulty as
+            | "Beginner"
+            | "Intermediate"
+            | "Advanced",
         });
 
         await updateStudyTip(selectedItem.id, normalizedTip);
@@ -325,7 +361,8 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
       <Card>
         <CardHeader>
           <CardTitle>
-            {isEditing ? "Edit Item" : "Create New"} {activeTab === "resources" ? "Resource" : "Tip"}
+            {isEditing ? "Edit Item" : "Create New"}{" "}
+            {activeTab === "resources" ? "Resource" : "Tip"}
           </CardTitle>
           <CardDescription>
             {isEditing
@@ -363,7 +400,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
               <Label htmlFor="difficulty">Difficulty</Label>
               <Select
                 value={formData.difficulty || "Beginner"}
-                onValueChange={(value) => handleSelectChange("difficulty", value)}
+                onValueChange={(value) =>
+                  handleSelectChange("difficulty", value)
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select difficulty" />
@@ -496,7 +535,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
                 id="isActive"
                 name="isActive"
                 checked={formData.isActive || false}
-                onCheckedChange={(checked) => handleSwitchChange("isActive", checked)}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("isActive", checked)
+                }
               />
             </div>
 
@@ -507,7 +548,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
                   id="isFeatured"
                   name="isFeatured"
                   checked={formData.isFeatured || false}
-                  onCheckedChange={(checked) => handleSwitchChange("isFeatured", checked)}
+                  onCheckedChange={(checked) =>
+                    handleSwitchChange("isFeatured", checked)
+                  }
                 />
               </div>
             )}
@@ -518,7 +561,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
                 id="isSponsored"
                 name="isSponsored"
                 checked={formData.isSponsored || false}
-                onCheckedChange={(checked) => handleSwitchChange("isSponsored", checked)}
+                onCheckedChange={(checked) =>
+                  handleSwitchChange("isSponsored", checked)
+                }
               />
             </div>
           </div>
@@ -588,19 +633,13 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
                   <X className="mr-2 h-4 w-4" />
                   Cancel
                 </Button>
-                <Button
-                  onClick={handleUpdateItem}
-                  disabled={isCreating}
-                >
+                <Button onClick={handleUpdateItem} disabled={isCreating}>
                   <Save className="mr-2 h-4 w-4" />
                   {isCreating ? "Updating..." : "Update Item"}
                 </Button>
               </>
             ) : (
-              <Button
-                onClick={handleCreateItem}
-                disabled={isCreating}
-              >
+              <Button onClick={handleCreateItem} disabled={isCreating}>
                 <Plus className="mr-2 h-4 w-4" />
                 {isCreating ? "Creating..." : "Create Item"}
               </Button>
@@ -611,7 +650,9 @@ const AdminResourcesTab = ({}: AdminResourcesTabProps) => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Existing {activeTab === "resources" ? "Resources" : "Tips"}</CardTitle>
+          <CardTitle>
+            Existing {activeTab === "resources" ? "Resources" : "Tips"}
+          </CardTitle>
           <CardDescription>
             Manage and edit existing study resources and tips.
           </CardDescription>
