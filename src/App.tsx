@@ -86,6 +86,10 @@ function App() {
                       element={<UniversityInfo />}
                     />
                     <Route
+                      path="/university-profile"
+                      element={<UniversityProfile />}
+                    />
+                    <Route
                       path="/university/:universityId"
                       element={<UniversityProfile />}
                     />
