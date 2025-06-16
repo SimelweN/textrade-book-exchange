@@ -343,8 +343,37 @@ const ModernAPSCalculator: React.FC = () => {
     toast.success("Calculator reset to default values");
   };
 
-  const handleSaveProfile = () => {
-    toast.success("APS profile saved successfully!");
+  const handleSaveProfile = async () => {
+    if (!user) {
+      toast.error("Please log in to save your APS score");
+      navigate("/login");
+      return;
+    }
+
+    if (totalAPS === 0) {
+      toast.error("Please enter your subject marks before saving");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ aps_score: totalAPS })
+        .eq("id", user.id);
+
+      if (error) {
+        console.error("Error saving APS score:", error);
+        toast.error("Failed to save APS score. Please try again.");
+      } else {
+        toast.success(`APS score of ${totalAPS} saved to your profile!`);
+      }
+    } catch (error) {
+      console.error("Error saving APS score:", error);
+      toast.error("Failed to save APS score. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
