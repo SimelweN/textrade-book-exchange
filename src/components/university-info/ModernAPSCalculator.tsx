@@ -82,12 +82,11 @@ interface DegreeInsight {
   careerProspects?: string[];
 }
 
-// Default subjects for APS calculation
+// Default subjects for APS calculation (exactly 6 subjects required)
 const CORE_SUBJECTS: APSSubject[] = [
   { name: "English Home Language", marks: 0, level: 4, points: 0 },
   { name: "Mathematics", marks: 0, level: 4, points: 0 },
-  { name: "Physical Sciences", marks: 0, level: 4, points: 0 },
-  { name: "Life Sciences", marks: 0, level: 4, points: 0 },
+  { name: "Select Subject", marks: 0, level: 4, points: 0 },
   { name: "Select Subject", marks: 0, level: 4, points: 0 },
   { name: "Select Subject", marks: 0, level: 4, points: 0 },
   { name: "Select Subject", marks: 0, level: 4, points: 0 },
