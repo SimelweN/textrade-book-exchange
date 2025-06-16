@@ -410,11 +410,13 @@ const PopularUniversities = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate(`/books?university=${university.id}`)}
-                  className="flex-1 text-xs sm:text-sm"
+                  onClick={() =>
+                    navigate(`/university-profile?id=${university.id}`)
+                  }
+                  className="border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors text-xs sm:text-sm w-full sm:w-auto"
                 >
-                  <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  Books
+                  <UniversityIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  View Details
                 </Button>
 
                 <Button
