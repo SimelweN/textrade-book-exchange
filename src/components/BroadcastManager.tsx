@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -15,16 +14,47 @@ const BroadcastManager = () => {
     null,
   );
   const [showBroadcast, setShowBroadcast] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastCheckTime, setLastCheckTime] = useState<number>(0);
 
   // Always call useAuth - if it fails, the component will fail gracefully
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const checkForBroadcasts = async () => {
+      // Prevent rapid successive calls (debounce with 5 second minimum interval)
+      const now = Date.now();
+      if (now - lastCheckTime < 5000) {
+        console.log(
+          "⏱️ [BroadcastManager] Skipping broadcast check - too soon",
+        );
+        return;
+      }
+
+      // Prevent concurrent requests
+      if (isLoading) {
+        console.log(
+          "⏱️ [BroadcastManager] Skipping broadcast check - already loading",
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      setLastCheckTime(now);
+
       try {
+        console.log("🔄 [BroadcastManager] Checking for broadcasts...");
         const latestBroadcast = await getLatestBroadcast();
 
-        if (!latestBroadcast) return;
+        if (!latestBroadcast) {
+          console.log("ℹ️ [BroadcastManager] No active broadcasts found");
+          return;
+        }
+
+        console.log(
+          "📢 [BroadcastManager] Found broadcast:",
+          latestBroadcast.title,
+        );
 
         // Check if user has seen this broadcast (using localStorage for guests)
         if (isAuthenticated && user) {
@@ -36,7 +66,23 @@ const BroadcastManager = () => {
             setCurrentBroadcast(latestBroadcast);
             setShowBroadcast(true);
             // Save to notifications for logged-in users - fix parameter order
-            await saveBroadcastToNotifications(latestBroadcast, user.id);
+            try {
+              await saveBroadcastToNotifications(latestBroadcast, user.id);
+              console.log(
+                "✅ [BroadcastManager] Broadcast saved to notifications",
+              );
+            } catch (notifError) {
+              console.warn(
+                "⚠️ [BroadcastManager] Failed to save to notifications:",
+                notifError instanceof Error
+                  ? notifError.message
+                  : String(notifError),
+              );
+            }
+          } else {
+            console.log(
+              "ℹ️ [BroadcastManager] User has already viewed this broadcast",
+            );
           }
         } else {
           // For guests, use localStorage
@@ -47,20 +93,31 @@ const BroadcastManager = () => {
           if (!viewedBroadcasts.includes(latestBroadcast.id)) {
             setCurrentBroadcast(latestBroadcast);
             setShowBroadcast(true);
+            console.log(
+              "✅ [BroadcastManager] Showing broadcast to guest user",
+            );
+          } else {
+            console.log(
+              "ℹ️ [BroadcastManager] Guest has already viewed this broadcast",
+            );
           }
         }
       } catch (error) {
         // Broadcasts are optional - don't spam console with errors
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         console.log(
-          "ℹ️ [BroadcastManager] Broadcast check skipped:",
-          error instanceof Error ? error.message : String(error),
+          "ℹ️ [BroadcastManager] Broadcast check skipped due to error:",
+          errorMessage,
         );
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    // Check for broadcasts on mount and when auth state changes
+    // Only check for broadcasts if not already loading and if enough time has passed
     checkForBroadcasts();
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user?.id]); // Only depend on user ID, not the full user object
 
   const handleDismiss = async () => {
     if (!currentBroadcast) return;
