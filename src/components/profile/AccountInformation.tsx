@@ -17,7 +17,10 @@ interface AccountInformationProps {
   onProfileUpdate: (updatedProfile: UserProfile) => void;
 }
 
-const AccountInformation = ({ profile, onProfileUpdate }: AccountInformationProps) => {
+const AccountInformation = ({
+  profile,
+  onProfileUpdate,
+}: AccountInformationProps) => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -28,7 +31,7 @@ const AccountInformation = ({ profile, onProfileUpdate }: AccountInformationProp
   });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -58,14 +61,28 @@ const AccountInformation = ({ profile, onProfileUpdate }: AccountInformationProp
         name: data.name,
         bio: data.bio,
         updated_at: data.updated_at,
-        pickup_address: typeof data.pickup_address === 'object' && data.pickup_address !== null 
-          ? data.pickup_address as any 
-          : undefined,
-        shipping_address: typeof data.shipping_address === 'object' && data.shipping_address !== null 
-          ? data.shipping_address as any 
-          : undefined,
+        pickup_address:
+          typeof data.pickup_address === "object" &&
+          data.pickup_address !== null
+            ? (data.pickup_address as {
+                street: string;
+                city: string;
+                postal_code: string;
+                province: string;
+              })
+            : undefined,
+        shipping_address:
+          typeof data.shipping_address === "object" &&
+          data.shipping_address !== null
+            ? (data.shipping_address as {
+                street: string;
+                city: string;
+                postal_code: string;
+                province: string;
+              })
+            : undefined,
       };
-      
+
       onProfileUpdate(updatedProfile);
       setIsEditing(false);
       toast.success("Profile updated successfully!");
@@ -147,7 +164,11 @@ const AccountInformation = ({ profile, onProfileUpdate }: AccountInformationProp
             <div>
               <Label>Account Status</Label>
               <div className="mt-1">
-                <Badge variant={profile.status === "active" ? "default" : "destructive"}>
+                <Badge
+                  variant={
+                    profile.status === "active" ? "default" : "destructive"
+                  }
+                >
                   {profile.status === "active" ? "Active" : "Suspended"}
                 </Badge>
               </div>
@@ -174,14 +195,16 @@ const AccountInformation = ({ profile, onProfileUpdate }: AccountInformationProp
                 <Button onClick={handleSave} disabled={isSaving}>
                   {isSaving ? "Saving..." : "Save Changes"}
                 </Button>
-                <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                >
                   Cancel
                 </Button>
               </>
             ) : (
-              <Button onClick={() => setIsEditing(true)}>
-                Edit Profile
-              </Button>
+              <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
             )}
           </div>
         </CardContent>
