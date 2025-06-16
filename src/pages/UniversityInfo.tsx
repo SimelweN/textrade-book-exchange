@@ -188,34 +188,34 @@ const UniversityInfo = () => {
             onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-8 h-auto">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-8 h-auto bg-gray-100">
               <TabsTrigger
                 value="overview"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <University className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs">Overview</span>
+                <span className="text-xs sm:text-sm">Universities</span>
               </TabsTrigger>
               <TabsTrigger
                 value="aps-calculator"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <Calculator className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs">APS</span>
+                <span className="text-xs sm:text-sm">APS Calculator</span>
               </TabsTrigger>
               <TabsTrigger
                 value="bursaries"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs">Bursaries</span>
+                <span className="text-xs sm:text-sm">Bursaries</span>
               </TabsTrigger>
               <TabsTrigger
                 value="books"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs">Books</span>
+                <span className="text-xs sm:text-sm">Textbooks</span>
               </TabsTrigger>
             </TabsList>
 
@@ -229,31 +229,42 @@ const UniversityInfo = () => {
               {/* Quick Tools Section */}
               <div className="grid md:grid-cols-2 gap-6">
                 <Card
-                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-sm"
                   onClick={() => handleTabChange("aps-calculator")}
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Calculator className="h-5 w-5 text-blue-600" />
+                      <Calculator
+                        className="h-5 w-5"
+                        style={{ color: "rgb(68, 171, 131)" }}
+                      />
                       APS Calculator
                     </CardTitle>
                     <CardDescription>
-                      Calculate your Admission Point Score and find eligible
-                      universities
+                      Calculate your Admission Point Score and find qualifying
+                      programs
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Badge variant="secondary">Most Popular</Badge>
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-50 text-green-700 border-green-200"
+                    >
+                      Most Popular
+                    </Badge>
                   </CardContent>
                 </Card>
 
                 <Card
-                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-sm"
                   onClick={() => handleTabChange("bursaries")}
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="h-5 w-5 text-green-600" />
+                      <DollarSign
+                        className="h-5 w-5"
+                        style={{ color: "rgb(68, 171, 131)" }}
+                      />
                       Find Bursaries
                     </CardTitle>
                     <CardDescription>
@@ -261,16 +272,21 @@ const UniversityInfo = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Badge variant="outline">40+ Available</Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-green-200 text-green-700 bg-green-50"
+                    >
+                      40+ Available
+                    </Badge>
                   </CardContent>
                 </Card>
               </div>
 
               {/* About Section */}
-              <Card>
+              <Card className="border-0 shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Building className="h-5 w-5" />
+                    <Building className="h-5 w-5 text-gray-600" />
                     About ReBooked Campus
                   </CardTitle>
                 </CardHeader>
