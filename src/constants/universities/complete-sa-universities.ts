@@ -26,7 +26,7 @@ const createDegree = (
   apsRequirement: number,
   description: string,
   careerProspects: string[] = [],
-  subjects: any[] = [],
+  subjects: string[] = [],
 ) => ({
   id,
   name,
