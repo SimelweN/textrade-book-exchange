@@ -213,8 +213,25 @@ const ModernAPSCalculator: React.FC = () => {
   const degreeAnalysis = useMemo(() => {
     const degrees: DegreeInsight[] = [];
 
+    // Debug logging
+    if (import.meta.env.DEV) {
+      console.log(
+        `🔍 APS Calculator: Analyzing ${ALL_SOUTH_AFRICAN_UNIVERSITIES.length} universities for APS ${totalAPS}`,
+      );
+    }
+
     // Always show programs, even if user hasn't entered APS yet
     ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
+      const universityProgramCount =
+        university.faculties?.reduce(
+          (total, fac) => total + (fac.degrees?.length || 0),
+          0,
+        ) || 0;
+
+      if (import.meta.env.DEV && universityProgramCount === 0) {
+        console.warn(`⚠️ ${university.name} has no programs!`);
+      }
+
       university.faculties?.forEach((faculty) => {
         faculty.degrees?.forEach((degree) => {
           const eligible = totalAPS >= degree.apsRequirement;
@@ -240,6 +257,15 @@ const ModernAPSCalculator: React.FC = () => {
         });
       });
     });
+
+    // Debug logging
+    if (import.meta.env.DEV) {
+      console.log(`📊 Found ${degrees.length} total programs`);
+      if (totalAPS > 0) {
+        const eligible = degrees.filter((d) => d.eligible).length;
+        console.log(`✅ ${eligible} programs eligible for APS ${totalAPS}`);
+      }
+    }
 
     return degrees.sort((a, b) => {
       // Sort eligible programs first, then by APS requirement
