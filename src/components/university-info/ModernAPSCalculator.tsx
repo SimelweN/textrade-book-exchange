@@ -328,17 +328,26 @@ const ModernAPSCalculator: React.FC = () => {
   const filteredDegrees = useMemo(() => {
     let filtered = degreeAnalysis;
 
-    switch (selectedFilter) {
-      case "eligible":
-        filtered = filtered.filter((d) => d.eligible);
-        break;
-      case "competitive":
-        filtered = filtered.filter((d) => d.competitiveness === "High");
-        break;
+    if (totalAPS === 0) {
+      // Show a sample of programs when no APS is entered
+      filtered = degreeAnalysis.slice(0, 20);
+    } else {
+      switch (selectedFilter) {
+        case "eligible":
+          filtered = filtered.filter((d) => d.eligible);
+          break;
+        case "competitive":
+          filtered = filtered.filter((d) => d.competitiveness === "High");
+          break;
+        case "all":
+        default:
+          // Show all programs, but prioritize eligible ones
+          break;
+      }
     }
 
-    return filtered.slice(0, 12);
-  }, [degreeAnalysis, selectedFilter]);
+    return filtered.slice(0, 20);
+  }, [degreeAnalysis, selectedFilter, totalAPS]);
 
   const handleReset = () => {
     setSubjects(CORE_SUBJECTS);
