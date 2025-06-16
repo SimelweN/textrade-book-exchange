@@ -527,18 +527,11 @@ const ModernAPSCalculator: React.FC = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
                   <Button
-                    onClick={handleSaveProfile}
-                    disabled={isSaving || totalAPS === 0}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
-                  >
-                    {isSaving ? "Saving..." : "Save My APS"}
-                  </Button>
-                  <Button
                     onClick={handleReset}
                     variant="outline"
-                    className="border-slate-200 hover:bg-slate-50"
+                    className="w-full border-slate-200 hover:bg-slate-50"
                   >
-                    Reset
+                    Reset Calculator
                   </Button>
                 </div>
               </CardContent>
