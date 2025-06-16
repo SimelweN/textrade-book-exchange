@@ -27,6 +27,7 @@ import PopularUniversities from "@/components/university-info/PopularUniversitie
 import SEO from "@/components/SEO";
 import CampusNavbar from "@/components/CampusNavbar";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import UniversityDebug from "@/components/university-info/UniversityDebug";
 
 // Lazy load heavy components for better performance
 const APSCalculatorSection = lazy(
@@ -277,6 +278,9 @@ const UniversityInfo = () => {
           </Tabs>
         </div>
       </div>
+
+      {/* Debug component - shows in development */}
+      {import.meta.env.DEV && <UniversityDebug />}
     </>
   );
 };
