@@ -73,7 +73,24 @@ export const useNotifications = (): NotificationHookReturn => {
               array.findIndex((n) => n.id === notification.id) === index,
           );
 
-          setNotifications(uniqueNotifications);
+          // Additional check to prevent setting duplicate data
+          const newNotificationIds = new Set(
+            uniqueNotifications.map((n) => n.id),
+          );
+          const currentNotificationIds = new Set(
+            notifications.map((n) => n.id),
+          );
+
+          // Only update if the notifications have actually changed
+          const hasChanges =
+            uniqueNotifications.length !== notifications.length ||
+            !Array.from(newNotificationIds).every((id) =>
+              currentNotificationIds.has(id),
+            );
+
+          if (hasChanges) {
+            setNotifications(uniqueNotifications);
+          }
           setHasError(false);
           setLastError(undefined);
           retryCountRef.current = 0;
@@ -194,7 +211,11 @@ export const useNotifications = (): NotificationHookReturn => {
               clearNotificationCache(user.id);
 
               // Only refresh if we don't have errors or if this is an insert/update
-              if (!hasError || payload.eventType === "INSERT") {
+              // Also prevent refresh if we're already refreshing
+              if (
+                (!hasError || payload.eventType === "INSERT") &&
+                !refreshingRef.current
+              ) {
                 refreshNotifications().catch((error) => {
                   if (import.meta.env.DEV) {
                     console.error(
@@ -204,7 +225,7 @@ export const useNotifications = (): NotificationHookReturn => {
                   }
                 });
               }
-            }, 1000); // 1 second debounce
+            }, 2000); // Increased to 2 second debounce to reduce rapid calls
           },
         )
         .subscribe((status) => {

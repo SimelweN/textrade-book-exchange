@@ -76,8 +76,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [initError, setInitError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
 
-  const isAuthenticated = !!user;
-  const isAdmin = profile?.isAdmin || false;
+  const isAuthenticated = !!user && !!session;
+  const isAdmin = profile?.isAdmin === true;
 
   const createFallbackProfile = useCallback(
     (user: User): UserProfile => ({

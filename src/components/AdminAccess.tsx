@@ -25,8 +25,7 @@ const AdminAccess = () => {
       className="flex items-center hover:bg-book-100 min-h-[44px] touch-manipulation"
     >
       <Shield className="mr-2 h-4 w-4" />
-      <span className="hidden lg:inline">Admin Dashboard</span>
-      <span className="lg:hidden">Admin</span>
+      <span>Admin</span>
     </Button>
   );
 };

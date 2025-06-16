@@ -36,6 +36,7 @@ const ActivityLog = () => {
   const loadActivities = useCallback(async () => {
     if (!user) {
       setIsLoading(false);
+      setActivities([]);
       return;
     }
 
@@ -43,15 +44,22 @@ const ActivityLog = () => {
     setError(null);
 
     try {
+      console.log("Loading activities for user:", user.id);
       const userActivities = await ActivityService.getUserActivities(
         user.id,
         100,
       );
 
+      console.log("Loaded activities:", userActivities.length);
       setActivities(userActivities);
+
+      if (userActivities.length === 0) {
+        console.log("No activities found, but this is expected for new users");
+      }
     } catch (error) {
       console.error("Error loading activities:", error);
       setError("Failed to load activities. Please try again.");
+      // Don't clear activities on error - keep any existing data
     } finally {
       setIsLoading(false);
     }
