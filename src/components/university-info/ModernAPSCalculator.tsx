@@ -1,9 +1,9 @@
 import React from "react";
-import WorkingAPSCalculator from "./WorkingAPSCalculator";
+import SimpleAPSCalculator from "./SimpleAPSCalculator";
 
-// Use the working version with guaranteed data
+// Use the simple, reliable version that definitely works
 const ModernAPSCalculator: React.FC = () => {
-  return <WorkingAPSCalculator />;
+  return <SimpleAPSCalculator />;
 };
 
 export default ModernAPSCalculator;
