@@ -329,9 +329,7 @@ const UniversityInfo = () => {
             </TabsContent>
 
             <TabsContent value="aps-calculator" className="space-y-6">
-              <Suspense fallback={<LoadingSection />}>
-                <APSCalculatorSection />
-              </Suspense>
+              <APSCalculatorSection />
             </TabsContent>
 
             <TabsContent value="bursaries" className="space-y-6">
