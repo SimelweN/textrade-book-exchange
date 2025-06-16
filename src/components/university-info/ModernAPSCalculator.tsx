@@ -156,7 +156,6 @@ const ModernAPSCalculator: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<
     "all" | "eligible" | "competitive"
   >("all");
-  const [isSaving, setIsSaving] = useState(false);
 
   // Calculate total APS
   const totalAPS = useMemo(() => {
