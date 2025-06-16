@@ -395,7 +395,7 @@ const ModernAPSCalculator: React.FC = () => {
           </div>
 
           {/* Key Performance Indicators */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             <div className="bg-slate-800 rounded-xl p-6 text-center border border-slate-700">
               <TrendingUp className="h-8 w-8 text-emerald-400 mx-auto mb-3" />
               <div className="text-3xl font-bold text-white mb-1">
