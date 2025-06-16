@@ -793,9 +793,11 @@ const ModernAPSCalculator: React.FC = () => {
                           No Programs Available
                         </h3>
                         <p className="text-slate-500 mb-4">
-                          {totalAPS === 0
-                            ? "Enter your marks above or try the sample data to see available programs."
-                            : "No programs match your current criteria. Try adjusting your filters or improving your APS score."}
+                          {degreeAnalysis.length === 0
+                            ? "There seems to be an issue loading university programs. Please refresh the page."
+                            : totalAPS === 0
+                              ? "Enter your marks above or try the sample data to see available programs."
+                              : "No programs match your current criteria. Try adjusting your filters or improving your APS score."}
                         </p>
                         {totalAPS === 0 && (
                           <Button
@@ -804,6 +806,15 @@ const ModernAPSCalculator: React.FC = () => {
                           >
                             Load Sample Data
                           </Button>
+                        )}
+                        {degreeAnalysis.length === 0 && (
+                          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-700 text-sm">
+                              Debug info: Total universities:{" "}
+                              {ALL_SOUTH_AFRICAN_UNIVERSITIES.length}, Total
+                              programs found: {degreeAnalysis.length}
+                            </p>
+                          </div>
                         )}
                       </div>
                     ) : (
