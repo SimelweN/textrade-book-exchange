@@ -194,43 +194,44 @@ const ModernAPSCalculator: React.FC = () => {
     );
   }, [subjects]);
 
-  // Comprehensive degree analysis - Only show programs where user APS >= program minimum APS
+  // Comprehensive degree analysis - Show all programs with eligibility status
   const degreeAnalysis = useMemo(() => {
     const degrees: DegreeInsight[] = [];
 
-    // Only process if user has entered an APS score
-    if (totalAPS > 0) {
-      ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
-        university.faculties?.forEach((faculty) => {
-          faculty.degrees?.forEach((degree) => {
-            const eligible = totalAPS >= degree.apsRequirement;
+    // Always show programs, even if user hasn't entered APS yet
+    ALL_SOUTH_AFRICAN_UNIVERSITIES.forEach((university) => {
+      university.faculties?.forEach((faculty) => {
+        faculty.degrees?.forEach((degree) => {
+          const eligible = totalAPS >= degree.apsRequirement;
+          const apsGap = eligible ? 0 : degree.apsRequirement - totalAPS;
 
-            // Only include degrees where the user meets the APS requirement
-            if (eligible) {
-              let competitiveness: "High" | "Moderate" | "Accessible" =
-                "Accessible";
-              if (degree.apsRequirement >= 32) competitiveness = "High";
-              else if (degree.apsRequirement >= 26)
-                competitiveness = "Moderate";
+          let competitiveness: "High" | "Moderate" | "Accessible" =
+            "Accessible";
+          if (degree.apsRequirement >= 32) competitiveness = "High";
+          else if (degree.apsRequirement >= 26) competitiveness = "Moderate";
 
-              degrees.push({
-                name: degree.name,
-                university: university.name,
-                faculty: faculty.name,
-                apsRequirement: degree.apsRequirement,
-                duration: degree.duration,
-                description: degree.description,
-                eligible: true,
-                competitiveness,
-                careerProspects: degree.careerProspects || [],
-              });
-            }
+          degrees.push({
+            name: degree.name,
+            university: university.name,
+            faculty: faculty.name,
+            apsRequirement: degree.apsRequirement,
+            duration: degree.duration,
+            description: degree.description,
+            eligible: eligible,
+            apsGap: apsGap,
+            competitiveness,
+            careerProspects: degree.careerProspects || [],
           });
         });
       });
-    }
+    });
 
-    return degrees.sort((a, b) => a.apsRequirement - b.apsRequirement);
+    return degrees.sort((a, b) => {
+      // Sort eligible programs first, then by APS requirement
+      if (a.eligible && !b.eligible) return -1;
+      if (!a.eligible && b.eligible) return 1;
+      return a.apsRequirement - b.apsRequirement;
+    });
   }, [totalAPS]);
 
   // University matching analysis
