@@ -193,7 +193,20 @@ const CampusBooksSection = () => {
   }, [searchTerm, selectedUniversity, selectedFaculty, selectedLevel]);
 
   // Book card component
-  const BookCard = ({ book }: { book: any }) => {
+  const BookCard = ({
+    book,
+  }: {
+    book: {
+      id: string;
+      title: string;
+      author: string;
+      condition: string;
+      price: number;
+      university: string;
+      category: string;
+      cover_image?: string;
+    };
+  }) => {
     const getConditionColor = (condition: string) => {
       switch (condition.toLowerCase()) {
         case "excellent":
