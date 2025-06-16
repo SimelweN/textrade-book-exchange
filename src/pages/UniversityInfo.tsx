@@ -69,6 +69,13 @@ const UniversityInfo = () => {
     }
   }, [setSearchParams]);
 
+  // Run program verification in development
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      logProgramVerification();
+    }
+  }, []);
+
   // Redirect to new university profile route if university parameter is present
   useEffect(() => {
     if (selectedUniversityId) {
