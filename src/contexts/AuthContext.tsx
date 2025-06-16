@@ -20,10 +20,10 @@ import { addNotification } from "@/services/notificationService";
 import { logError, getErrorMessage } from "@/utils/errorUtils";
 
 // Simple logging for development
-const devLog = (message: string, data?: any) => {
+const devLog = (message: string, data?: unknown) => {
   if (import.meta.env.DEV) console.log(message, data);
 };
-const devWarn = (message: string, data?: any) => {
+const devWarn = (message: string, data?: unknown) => {
   if (import.meta.env.DEV) console.warn(message, data);
 };
 
