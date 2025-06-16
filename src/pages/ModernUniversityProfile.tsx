@@ -227,8 +227,8 @@ const ModernUniversityProfile: React.FC = () => {
               </div>
             </div>
 
-            {/* Key Statistics Row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-slate-700">
+            {/* Key Statistics Row - Mobile Optimized */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-700">
               {[
                 {
                   icon: Users,
@@ -257,12 +257,14 @@ const ModernUniversityProfile: React.FC = () => {
                   color: "text-orange-400",
                 },
               ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <stat.icon className={`h-8 w-8 ${stat.color} mx-auto mb-3`} />
-                  <div className="text-3xl font-bold text-white mb-1">
+                <div key={index} className="text-center p-2">
+                  <stat.icon
+                    className={`h-6 w-6 sm:h-8 sm:w-8 ${stat.color} mx-auto mb-2 sm:mb-3`}
+                  />
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-slate-300 text-sm uppercase tracking-wider">
+                  <div className="text-slate-300 text-xs sm:text-sm uppercase tracking-wider">
                     {stat.label}
                   </div>
                 </div>
