@@ -287,18 +287,28 @@ const ModernAPSCalculator: React.FC = () => {
     const topUniversities = universityMatches.filter(
       (u) => u.eligiblePrograms > 0,
     ).length;
-    const averageRequirement = Math.round(
-      degreeAnalysis.reduce((sum, d) => sum + d.apsRequirement, 0) /
-        totalDegrees,
-    );
+    const averageRequirement =
+      totalDegrees > 0
+        ? Math.round(
+            degreeAnalysis.reduce((sum, d) => sum + d.apsRequirement, 0) /
+              totalDegrees,
+          )
+        : 0;
+
+    const performancePercentile =
+      isNaN(totalAPS) || totalAPS === 0
+        ? 0
+        : Math.min(100, Math.round((totalAPS / 42) * 100));
 
     return {
       totalDegrees,
       eligibleCount,
-      eligibilityRate,
+      eligibilityRate: isNaN(eligibilityRate) ? 0 : eligibilityRate,
       topUniversities,
-      averageRequirement,
-      performancePercentile: Math.min(100, Math.round((totalAPS / 42) * 100)),
+      averageRequirement: isNaN(averageRequirement) ? 0 : averageRequirement,
+      performancePercentile: isNaN(performancePercentile)
+        ? 0
+        : performancePercentile,
     };
   }, [degreeAnalysis, universityMatches, totalAPS]);
 
