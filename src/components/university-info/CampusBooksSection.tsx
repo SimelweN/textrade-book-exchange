@@ -46,21 +46,13 @@ const CampusBooksSection = () => {
   // Get universities safely
   const universities = useMemo(() => {
     try {
-      if (
-        !ALL_SOUTH_AFRICAN_UNIVERSITIES ||
-        !Array.isArray(ALL_SOUTH_AFRICAN_UNIVERSITIES)
-      ) {
+      if (!ALL_SOUTH_AFRICAN_UNIVERSITIES || !Array.isArray(ALL_SOUTH_AFRICAN_UNIVERSITIES)) {
         console.warn("Universities data not available");
         return [];
       }
 
-      return ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(
-        (uni) =>
-          uni &&
-          uni.id &&
-          uni.name &&
-          uni.faculties &&
-          Array.isArray(uni.faculties),
+      return ALL_SOUTH_AFRICAN_UNIVERSITIES.filter(uni =>
+        uni && uni.id && uni.name && uni.faculties && Array.isArray(uni.faculties)
       );
     } catch (error) {
       console.error("Error loading universities for books section:", error);
@@ -73,13 +65,11 @@ const CampusBooksSection = () => {
     try {
       if (!selectedUniversity) return [];
 
-      const university = universities.find(
-        (uni) => uni.id === selectedUniversity,
-      );
+      const university = universities.find(uni => uni.id === selectedUniversity);
       if (!university || !university.faculties) return [];
 
-      return university.faculties.filter(
-        (faculty) => faculty && faculty.id && faculty.name,
+      return university.faculties.filter(faculty =>
+        faculty && faculty.id && faculty.name
       );
     } catch (error) {
       console.error("Error getting faculties:", error);
@@ -162,27 +152,24 @@ const CampusBooksSection = () => {
 
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
-        filtered = filtered.filter(
-          (book) =>
-            book.title.toLowerCase().includes(searchLower) ||
-            book.author.toLowerCase().includes(searchLower) ||
-            book.description.toLowerCase().includes(searchLower) ||
-            book.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
+        filtered = filtered.filter(book =>
+          book.title.toLowerCase().includes(searchLower) ||
+          book.author.toLowerCase().includes(searchLower) ||
+          book.description.toLowerCase().includes(searchLower) ||
+          book.tags.some(tag => tag.toLowerCase().includes(searchLower))
         );
       }
 
       if (selectedUniversity && selectedUniversity !== "all") {
-        filtered = filtered.filter(
-          (book) => book.university === selectedUniversity,
-        );
+        filtered = filtered.filter(book => book.university === selectedUniversity);
       }
 
       if (selectedFaculty && selectedFaculty !== "all") {
-        filtered = filtered.filter((book) => book.faculty === selectedFaculty);
+        filtered = filtered.filter(book => book.faculty === selectedFaculty);
       }
 
       if (selectedLevel && selectedLevel !== "all") {
-        filtered = filtered.filter((book) => book.level === selectedLevel);
+        filtered = filtered.filter(book => book.level === selectedLevel);
       }
 
       return filtered;
@@ -193,38 +180,27 @@ const CampusBooksSection = () => {
   }, [searchTerm, selectedUniversity, selectedFaculty, selectedLevel]);
 
   // Book card component
-  const BookCard = ({
-    book,
-  }: {
-    book: {
-      id: string;
-      title: string;
-      author: string;
-      condition: string;
-      price: number;
-      university: string;
-      category: string;
-      cover_image?: string;
-    };
-  }) => {
+  const BookCard = ({ book }: { book: {
+    id: string;
+    title: string;
+    author: string;
+    condition: string;
+    price: number;
+    university: string;
+    category: string;
+    cover_image?: string;
+  } }) => {
     const getConditionColor = (condition: string) => {
       switch (condition.toLowerCase()) {
-        case "excellent":
-          return "bg-green-100 text-green-800 border-green-200";
-        case "very good":
-          return "bg-blue-100 text-blue-800 border-blue-200";
-        case "good":
-          return "bg-yellow-100 text-yellow-800 border-yellow-200";
-        case "fair":
-          return "bg-orange-100 text-orange-800 border-orange-200";
-        default:
-          return "bg-gray-100 text-gray-800 border-gray-200";
+        case 'excellent': return 'bg-green-100 text-green-800 border-green-200';
+        case 'very good': return 'bg-blue-100 text-blue-800 border-blue-200';
+        case 'good': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        case 'fair': return 'bg-orange-100 text-orange-800 border-orange-200';
+        default: return 'bg-gray-100 text-gray-800 border-gray-200';
       }
     };
 
-    const universityInfo = universities.find(
-      (uni) => uni.id === book.university,
-    );
+    const universityInfo = universities.find(uni => uni.id === book.university);
 
     return (
       <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
@@ -250,7 +226,9 @@ const CampusBooksSection = () => {
               <div className="text-2xl font-bold text-green-600">
                 R{book.price}
               </div>
-              <div className="text-xs text-gray-500">ISBN: {book.isbn}</div>
+              <div className="text-xs text-gray-500">
+                ISBN: {book.isbn}
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -278,11 +256,7 @@ const CampusBooksSection = () => {
           {/* Tags */}
           <div className="flex flex-wrap gap-1 mb-4">
             {book.tags.slice(0, 3).map((tag: string, index: number) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="text-xs bg-gray-100"
-              >
+              <Badge key={index} variant="secondary" className="text-xs bg-gray-100">
                 {tag}
               </Badge>
             ))}
@@ -322,88 +296,85 @@ const CampusBooksSection = () => {
 
   if (universities.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <BookOpen className="w-5 h-5" />
-            <span>Campus Books</span>
-          </CardTitle>
+      <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
+        <CardHeader className="pb-3 sm:pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 mb-2">
+            <CardTitle className="text-base sm:text-lg font-bold text-blue-900 line-clamp-2">
+              {book.title}
+            </CardTitle>
+            <Badge className={`${getConditionColor(book.condition)} text-xs whitespace-nowrap`}>
+              {book.condition}
+            </Badge>
+          </div>
+          <CardDescription className="text-sm text-gray-600 mb-2">
+            by {book.author}
+          </CardDescription>
+          <div className="text-xl sm:text-2xl font-bold text-green-600 mb-2">
+            R{book.price.toFixed(2)}
+          </div>
         </CardHeader>
-        <CardContent>
-          <Alert className="border-yellow-200 bg-yellow-50">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              University data is currently loading. Please try again later.
-            </AlertDescription>
-          </Alert>
+
+        <CardContent className="pt-0">
+          {/* University and Location Info */}
+          <div className="mb-3 space-y-1">
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+              <Building className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="truncate">{universityInfo?.name || book.university}</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+              <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="truncate">{book.faculty}</span>
+            </div>
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="truncate">{book.location}</span>
+            </div>
+          </div>
+
+          <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
+            {book.description}
+          </p>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1 mb-3 sm:mb-4">
+            {book.tags.slice(0, 3).map((tag: string, index: number) => (
+              <Badge key={index} variant="secondary" className="text-xs bg-gray-100">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-3 sm:mb-4">
+            <span className="truncate">Sold by: {book.seller}</span>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Star className="w-3 h-3 fill-current text-yellow-400" />
+              <span>4.5</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              size="sm"
+              className="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
+              onClick={() => navigate(`/book/${book.id}`)}
+            >
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+              View Details
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full sm:w-auto border-green-200 text-green-600 hover:bg-green-50 text-xs sm:text-sm"
+              onClick={() => navigate(`/cart?add=${book.id}`)}
+            >
+              <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4 mr-2 sm:mr-0" />
+              <span className="sm:hidden">Add to Cart</span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Header with Image */}
-      <div className="relative text-center space-y-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=400&fit=crop&crop=center"
-            alt="Stack of university textbooks"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-green-50/80 to-blue-50/80" />
-        </div>
-        <div className="relative z-10">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <BookOpen className="w-8 h-8 text-green-600" />
-            <h2 className="text-3xl font-bold text-gray-900">
-              Campus Textbook Marketplace
-            </h2>
-          </div>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Buy and sell university textbooks with fellow students. Find
-            affordable books for your courses and sell your used textbooks to
-            help other students.
-          </p>
-        </div>
-      </div>
-
-      {/* Search and Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Search className="w-5 h-5" />
-            <span>Find Your Books</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search by title, author, or subject..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                University
-              </label>
-              <Select
-                value={selectedUniversity}
-                onValueChange={setSelectedUniversity}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select university" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Universities</SelectItem>
-                  {universities.map((university) => (
                     <SelectItem key={university.id} value={university.id}>
                       {university.abbreviation || university.name}
                     </SelectItem>
@@ -456,10 +427,7 @@ const CampusBooksSection = () => {
           </div>
 
           {/* Clear Filters */}
-          {(searchTerm ||
-            (selectedUniversity && selectedUniversity !== "all") ||
-            (selectedFaculty && selectedFaculty !== "all") ||
-            (selectedLevel && selectedLevel !== "all")) && (
+          {(searchTerm || (selectedUniversity && selectedUniversity !== "all") || (selectedFaculty && selectedFaculty !== "all") || (selectedLevel && selectedLevel !== "all")) && (
             <div className="flex justify-end">
               <Button
                 variant="outline"
@@ -500,8 +468,7 @@ const CampusBooksSection = () => {
                 No books found
               </h3>
               <p className="text-gray-500 mb-4">
-                Try adjusting your search criteria or browse all available
-                books.
+                Try adjusting your search criteria or browse all available books.
               </p>
               <Button
                 onClick={() => {
