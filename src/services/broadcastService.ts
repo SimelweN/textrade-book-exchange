@@ -38,8 +38,13 @@ export const broadcastService = {
         .single();
 
       if (error) {
-        console.error("Error creating broadcast:", error);
-        throw new Error(`Failed to create broadcast: ${error.message}`);
+        const errorMessage = error.message || "Unknown error";
+        console.error("Error creating broadcast:", {
+          message: errorMessage,
+          code: error.code,
+          details: error.details,
+        });
+        throw new Error(`Failed to create broadcast: ${errorMessage}`);
       }
       if (!data) {
         throw new Error("No data returned after creating broadcast");
@@ -61,12 +66,19 @@ export const broadcastService = {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching broadcasts:", error);
+        const errorMessage = error.message || "Unknown error";
+        console.error("Error fetching broadcasts:", {
+          message: errorMessage,
+          code: error.code,
+          details: error.details,
+        });
         return [];
       }
       return data?.map(mapSupabaseBroadcast) || [];
     } catch (error) {
-      console.error("Failed to fetch broadcasts:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("Failed to fetch broadcasts:", errorMessage);
       return [];
     }
   },
@@ -82,12 +94,19 @@ export const broadcastService = {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching active broadcasts:", error);
+        const errorMessage = error.message || "Unknown error";
+        console.error("Error fetching active broadcasts:", {
+          message: errorMessage,
+          code: error.code,
+          details: error.details,
+        });
         return [];
       }
       return data?.map(mapSupabaseBroadcast) || [];
     } catch (error) {
-      console.error("Failed to fetch active broadcasts:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("Failed to fetch active broadcasts:", errorMessage);
       return [];
     }
   },
