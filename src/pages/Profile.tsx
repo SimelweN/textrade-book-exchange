@@ -37,7 +37,6 @@ import { BookDeletionService } from "@/services/bookDeletionService";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import AdminDebug from "@/components/AdminDebug";
 
 const Profile = () => {
   const { profile, user } = useAuth();
