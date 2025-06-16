@@ -396,7 +396,22 @@ const ModernAPSCalculator: React.FC = () => {
 
   const handleLoadSample = () => {
     setSubjects(SAMPLE_SUBJECTS);
-    toast.success("Sample marks loaded (APS: 35)");
+
+    // Calculate the sample APS for verification
+    const sampleAPS = SAMPLE_SUBJECTS.reduce(
+      (total, subject) => total + subject.points,
+      0,
+    );
+
+    console.log("🎯 Sample data loaded:", {
+      subjects: SAMPLE_SUBJECTS,
+      calculatedAPS: sampleAPS,
+    });
+
+    toast.success(`Sample marks loaded (APS: ${sampleAPS})`);
+
+    // Force switch to programs tab to show results
+    setActiveInsight("programs");
   };
 
   return (
