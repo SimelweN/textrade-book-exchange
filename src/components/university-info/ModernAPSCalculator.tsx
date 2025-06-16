@@ -956,12 +956,21 @@ const ModernAPSCalculator: React.FC = () => {
                     <CardTitle className="flex items-center justify-between text-slate-900">
                       <div className="flex items-center gap-2">
                         <GraduationCap className="h-5 w-5 text-purple-500" />
-                        Program Matches
+                        {totalAPS === 0
+                          ? "Available Programs"
+                          : "Program Matches"}
                       </div>
                       <Badge variant="outline">
-                        {filteredDegrees.length} results
+                        {filteredDegrees.length}{" "}
+                        {totalAPS === 0 ? "samples" : "results"}
                       </Badge>
                     </CardTitle>
+                    {totalAPS === 0 && (
+                      <CardDescription className="text-slate-600">
+                        Enter your marks above to see which programs you're
+                        eligible for. Below is a sample of available programs.
+                      </CardDescription>
+                    )}
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
