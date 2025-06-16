@@ -174,34 +174,41 @@ const UniversityInfo = () => {
             onValueChange={handleTabChange}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-8 h-auto bg-gray-100">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-8 h-auto bg-gray-200 p-1">
               <TabsTrigger
                 value="overview"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="flex flex-col items-center gap-1 py-2.5 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <University className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs sm:text-sm">Universities</span>
+                <span className="text-xs sm:text-sm">Overview</span>
               </TabsTrigger>
               <TabsTrigger
                 value="aps-calculator"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="flex flex-col items-center gap-1 py-2.5 px-2 text-center data-[state=active]:bg-green-50 data-[state=active]:shadow-sm data-[state=active]:text-green-800"
               >
                 <Calculator className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs sm:text-sm">APS Calculator</span>
+                <span className="text-xs sm:text-sm">APS</span>
               </TabsTrigger>
               <TabsTrigger
                 value="bursaries"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="flex flex-col items-center gap-1 py-2.5 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="text-xs sm:text-sm">Bursaries</span>
               </TabsTrigger>
               <TabsTrigger
                 value="books"
-                className="flex flex-col items-center gap-1 py-2 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="flex flex-col items-center gap-1 py-2.5 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs sm:text-sm">Textbooks</span>
+                <span className="text-xs sm:text-sm">Books</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="accommodation"
+                className="flex flex-col items-center gap-1 py-2.5 px-2 text-center data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              >
+                <Building className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm">Accommodation</span>
               </TabsTrigger>
             </TabsList>
 
