@@ -530,19 +530,19 @@ const ModernUniversityProfile: React.FC = () => {
             </TabsContent>
 
             {/* Programs Tab */}
-            <TabsContent value="programs" className="space-y-8">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-900 mb-4">
+            <TabsContent value="programs" className="space-y-6 sm:space-y-8">
+              <div className="text-center mb-6 sm:mb-8 px-4">
+                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4">
                   Academic Programs
                 </h2>
-                <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+                <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto">
                   Explore our comprehensive range of undergraduate and
                   postgraduate programs across {university.faculties?.length}{" "}
                   faculties.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
                 {/* Faculty List */}
                 <div className="lg:col-span-1">
                   <Card className="bg-white border-0 shadow-lg sticky top-6">
