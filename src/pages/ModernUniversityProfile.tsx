@@ -206,7 +206,7 @@ const ModernUniversityProfile: React.FC = () => {
                 { icon: Users, value: stats?.students.toLocaleString() || '28,500', label: 'Students', color: 'text-blue-400' },
                 { icon: Calendar, value: stats?.established || '1829', label: 'Established', color: 'text-emerald-400' },
                 { icon: GraduationCap, value: stats?.programs || '150+', label: 'Programs', color: 'text-purple-400' },
-                { icon: Award, value: `${stats?.graduationRate}%` || '87%', label: 'Graduation Rate', color: 'text-orange-400' }
+                { icon: Award, value: stats?.graduationRate ? `${stats.graduationRate}%` : '87%', label: 'Graduation Rate', color: 'text-orange-400' }
               ].map((stat, index) => (
                 <div key={index} className="text-center">
                   <stat.icon className={`h-8 w-8 ${stat.color} mx-auto mb-3`} />
