@@ -355,21 +355,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         handleAuthStateChange(session, event);
-        } else {
-          throw new Error(`Auth initialization failed: ${error.message}`);
-        }
+      } else {
+        setUser(null);
+        setProfile(null);
+        setSession(null);
+      }
+    });
 
-        if (session) {
-          await handleAuthStateChange(session, "SESSION_RESTORED");
-        } else {
-          // No session found - user is not authenticated
-          setUser(null);
-          setProfile(null);
-          setSession(null);
-        }
+    return () => subscription.unsubscribe();
+  }, [handleAuthStateChange]);
 
-        // Always ensure loading is turned off after initialization
+  // Separate effect for loading timeout to prevent infinite re-renders
+  useEffect(() => {
+    if (isLoading) {
+      const loadingTimeout = setTimeout(() => {
+        console.warn("⚠️ [AuthContext] Loading timeout - forcing resolution");
         setIsLoading(false);
+      }, 5000); // 5 second timeout
+
+      return () => clearTimeout(loadingTimeout);
+    }
+  }, [isLoading]);
+
   const value = {
     user,
     profile,
