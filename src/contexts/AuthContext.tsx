@@ -152,9 +152,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const fallbackProfile = createFallbackProfile(session.user);
           setProfile(fallbackProfile);
 
-          // Immediately set loading to false to prevent navbar glitching
-          setIsLoading(false);
-
           console.log("ℹ️ [AuthContext] Using immediate fallback profile");
 
           // Try to load full profile in background (non-blocking)
@@ -227,11 +224,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           type: error instanceof Error ? error.constructor.name : typeof error,
         });
 
-        // Don't throw - use fallback profile
+        // Don't throw - use fallback profile and ensure loading resolves
         if (session.user) {
           const fallbackProfile = createFallbackProfile(session.user);
           setProfile(fallbackProfile);
         }
+        setIsLoading(false);
       }
     },
     [createFallbackProfile, upgradeProfileIfNeeded, isInitializing],
@@ -337,7 +335,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     initializeAuth();
-  }, [initializeAuth]);
+
+    // Fallback timeout to ensure loading never gets stuck
+    const loadingTimeout = setTimeout(() => {
+      if (isLoading) {
+        console.warn("⚠️ [AuthContext] Loading timeout - forcing resolution");
+        setIsLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(loadingTimeout);
+  }, [initializeAuth, isLoading]);
 
   useEffect(() => {
     const {
@@ -345,16 +353,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         handleAuthStateChange(session, event);
-      } else {
-        setUser(null);
-        setProfile(null);
-        setSession(null);
-      }
-    });
+        } else {
+          throw new Error(`Auth initialization failed: ${error.message}`);
+        }
 
-    return () => subscription.unsubscribe();
-  }, [handleAuthStateChange]);
+        if (session) {
+          await handleAuthStateChange(session, "SESSION_RESTORED");
+        } else {
+          // No session found - user is not authenticated
+          setUser(null);
+          setProfile(null);
+          setSession(null);
+        }
 
+        // Always ensure loading is turned off after initialization
+        setIsLoading(false);
   const value = {
     user,
     profile,
