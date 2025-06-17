@@ -335,17 +335,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     initializeAuth();
+  }, [initializeAuth]);
 
-    // Fallback timeout to ensure loading never gets stuck
-    const loadingTimeout = setTimeout(() => {
-      if (isLoading) {
+  // Separate effect for loading timeout to prevent infinite re-renders
+  useEffect(() => {
+    if (isLoading) {
+      const loadingTimeout = setTimeout(() => {
         console.warn("⚠️ [AuthContext] Loading timeout - forcing resolution");
         setIsLoading(false);
-      }
-    }, 5000); // 5 second timeout
+      }, 5000); // 5 second timeout
 
-    return () => clearTimeout(loadingTimeout);
-  }, [initializeAuth, isLoading]);
+      return () => clearTimeout(loadingTimeout);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const {
