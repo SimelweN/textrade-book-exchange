@@ -19,10 +19,48 @@ import NotificationBadge from "./NotificationBadge";
 import { toast } from "sonner";
 
 const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isLoading, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Prevent navbar flickering during auth initialization
+  if (isLoading) {
+    return (
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center min-w-0">
+              <Link
+                to="/"
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              >
+                <div className="w-7 h-7 sm:w-8 sm:h-8 bg-book-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-book-600 truncate">
+                  ReBooked Solutions
+                </span>
+              </Link>
+            </div>
+
+            {/* Loading placeholder */}
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="w-16 h-8 bg-gray-200 rounded animate-pulse"></div>
+              <div className="w-16 h-8 bg-gray-200 rounded animate-pulse"></div>
+              <div className="w-20 h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+
+            {/* Mobile menu button placeholder */}
+            <div className="md:hidden">
+              <div className="w-10 h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   const handleLogout = async () => {
     try {
@@ -129,10 +167,11 @@ const Navbar = () => {
                     <Button
                       variant="ghost"
                       className="text-gray-700 hover:text-book-600 px-2 lg:px-3 h-10 text-sm"
+                      title={profile?.name || user?.email || "Profile"}
                     >
                       <User className="w-4 h-4" />
                       <span className="ml-1 lg:ml-2 hidden lg:inline">
-                        Profile
+                        {profile?.name || "Profile"}
                       </span>
                     </Button>
                   </Link>
@@ -261,7 +300,7 @@ const Navbar = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <User className="w-5 h-5 mr-3" />
-                    Profile
+                    {profile?.name || "Profile"}
                   </Link>
 
                   <button
