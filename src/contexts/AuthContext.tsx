@@ -143,13 +143,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           userId: session.user?.id,
         });
 
+        // Set session and user in batch to prevent flickering
         setSession(session);
         setUser(session.user);
 
         if (session.user) {
-          // Create immediate fallback profile
+          // Create immediate fallback profile to prevent UI flickering
           const fallbackProfile = createFallbackProfile(session.user);
           setProfile(fallbackProfile);
+
+          // Immediately set loading to false to prevent navbar glitching
+          setIsLoading(false);
+
           console.log("ℹ️ [AuthContext] Using immediate fallback profile");
 
           // Try to load full profile in background (non-blocking)
@@ -253,6 +258,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       if (session) {
         await handleAuthStateChange(session, "SESSION_RESTORED");
+      } else {
+        // Ensure loading is turned off even when no session
+        setIsLoading(false);
       }
 
       setAuthInitialized(true);
@@ -264,8 +272,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
       setInitError(errorMessage);
       logError("Auth initialization failed", error);
-    } finally {
+
+      // Ensure loading is turned off on error to prevent infinite loading
       setIsLoading(false);
+    } finally {
       setIsInitializing(false);
     }
   }, [authInitialized, handleAuthStateChange]);
