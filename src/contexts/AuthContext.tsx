@@ -257,9 +257,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (session) {
         await handleAuthStateChange(session, "SESSION_RESTORED");
       } else {
-        // Ensure loading is turned off even when no session
-        setIsLoading(false);
+        // No session found - user is not authenticated
+        setUser(null);
+        setProfile(null);
+        setSession(null);
       }
+
+      // Always ensure loading is turned off after initialization
+      setIsLoading(false);
 
       setAuthInitialized(true);
       console.log("✅ [AuthContext] Auth initialized successfully");
@@ -364,18 +369,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => subscription.unsubscribe();
   }, [handleAuthStateChange]);
-
-  // Separate effect for loading timeout to prevent infinite re-renders
-  useEffect(() => {
-    if (isLoading) {
-      const loadingTimeout = setTimeout(() => {
-        console.warn("⚠️ [AuthContext] Loading timeout - forcing resolution");
-        setIsLoading(false);
-      }, 5000); // 5 second timeout
-
-      return () => clearTimeout(loadingTimeout);
-    }
-  }, [isLoading]);
 
   const value = {
     user,
